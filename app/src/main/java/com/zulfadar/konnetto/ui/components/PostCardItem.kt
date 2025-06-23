@@ -3,6 +3,7 @@ package com.zulfadar.konnetto.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,20 +42,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zulfadar.konnetto.R
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
+import com.zulfadar.konnetto.utils.formatCount
 
 @Composable
 fun PostCardItem(
+    modifier: Modifier = Modifier,
+    displayname: String,
     username: String,
     timestamp: String,
     profilePict: Int,
     image: Int? = null,
     caption: String,
     onCommentsClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var isLiked by remember { mutableStateOf(false) }
+    var isSaved by remember { mutableStateOf(false) }
     var likeCount by remember { mutableIntStateOf(0) }
+    var commentCount by remember { mutableIntStateOf(0) }
+    var shareCount by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = modifier
@@ -63,161 +69,210 @@ fun PostCardItem(
 //        elevation = CardDefaults.cardElevation(4.dp),
 //        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
     ) {
-        Column(
+        Row(
             modifier = Modifier
+                .padding(4.dp)
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
+            Image(
+                painter = painterResource(profilePict),
+                contentDescription = "profile picture",
                 modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(profilePict),
-                    contentDescription = "profile picture",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
+                    .size(40.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(Modifier.widthIn(min = 8.dp))
+            Column {
+                Text(
+                    text = displayname,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {  }
                 )
-                Spacer(Modifier.widthIn(min = 8.dp))
-                Column {
+                Row {
                     Text(
-                        text = username,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.clickable {  }
+                        text = "@$username",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.clickable { }
                     )
+                    Spacer(modifier = Modifier.widthIn(12.dp))
                     Text(
                         text = timestamp,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = {}
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(30.dp),
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = null,
+                )
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            val displayedText = if (isExpanded || caption.length <= 100) caption else "${caption.take(100)}..."
+
+            Text(
+                text = displayedText,
+                textAlign = TextAlign.Justify,
+                lineHeight = 16.sp,
+                fontSize = 14.sp
+            )
+            if (caption.length > 100) {
+                Text(
+                    text = if (isExpanded) "See Less" else "See More",
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(top = 4.dp)
+                        .align(Alignment.End)
+                )
+            }
+        }
+        Spacer(Modifier.heightIn(min =8.dp))
+        if (image != null) {
+            Image(
+                painter = painterResource(image),
+                contentDescription = "image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(height = 450.dp, width = 388.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.FillBounds
+            )
+        }
+        Spacer(Modifier.heightIn(min = 8.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                IconButton(
+                    onClick = {
+                        isLiked = !isLiked
+                        likeCount = if (isLiked) likeCount + 1 else maxOf(likeCount - 1, 0)
+                    }
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(24.dp),
+                        imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = null,
+                        tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                if (likeCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .widthIn(min = 20.dp)
+                            .clickable {  }
+                    ) {
+                        Text(
+                            text = likeCount.formatCount(),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (likeCount > 0) MaterialTheme.colorScheme.onSurface
+                            else Color.Transparent
+                        )
+                    }
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(
+                    onClick = {
+                        onCommentsClick()
+                    }
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(24.dp),
+                        painter = painterResource(R.drawable.icons_comment),
+                        contentDescription = null,
+                    )
+                }
+                if (commentCount > 0) {
+                    Box(modifier = Modifier.widthIn(min = 20.dp)) {
+                        Text(
+                            text = commentCount.formatCount(),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (commentCount > 0) MaterialTheme.colorScheme.onSurface
+                            else Color.Transparent
+                        )
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 IconButton(
                     onClick = {}
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(30.dp),
-                        imageVector = Icons.Filled.MoreVert,
+                            .size(24.dp),
+                        painter = painterResource(R.drawable.share_icon_outlined) ,
                         contentDescription = null,
                     )
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                val displayedText = if (isExpanded || caption.length <= 100) caption else "${caption.take(100)}..."
-
-                Text(
-                    text = displayedText,
-                    textAlign = TextAlign.Justify,
-                    fontSize = 14.sp
-                )
-                if (caption.length > 100) {
-                    Text(
-                        text = if (isExpanded) "See Less" else "See More",
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .clickable { isExpanded = !isExpanded }
-                            .padding(top = 4.dp)
-                            .align(Alignment.End)
-                    )
+                if (shareCount > 0) {
+                    Box(modifier = Modifier.widthIn(min = 20.dp)) {
+                        Text(
+                            text = shareCount.formatCount(),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (shareCount > 0) MaterialTheme.colorScheme.onSurface
+                            else Color.Transparent
+                        )
+                    }
                 }
             }
-            Spacer(Modifier.heightIn(min =8.dp))
-            if (image != null) {
-                Image(
-                    painter = painterResource(image),
-                    contentDescription = "image",
+            IconButton(
+                modifier = Modifier,
+                onClick = { isSaved = !isSaved}
+            ) {
+                Icon(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                        .size(height = 350.dp, width = 250.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.FillBounds
+                        .size(24.dp),
+                    painter = if (isSaved) painterResource(R.drawable.baseline_bookmark_24) else painterResource(R.drawable.baseline_bookmark_border_24),
+                    contentDescription = null,
                 )
             }
-            Spacer(Modifier.heightIn(min = 8.dp))
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable { isLiked = !isLiked },
-                        imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
-                        tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        "0",
-                        fontSize = 12.sp
-                    )
-                }
-                Spacer(Modifier.widthIn(min = 18.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable {
-                                onCommentsClick()
-                            },
-                        painter = painterResource(R.drawable.outline_insert_comment_24),
-                        contentDescription = null,
-                    )
-                    Text(
-                        "0",
-                        fontSize = 12.sp
-                    )
-                }
-                Spacer(Modifier.widthIn(min = 18.dp))
-                Row(
-                    modifier = Modifier
-                        .weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable {  },
-                        painter = painterResource(R.drawable.baseline_share_24) ,
-                        contentDescription = null,
-                    )
-                    Text(
-                        "0",
-                        fontSize = 12.sp
-                    )
-                }
-            }
-            Spacer(Modifier.heightIn(min = 15.dp))
         }
     }
     Divider(color = Color.LightGray, thickness = 1.dp)
 }
+
 
 @Preview(showBackground = true)
 @Composable
 private fun PostCardItemPreview() {
     KonnettoTheme {
         PostCardItem(
-            username = "Char Aznable",
+            displayname = "Char",
+            username = "charaznable123",
             timestamp = "16 h",
             profilePict = R.drawable.logo,
             image = R.drawable.memespongebob,

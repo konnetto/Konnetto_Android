@@ -1,23 +1,23 @@
 package com.zulfadar.konnetto.data.repository
 
-import com.zulfadar.konnetto.data.model.FakePostDataSource
-import com.zulfadar.konnetto.data.model.Posting
+import com.zulfadar.konnetto.data.FakePostDataSource
+import com.zulfadar.konnetto.data.model.Post
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class PostRepository {
-    private val postings = mutableListOf<Posting>()
+    private val posts = mutableListOf<Post>()
 
     init {
-        if (postings.isEmpty()) {
+        if (posts.isEmpty()) {
             FakePostDataSource.dummyPosting.forEach {
-                postings.add(Posting(it))
+                posts.add(it)
             }
         }
     }
 
-    fun getAllPosting(): Flow<List<Posting>> {
-        return flowOf(postings)
+    fun getAllPosts(): Flow<List<Post>> {
+        return flowOf(posts)
     }
 
     companion object {

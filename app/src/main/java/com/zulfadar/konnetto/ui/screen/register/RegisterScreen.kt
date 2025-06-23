@@ -46,6 +46,7 @@ fun RegisterScreen(
     navigateToLogin: () -> Unit
 ) {
     RegisterContent(
+        displayname = "",
         username = "",
         email = "",
         password = "",
@@ -57,6 +58,7 @@ fun RegisterScreen(
 
 @Composable
 fun RegisterContent(
+    displayname: String,
     username: String,
     email: String,
     password: String,
@@ -64,7 +66,7 @@ fun RegisterContent(
     navigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
+    var displayname by remember { mutableStateOf(displayname) }
     var username by remember { mutableStateOf(username) }
     var email by remember { mutableStateOf(email) }
     var password by remember { mutableStateOf(password) }
@@ -88,6 +90,16 @@ fun RegisterContent(
             fontSize = 30.sp
         )
         Spacer(Modifier.heightIn(min = 30.dp))
+        InputTextField(
+            input = displayname,
+            onValueChange = { newInput ->
+                displayname = newInput
+            },
+            labelText = "Name",
+            leadingIcon = Icons.Filled.Person,
+            keyboardType = KeyboardType.Text
+        )
+        Spacer(Modifier.heightIn(min = 10.dp))
         InputTextField(
             input = username,
             onValueChange = { newInput ->
@@ -179,6 +191,7 @@ fun RegisterContent(
 private fun RegisterScreenPreview() {
     KonnettoTheme {
         RegisterContent(
+            displayname = "",
             username = "",
             email = "",
             password = "",

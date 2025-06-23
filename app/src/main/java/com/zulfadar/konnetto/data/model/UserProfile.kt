@@ -1,9 +1,10 @@
 package com.zulfadar.konnetto.data.model
 
 data class UserProfile(
+    val id: Long,
     val username: String,
-    val profilePict: String?,
-    val friends: Int?,
-    val follows: Int?,
-    val post: Post?,
+    val name: String,
+    val photo: String?,
 )
+
+
