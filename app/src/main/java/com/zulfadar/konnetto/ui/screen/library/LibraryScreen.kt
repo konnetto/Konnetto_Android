@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.screen.CreateNewPost
+package com.zulfadar.konnetto.ui.screen.library
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
 
 @Composable
-fun CreateNewPostScreen(
+fun LibraryPageScreen(
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -20,7 +20,7 @@ fun CreateNewPostScreen(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            "Add Post",
+            "Library Page",
             fontSize = 50.sp,
             fontWeight = FontWeight.Bold
         )
@@ -29,8 +29,8 @@ fun CreateNewPostScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun CreateNewPostScreenPreview() {
+private fun LibraryPageScreenPreview() {
     KonnettoTheme {
-        CreateNewPostScreen()
+        LibraryPageScreen()
     }
 }

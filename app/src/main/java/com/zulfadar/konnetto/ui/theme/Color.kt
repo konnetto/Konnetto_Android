@@ -7,7 +7,7 @@ val GreenGrey80 = Color(0xFFC6DCC2)
 val Yellow80 = Color(0xFFE7EFB8)
 
 val LightGreen = Color(0xFF50FF43)
-val GreenGrey40 = Color(0xFF5E715B)
-val Green40 = Color(0xFF5F7D52)
+val GreenGrey40 = Color(0xFF222621)
+val Green40 = Color(0xFF1DB954)
 
 val White = Color(0xFFFFFFFF)
