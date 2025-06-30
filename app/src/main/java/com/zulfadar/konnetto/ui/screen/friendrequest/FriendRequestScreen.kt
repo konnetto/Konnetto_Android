@@ -101,6 +101,7 @@ fun FriendRequestContent(
             items(friendRequests) { data ->
                 if (friendRequests.isNullOrEmpty()) {
                     Column(
+                        modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Top
                     ) {

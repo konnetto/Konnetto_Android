@@ -32,11 +32,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -66,13 +68,18 @@ import com.zulfadar.konnetto.ui.common.UiState
 import com.zulfadar.konnetto.ui.components.PostCardItem
 import com.zulfadar.konnetto.ui.navigation.TabItem
 import com.zulfadar.konnetto.ui.navigation.WatchingTabItem
+import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
 import com.zulfadar.konnetto.ui.screen.profile.components.WatchCardItem
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onBackClick: () -> Unit,
+    showCommentSectionSheet: Boolean,
+    commentSectionSheetState: SheetState,
+    onDismissCommentSheet: () -> Unit,
     onCommentClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = viewModel(
@@ -111,6 +118,9 @@ fun ProfileScreen(
                 currentlyWatch = currentlyWatchingList,
                 onBackClick = onBackClick,
                 onCommentClick = onCommentClick,
+                showCommentSectionSheet = showCommentSectionSheet,
+                commentSectionState = commentSectionSheetState,
+                onDismissCommentSheet = onDismissCommentSheet,
                 modifier = modifier
             )
         }
@@ -122,7 +132,7 @@ fun ProfileScreen(
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileContent(
     displayname: String,
@@ -133,6 +143,9 @@ fun ProfileContent(
     biography: String?,
     posts: List<Post>,
     currentlyWatch: List<CurrentlyWatching>,
+    showCommentSectionSheet: Boolean,
+    commentSectionState: SheetState,
+    onDismissCommentSheet: () -> Unit,
     onCommentClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -342,43 +355,6 @@ fun ProfileContent(
 //                    )
 //                }
             }
-//            item {
-//                if (posts.isNullOrEmpty()) {
-//                    Column(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                    ) {
-//                        Box(
-//                            modifier = Modifier.fillMaxWidth(),
-//                            contentAlignment = Alignment.TopCenter
-//                        ) {
-//                            Text(
-//                                fontSize = 24.sp,
-//                                color = MaterialTheme.colorScheme.primary,
-//                                text = "No Post Yet",
-//                                modifier = Modifier.padding(16.dp)
-//                            )
-//                        }
-//                    }
-//                } else {
-//                    Column(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                    ) {
-//                        posts.forEach { data ->
-//                            PostCardItem(
-//                                displayname = data.displayname,
-//                                username = data.username,
-//                                timestamp = data.timestamp,
-//                                profilePict = data.profilePict,
-//                                image = data.image,
-//                                caption = data.caption,
-//                                onCommentsClick = onCommentClick,
-//                            )
-//                        }
-//                    }
-//                }
-//            }
 
             item {
                 HorizontalPager(
@@ -449,6 +425,12 @@ fun ProfileContent(
                 }
             }
         }
+        if (showCommentSectionSheet) {
+            CommentSection(
+                commentSheetState = commentSectionState,
+                onDismissCommentSheet = onDismissCommentSheet
+            )
+        }
     }
 }
 
@@ -468,36 +450,6 @@ fun ProfileSection(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-//        Box(
-//            modifier = Modifier.height(120.dp)
-//        ) {
-//            //Header Image
-//            Image(
-//                painter = painterResource(id = R.drawable.header),
-//                contentDescription = "Cover Photo",
-//                modifier = Modifier
-//                    .sizeIn(maxHeight = 120.dp)
-//                    .fillMaxSize(),
-//                contentScale = ContentScale.Crop
-//            )
-//            Image(
-//                painter = painterResource(profilePict?.toInt() ?: R.drawable.img),
-//                contentDescription = "Profile Picture",
-//                modifier = Modifier
-//                    .size(130.dp)
-//                    .offset(y = 60.dp, x = 20.dp)
-//                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
-//                    .border(
-//                        width = 4.dp,
-//                        color = MaterialTheme.colorScheme.background,
-//                        shape = CircleShape
-//                    )
-//                    .padding(3.dp)
-//                    .clip(CircleShape)
-//                    .background(color = MaterialTheme.colorScheme.background)
-//                    .align(Alignment.BottomStart)
-//            )
-//        }
         Row(
             modifier = Modifier
                 .padding(start = 12.dp),
@@ -805,11 +757,12 @@ fun ProfileTopAppBar(
 //    }
 //}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 private fun ProfileScreenPreview() {
     KonnettoTheme {
-//        ProfileScreen()
+        val dummySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ProfileContent(
             displayname = "Uzumaki Uchiha bambank",
             username = "Bambank",
@@ -883,7 +836,10 @@ private fun ProfileScreenPreview() {
                     title = "Spongebob",
                     poster = R.drawable.memespongebob
                 ),
-            )
+            ),
+            showCommentSectionSheet = false,
+            commentSectionState = dummySheetState,
+            onDismissCommentSheet = {},
         )
     }
 }

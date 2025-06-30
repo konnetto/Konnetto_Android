@@ -24,6 +24,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -50,6 +51,7 @@ import com.zulfadar.konnetto.ui.navigation.TabItem
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -63,7 +65,6 @@ fun HomeScreen(
     ),
     navigateToComment: () -> Unit,
     onMenuClick: () -> Unit,
-    onProfileClick: () -> Unit,
     onSearchClick: () -> Unit
 ) {
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -76,7 +77,6 @@ fun HomeScreen(
                     postings = uiState.data,
                     modifier = modifier,
                     navigateToComments = navigateToComment,
-                    onProfileClick = onProfileClick,
                     onMenuClick = onMenuClick,
                     onSearchClick = onSearchClick,
                 )
@@ -86,21 +86,19 @@ fun HomeScreen(
     }
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
     postings: List<Post>,
     navigateToComments: () -> Unit,
     onMenuClick: () -> Unit,
-    onProfileClick: () -> Unit,
     onSearchClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
             HomeTopAppBar(
                 onMenuClick = onMenuClick,
-                onProfileClick = onProfileClick,
                 onSearchClick = onSearchClick
             )
         },
@@ -266,7 +264,6 @@ fun HomeTabs(
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeTopAppBar(
     onMenuClick: () -> Unit,
-    onProfileClick: ()-> Unit,
     onSearchClick: () -> Unit
 ) {
     TopAppBar(
@@ -313,10 +310,12 @@ fun HomeTopAppBar(
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
     KonnettoTheme {
+        val dummySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         HomeContent(
             postings = listOf(
                 Post(
@@ -357,7 +356,6 @@ private fun HomeScreenPreview() {
                 ),
             ),
             navigateToComments = {},
-            onProfileClick = {},
             onMenuClick = {},
             onSearchClick = {},
         )

@@ -19,8 +19,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,11 +31,16 @@ import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +59,7 @@ import androidx.navigation.compose.rememberNavController
 import com.zulfadar.konnetto.ui.navigation.NavigationItem
 import com.zulfadar.konnetto.ui.navigation.Screen
 import com.zulfadar.konnetto.ui.screen.addnewpost.CreateNewPostScreen
+import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
 import com.zulfadar.konnetto.ui.screen.friendrequest.FriendRequestScreen
 import com.zulfadar.konnetto.ui.screen.home.HomeScreen
 import com.zulfadar.konnetto.ui.screen.library.LibraryPageScreen
@@ -66,6 +72,7 @@ import com.zulfadar.konnetto.ui.screen.settings.SettingsPageScreen
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KonnettoApp(
     modifier: Modifier = Modifier,
@@ -78,14 +85,23 @@ fun KonnettoApp(
 // Drawer content hanya aktif di HomePage
     val isHomePage = currentRoute == Screen.HomePage.route
 
+    //commentSection
+    val coroutineScope = rememberCoroutineScope()
+    var showCommentSectionSheet by remember { mutableStateOf(false) }
+    val commentSectionState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
+
     Box(modifier = modifier.fillMaxSize()) {
         ModalNavigationDrawer(
+            gesturesEnabled = drawerState.isOpen,
             drawerState = drawerState,
             drawerContent = {
                 if (isHomePage) {
                     ModalDrawerSheet(
                         modifier = Modifier.widthIn(max = 270.dp),
-                        drawerContainerColor = DrawerDefaults.containerColor
+                        drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                        drawerContentColor = MaterialTheme.colorScheme.surfaceContainerLowest
                     ) {
                         Row(
                             modifier = Modifier.padding(start = 14.dp, end = 12.dp, bottom = 20.dp, top = 20.dp),
@@ -142,7 +158,10 @@ fun KonnettoApp(
                                     launchSingleTop = true
                                 }
                                 scope.launch { drawerState.close() }
-                            }
+                            },
+                            colors = NavigationDrawerItemDefaults.colors(
+                                unselectedContainerColor = Color.Transparent
+                            )
                         )
                         NavigationDrawerItem(
                             icon = {
@@ -167,7 +186,10 @@ fun KonnettoApp(
                                     launchSingleTop = true
                                 }
                                 scope.launch { drawerState.close() }
-                            }
+                            },
+                            colors = NavigationDrawerItemDefaults.colors(
+                                unselectedContainerColor = Color.Transparent
+                            )
                         )
                         NavigationDrawerItem(
                             icon = {
@@ -192,7 +214,10 @@ fun KonnettoApp(
                                     launchSingleTop = true
                                 }
                                 scope.launch { drawerState.close() }
-                            }
+                            },
+                            colors = NavigationDrawerItemDefaults.colors(
+                                unselectedContainerColor = Color.Transparent
+                            )
                         )
                         NavigationDrawerItem(
                             icon = {
@@ -217,7 +242,10 @@ fun KonnettoApp(
                                     launchSingleTop = true
                                 }
                                 scope.launch { drawerState.close() }
-                            }
+                            },
+                            colors = NavigationDrawerItemDefaults.colors(
+                                unselectedContainerColor = Color.Transparent
+                            )
                         )
                         NavigationDrawerItem(
                             icon = {
@@ -242,7 +270,10 @@ fun KonnettoApp(
                                     launchSingleTop = true
                                 }
                                 scope.launch { drawerState.close() }
-                            }
+                            },
+                            colors = NavigationDrawerItemDefaults.colors(
+                                unselectedContainerColor = Color.Transparent
+                            )
                         )
                     }
                 }
@@ -300,7 +331,7 @@ fun KonnettoApp(
                     }
 
                     HomeScreen(
-                        navigateToComment = {},
+                        navigateToComment = { showCommentSectionSheet = true },
                         onMenuClick = {
                             // Hanya buka drawer jika di homePage
                             if (isHomePage) {
@@ -313,12 +344,7 @@ fun KonnettoApp(
                                 }
                             }
                         },
-                        onProfileClick = {
-                            navController.navigate(Screen.ProfilePage.route) {
-                                launchSingleTop = true
-                            }
-                        },
-                        onSearchClick = {}
+                        onSearchClick = {},
                     )
                 }
 
@@ -367,7 +393,15 @@ fun KonnettoApp(
                 composable(Screen.ProfilePage.route) {
                     ProfileScreen(
                         onBackClick = { navController.popBackStack() },
-                        onCommentClick = {},
+                        onCommentClick = { showCommentSectionSheet = true },
+                        showCommentSectionSheet = showCommentSectionSheet,
+                        commentSectionSheetState = commentSectionState,
+                        onDismissCommentSheet = {
+                            coroutineScope.launch {
+                                commentSectionState.hide()
+                                showCommentSectionSheet = false
+                            }
+                        },
                     )
                 }
             }
@@ -379,19 +413,18 @@ fun KonnettoApp(
                     modifier = Modifier.align(Alignment.BottomCenter)
                 )
             }
-//            if (currentRoute in listOf(
-//                    Screen.HomePage.route,
-//                    Screen.CreateNewPostPage.route,
-//                    Screen.NotificationPage.route,
-//                )
-//            ) {
-//                BottomBar(
-//                    navController = navController,
-//                    currentRoute = currentRoute,
-//                    modifier = Modifier.align(Alignment.BottomCenter)
-//                )
-//            }
         }
+    }
+    if (showCommentSectionSheet) {
+        CommentSection(
+            commentSheetState = commentSectionState,
+            onDismissCommentSheet = {
+                coroutineScope.launch {
+                    commentSectionState.hide()
+                    showCommentSectionSheet = false
+                }
+            }
+        )
     }
 }
 
@@ -414,64 +447,6 @@ private fun BottomBar(
     currentRoute: String?,
     modifier: Modifier = Modifier
 ) {
-//    val navigationItems = remember {
-//        listOf(
-//            NavigationItem(
-//                "Home",
-//                Icons.Outlined.Home,
-//                Screen.HomePage
-//            ),
-////            NavigationItem("Community", Icons.Outlined.AccountCircle, Screen.CommunityPage),
-//            NavigationItem(
-//                "Add",
-//                Icons.Outlined.Add,
-//                Screen.CreateNewPostPage
-//            ),
-////            NavigationItem("Event", Icons.Outlined.DateRange, Screen.EventPage),
-//            NavigationItem(
-//                "Notification",
-//                Icons.Outlined.Notifications,
-//                Screen.NotificationPage
-//            ),
-//        )
-//    }
-
-//    NavigationBar(
-//        containerColor = MaterialTheme.colorScheme.background,
-//        modifier = modifier
-//            .heightIn(max = 100.dp)
-//            .navigationBarsPadding() // ini menyesuaikan dengan navigation bar sistem
-//            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
-//    ) {
-//        navigationItems.forEach { item ->
-//            val selected = currentRoute == item.screen.route
-//            NavigationBarItem(
-//                icon = {
-//                    Icon(
-//                        imageVector = item.icon,
-//                        contentDescription = item.title,
-//                        modifier = Modifier.size(30.dp),
-//                        tint = if (selected) MaterialTheme.colorScheme.primary else Color.Gray
-//                    )
-//                },
-//                selected = selected,
-//                onClick = {
-//                    if (!selected) {
-//                        navController.navigate(item.screen.route) {
-//                            popUpTo(navController.graph.findStartDestination().id) {
-//                                saveState = true
-//                            }
-//                            launchSingleTop = true
-//                            restoreState = true
-//                        }
-//                    }
-//                },
-//                colors = NavigationBarItemDefaults.colors(
-//                    indicatorColor = Color.Transparent
-//                )
-//            )
-//        }
-//    }
     NavigationBar(
         modifier = modifier
             .padding(top = 40.dp)
@@ -484,9 +459,6 @@ private fun BottomBar(
         tonalElevation = 12.dp
 
     ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-
         val navigationItems = listOf(
             NavigationItem(
                 title = "Home",
@@ -537,8 +509,6 @@ private fun BottomBar(
         }
     }
 }
-
-
 
 @Preview
 @Composable
