@@ -38,7 +38,6 @@ fun NotificationTile(
     notificationCategory: String,
     onTileClick: () -> Unit
 ) {
-
     Row(
         modifier = modifier
             .fillMaxWidth()

@@ -32,10 +32,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zulfadar.konnetto.R
 import com.zulfadar.konnetto.data.model.FriendRequest
 import com.zulfadar.konnetto.di.Injection
-import com.zulfadar.konnetto.ui.ViewModelFactory
 import com.zulfadar.konnetto.ui.common.UiState
 import com.zulfadar.konnetto.ui.screen.friendrequest.component.FriendRequestTile
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
+import com.zulfadar.konnetto.ui.viewModelFactory.FriendRequestViewModelFactory
 
 @Composable
 fun FriendRequestScreen(
@@ -45,10 +45,7 @@ fun FriendRequestScreen(
     onDeclineClick: () -> Unit,
     onDisplaynameClick: () -> Unit,
     viewModel: FriendRequestViewModel = viewModel(
-        factory = ViewModelFactory(
-            Injection.provideRepositoy(),
-            Injection.provideCurretnlyWatchingRepository(),
-            Injection.provideNotificationsRepository(),
+        factory = FriendRequestViewModelFactory(
             Injection.provideFriendRequestsRepository()
         )
     )

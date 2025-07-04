@@ -1,0 +1,30 @@
+package com.zulfadar.konnetto.ui.friendlist
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.zulfadar.konnetto.data.model.FriendList
+import com.zulfadar.konnetto.data.repository.FriendListRepository
+import com.zulfadar.konnetto.ui.common.UiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+
+class FriendListViewModel(
+    private val friendListRepository: FriendListRepository
+): ViewModel() {
+    private val _uiStateFriendList: MutableStateFlow<UiState<List<FriendList>>> = MutableStateFlow(UiState.Loading)
+    val uiState: StateFlow<UiState<List<FriendList>>>
+        get() = _uiStateFriendList
+    fun getAllFriendList() {
+        viewModelScope.launch {
+            friendListRepository.getAllFriendList()
+                .catch {
+                    _uiStateFriendList.value = UiState.Error(it.message.toString())
+                }
+                .collect { postings ->
+                    _uiStateFriendList.value = UiState.Success(postings)
+                }
+        }
+    }
+}
