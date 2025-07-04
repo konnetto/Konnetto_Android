@@ -8,17 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -26,10 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
@@ -38,8 +29,8 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,19 +38,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.zulfadar.konnetto.ui.navigation.NavigationItem
+import com.zulfadar.konnetto.ui.components.BottomBar
+import com.zulfadar.konnetto.ui.friendlist.FriendListScreen
 import com.zulfadar.konnetto.ui.navigation.Screen
 import com.zulfadar.konnetto.ui.screen.addnewpost.CreateNewPostScreen
 import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
+import com.zulfadar.konnetto.ui.screen.editprofilescreen.EditProfileScreen
 import com.zulfadar.konnetto.ui.screen.friendrequest.FriendRequestScreen
 import com.zulfadar.konnetto.ui.screen.home.HomeScreen
 import com.zulfadar.konnetto.ui.screen.library.LibraryPageScreen
@@ -69,7 +60,6 @@ import com.zulfadar.konnetto.ui.screen.profile.ProfileScreen
 import com.zulfadar.konnetto.ui.screen.register.RegisterScreen
 import com.zulfadar.konnetto.ui.screen.saved.SavedPageScreen
 import com.zulfadar.konnetto.ui.screen.settings.SettingsPageScreen
-import com.zulfadar.konnetto.ui.theme.KonnettoTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,6 +70,10 @@ fun KonnettoApp(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val shouldShowBottomBar = listOf(
+        Screen.HomePage.route,
+        Screen.NotificationPage.route
+    )
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 // Drawer content hanya aktif di HomePage
@@ -87,7 +81,7 @@ fun KonnettoApp(
 
     //commentSection
     val coroutineScope = rememberCoroutineScope()
-    var showCommentSectionSheet by remember { mutableStateOf(false) }
+    var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
     val commentSectionState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     )
@@ -124,6 +118,7 @@ fun KonnettoApp(
                                     text = "displayname",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "username",
@@ -277,141 +272,160 @@ fun KonnettoApp(
                         )
                     }
                 }
-//                else {
-//                    // Kosong atau konten drawer minimal untuk mencegah buka drawer di luar home
-//                    Spacer(modifier = Modifier.height(1.dp))
-//                }
             },
             modifier = Modifier.widthIn(min = 30.dp)
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = Screen.HomePage.route,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                composable(Screen.LoginPage.route) {
-                    LoginScreen(
-                        onClickToLogin = {
-                            navController.navigate(Screen.HomePage.route) {
-                                popUpTo(Screen.LoginPage.route) { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        },
-                        onClickToSignUp = {
-                            navController.navigate(Screen.RegisterPage.route) {
-                                launchSingleTop = true
-                            }
-                        }
-                    )
-                }
-
-                composable(Screen.RegisterPage.route) {
-                    RegisterScreen(
-                        onClickToRegister = {
-                            navController.navigate(Screen.LoginPage.route) {
-                                popUpTo(Screen.RegisterPage.route) { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        },
-                        navigateToLogin = {
-                            navController.navigate(Screen.LoginPage.route) {
-                                launchSingleTop = true
-                            }
-                        }
-                    )
-                }
-
-                composable(Screen.HomePage.route) {
-                    BackHandler(enabled = true) {
-                        if (drawerState.isOpen) {
-                            scope.launch { drawerState.close() }
-                        } else {
-                            (navController.context as? Activity)?.finish()
-                        }
-                    }
-
-                    HomeScreen(
-                        navigateToComment = { showCommentSectionSheet = true },
-                        onMenuClick = {
-                            // Hanya buka drawer jika di homePage
-                            if (isHomePage) {
-                                scope.launch {
-                                    if (drawerState.isClosed) {
-                                        drawerState.open()
-                                    } else {
-                                        drawerState.close()
-                                    }
+            Box(modifier = Modifier.fillMaxSize()) {
+                NavHost(
+                    navController = navController,
+                    startDestination = Screen.HomePage.route,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    composable(Screen.LoginPage.route) {
+                        LoginScreen(
+                            onClickToLogin = {
+                                navController.navigate(Screen.HomePage.route) {
+                                    popUpTo(Screen.LoginPage.route) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            },
+                            onClickToSignUp = {
+                                navController.navigate(Screen.RegisterPage.route) {
+                                    launchSingleTop = true
                                 }
                             }
-                        },
-                        onSearchClick = {},
-                    )
-                }
+                        )
+                    }
 
-                composable(Screen.CreateNewPostPage.route) {
-                    CreateNewPostScreen(
-                        onPostButtonClick = {},
-                        onBackClick = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-
-                composable(Screen.NotificationPage.route) {
-                    NotificationScreen(
-                        onNotificationTileClick = {},
-                        onSlideToDelete = {},
-                        onMoreVertClick = {},
-                    )
-                }
-
-                composable(Screen.SavedPage.route) {
-                    SavedPageScreen()
-                }
-
-                composable(Screen.LibraryPage.route) {
-                    LibraryPageScreen()
-                }
-
-                composable(Screen.FriendRequestPage.route) {
-                    FriendRequestScreen(
-                        onBackClick = {
-                            navController.popBackStack()
-                        },
-                        onAccaptClick = {},
-                        onDeclineClick = {},
-                        onDisplaynameClick = {},
-                    )
-                }
-
-                composable(Screen.SettingsPage.route) {
-                    SettingsPageScreen(
-                        onBackClick = { navController.popBackStack() }
-                    )
-                }
-
-                composable(Screen.ProfilePage.route) {
-                    ProfileScreen(
-                        onBackClick = { navController.popBackStack() },
-                        onCommentClick = { showCommentSectionSheet = true },
-                        showCommentSectionSheet = showCommentSectionSheet,
-                        commentSectionSheetState = commentSectionState,
-                        onDismissCommentSheet = {
-                            coroutineScope.launch {
-                                commentSectionState.hide()
-                                showCommentSectionSheet = false
+                    composable(Screen.RegisterPage.route) {
+                        RegisterScreen(
+                            onClickToRegister = {
+                                navController.navigate(Screen.LoginPage.route) {
+                                    popUpTo(Screen.RegisterPage.route) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            },
+                            navigateToLogin = {
+                                navController.navigate(Screen.LoginPage.route) {
+                                    launchSingleTop = true
+                                }
                             }
-                        },
+                        )
+                    }
+
+                    composable(Screen.HomePage.route) {
+                        BackHandler(enabled = true) {
+                            if (drawerState.isOpen) {
+                                scope.launch { drawerState.close() }
+                            } else {
+                                (navController.context as? Activity)?.finish()
+                            }
+                        }
+
+                        HomeScreen(
+                            navigateToComment = { showCommentSectionSheet = true },
+                            onMenuClick = {
+                                // Hanya buka drawer jika di homePage
+                                if (isHomePage) {
+                                    scope.launch {
+                                        if (drawerState.isClosed) {
+                                            drawerState.open()
+                                        } else {
+                                            drawerState.close()
+                                        }
+                                    }
+                                }
+                            },
+                            onSearchClick = {},
+                        )
+                    }
+
+                    composable(Screen.CreateNewPostPage.route) {
+                        CreateNewPostScreen(
+                            onPostButtonClick = {},
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+
+                    composable(Screen.NotificationPage.route) {
+                        NotificationScreen(
+                            onNotificationTileClick = {},
+                            onSlideToDelete = {},
+                            onMoreVertClick = {},
+                        )
+                    }
+
+                    composable(Screen.SavedPage.route) {
+                        SavedPageScreen()
+                    }
+
+                    composable(Screen.LibraryPage.route) {
+                        LibraryPageScreen()
+                    }
+
+                    composable(Screen.FriendRequestPage.route) {
+                        FriendRequestScreen(
+                            onBackClick = {
+                                navController.popBackStack()
+                            },
+                            onAccaptClick = {},
+                            onDeclineClick = {},
+                            onDisplaynameClick = {},
+                        )
+                    }
+
+                    composable(Screen.SettingsPage.route) {
+                        SettingsPageScreen(
+                            onBackClick = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(Screen.ProfilePage.route) {
+                        ProfileScreen(
+                            onBackClick = { navController.popBackStack() },
+                            onCommentClick = { showCommentSectionSheet = true },
+                            showCommentSectionSheet = showCommentSectionSheet,
+                            commentSectionSheetState = commentSectionState,
+                            onDismissCommentSheet = {
+                                coroutineScope.launch {
+                                    commentSectionState.hide()
+                                    showCommentSectionSheet = false
+                                }
+                            },
+                            onShareBtnClick = {},
+                            onEdtBtnClick = {
+                                navController.navigate(Screen.EditProflePage.route) {
+                                    launchSingleTop = true
+                                }
+                            },
+                            onFriendCountClick = {
+                                navController.navigate(Screen.FriendListPage.route) {
+                                    launchSingleTop = true
+                                }
+                            },
+                        )
+                    }
+                    composable(Screen.EditProflePage.route) {
+                        EditProfileScreen(
+                            onBackClick = { navController.popBackStack() }
+                        )
+                    }
+                    composable(Screen.FriendListPage.route) {
+                        FriendListScreen(
+                            navigateToProfile = {},
+                            onBackClick = { navController.popBackStack() }
+                        )
+                    }
+                }
+                if (currentRoute in shouldShowBottomBar) {
+                    BottomBar(
+                        navController = navController,
+                        currentRoute = currentRoute,
+                        modifier = Modifier.align(Alignment.BottomCenter)
                     )
                 }
-            }
-
-            if (shouldShowBottomBar(currentRoute)) {
-                BottomBar(
-                    navController = navController,
-                    currentRoute = currentRoute,
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                )
             }
         }
     }
@@ -428,92 +442,11 @@ fun KonnettoApp(
     }
 }
 
-private fun shouldShowBottomBar(currentRoute: String?): Boolean {
-    return currentRoute !in listOf(
-        Screen.LoginPage.route,
-        Screen.RegisterPage.route,
-        Screen.CreateNewPostPage.route,
-        Screen.ProfilePage.route,
-        Screen.SavedPage.route,
-        Screen.FriendRequestPage.route,
-        Screen.LibraryPage.route,
-        Screen.SettingsPage.route
-    )
-}
 
-@Composable
-private fun BottomBar(
-    navController: NavHostController,
-    currentRoute: String?,
-    modifier: Modifier = Modifier
-) {
-    NavigationBar(
-        modifier = modifier
-            .padding(top = 40.dp)
-            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-            .windowInsetsBottomHeight(
-                WindowInsets.navigationBars.add(WindowInsets(bottom = 56.dp))
-            ),
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-        windowInsets = NavigationBarDefaults.windowInsets,
-        tonalElevation = 12.dp
-
-    ) {
-        val navigationItems = listOf(
-            NavigationItem(
-                title = "Home",
-                icon = painterResource(R.drawable.icons8_home),
-                screen = Screen.HomePage
-            ),
-            NavigationItem(
-                title = "Add New Post",
-                icon = painterResource(R.drawable.add_square_icon),
-                screen = Screen.CreateNewPostPage
-            ),
-            NavigationItem(
-                title = "Notification",
-                icon = painterResource(R.drawable.icons_notification),
-                screen = Screen.NotificationPage
-            ),
-        )
-        navigationItems.map { item ->
-            NavigationBarItem(
-                icon = {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            painter = item.icon,
-                            contentDescription = item.title,
-                            modifier = Modifier.size(35.dp)
-                        )
-                    }
-                },
-//                label = { Text(item.title) },
-                selected = currentRoute == item.screen.route,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = Color.LightGray,
-                    indicatorColor = Color.Transparent
-                ),
-                onClick = {
-                    navController.navigate(item.screen.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        restoreState = true
-                        launchSingleTop = true
-                    }
-                }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun KonnettoAppPreview() {
-    KonnettoTheme {
-        KonnettoApp()
-    }
-}
+//@Preview
+//@Composable
+//private fun KonnettoAppPreview() {
+//    KonnettoTheme {
+//        KonnettoApp()
+//    }
+//}

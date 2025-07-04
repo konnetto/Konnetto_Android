@@ -5,9 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,23 +45,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zulfadar.konnetto.R
 import com.zulfadar.konnetto.data.model.Post
 import com.zulfadar.konnetto.di.Injection
-import com.zulfadar.konnetto.ui.ViewModelFactory
 import com.zulfadar.konnetto.ui.common.UiState
 import com.zulfadar.konnetto.ui.components.PostCardItem
 import com.zulfadar.konnetto.ui.navigation.TabItem
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
+import com.zulfadar.konnetto.ui.viewModelFactory.ViewModelFactory
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(
         factory = ViewModelFactory(
             Injection.provideRepositoy(),
-            Injection.provideCurretnlyWatchingRepository(),
-            Injection.provideNotificationsRepository(),
-            Injection.provideFriendRequestsRepository()
         )
     ),
     navigateToComment: () -> Unit,
@@ -102,12 +99,11 @@ fun HomeContent(
                 onSearchClick = onSearchClick
             )
         },
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) { paddingValues ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .height(1500.dp)
                 .padding(paddingValues)
         ) {
             HomeTabs(
@@ -201,7 +197,10 @@ fun HomeTabs(
                             ),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            items(posts) { data ->
+                            items(
+                                items = posts,
+                                key = { post -> post.id } // <- gunakan ID unik dari post
+                            ) { data ->
                                 PostCardItem(
                                     displayname = data.displayname,
                                     username = data.username,
@@ -275,8 +274,8 @@ fun HomeTopAppBar(
                     painter = painterResource(R.drawable.logo),
                     contentDescription = "profile picture",
                     modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(40.dp))
                 )
             }
         },
@@ -292,7 +291,7 @@ fun HomeTopAppBar(
                 Icon(
                     painter = painterResource(R.drawable.icons8_search),
                     contentDescription = "Search",
-                    modifier = Modifier.size(30.dp),
+                    modifier = Modifier.aspectRatio(0.8f),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -300,7 +299,7 @@ fun HomeTopAppBar(
                 Icon(
                     painter = painterResource(R.drawable.icons8_chat),
                     contentDescription = "Search",
-                    modifier = Modifier.size(30.dp),
+                    modifier = Modifier.aspectRatio(0.8f),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -63,7 +64,6 @@ import com.zulfadar.konnetto.R
 import com.zulfadar.konnetto.data.model.CurrentlyWatching
 import com.zulfadar.konnetto.data.model.Post
 import com.zulfadar.konnetto.di.Injection
-import com.zulfadar.konnetto.ui.ViewModelFactory
 import com.zulfadar.konnetto.ui.common.UiState
 import com.zulfadar.konnetto.ui.components.PostCardItem
 import com.zulfadar.konnetto.ui.navigation.TabItem
@@ -71,23 +71,25 @@ import com.zulfadar.konnetto.ui.navigation.WatchingTabItem
 import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
 import com.zulfadar.konnetto.ui.screen.profile.components.WatchCardItem
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
+import com.zulfadar.konnetto.ui.viewModelFactory.ProfileViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onBackClick: () -> Unit,
+    onShareBtnClick: () -> Unit,
+    onEdtBtnClick: () -> Unit,
     showCommentSectionSheet: Boolean,
     commentSectionSheetState: SheetState,
     onDismissCommentSheet: () -> Unit,
     onCommentClick: () -> Unit,
+    onFriendCountClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = viewModel(
-        factory = ViewModelFactory(
+        factory = ProfileViewModelFactory(
             Injection.provideRepositoy(),
             Injection.provideCurretnlyWatchingRepository(),
-            Injection.provideNotificationsRepository(),
-            Injection.provideFriendRequestsRepository()
         )
     )
 ) {
@@ -106,6 +108,7 @@ fun ProfileScreen(
             val currentlyWatchingList = (currentlyWatchingState as UiState.Success).data
 
             ProfileContent(
+                modifier = modifier,
                 displayname = "Uzumai Uchiha bambank",
                 username = "BamBank",
                 profilePict = R.drawable.logo.toString(),
@@ -121,7 +124,9 @@ fun ProfileScreen(
                 showCommentSectionSheet = showCommentSectionSheet,
                 commentSectionState = commentSectionSheetState,
                 onDismissCommentSheet = onDismissCommentSheet,
-                modifier = modifier
+                onEdtBtnClick = onEdtBtnClick,
+                onShareBtnClick = onShareBtnClick,
+                onFriendCountClick = onFriendCountClick,
             )
         }
 
@@ -147,6 +152,9 @@ fun ProfileContent(
     commentSectionState: SheetState,
     onDismissCommentSheet: () -> Unit,
     onCommentClick: () -> Unit,
+    onEdtBtnClick: () -> Unit,
+    onShareBtnClick: () -> Unit,
+    onFriendCountClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -179,7 +187,6 @@ fun ProfileContent(
     val selectWatchTabIndex by remember {
         derivedStateOf { pagerWatchState.currentPage }
     }
-
     Scaffold(
         topBar = {
             ProfileTopAppBar(
@@ -191,7 +198,13 @@ fun ProfileContent(
     ) { paddingValues ->
         LazyColumn(
            state = lazyListState,
-           modifier = modifier.padding(paddingValues)
+           modifier = modifier
+               .padding(paddingValues)
+               .fillMaxSize(),
+            contentPadding = PaddingValues(
+                bottom = 150.dp, // atau kira-kira setinggi BottomBar
+                top = 8.dp
+            ),
         ) {
             item {
                 ProfileSection(
@@ -201,10 +214,12 @@ fun ProfileContent(
                     friends = friends,
                     follows = follows,
                     biography = biography,
+                    onEdtBtnClick = onEdtBtnClick,
+                    onShareBtnClick = onShareBtnClick,
+                    onFriendCountClick = onFriendCountClick,
                 )
             }
-
-            stickyHeader {
+            item {
                 ScrollableTabRow(
                     selectedTabIndex = selectWatchTabIndex,
                     edgePadding = 0.dp
@@ -240,29 +255,25 @@ fun ProfileContent(
                 ) { index ->
                     when (index) {
                         0 -> {
-                            if (currentlyWatch.isNullOrEmpty()) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                ) {
+                            Row(
+                                modifier = Modifier
+                                    .horizontalScroll(rememberScrollState())
+                            ) {
+                                if (currentlyWatch.isNullOrEmpty()) {
                                     Box(
-                                        modifier = Modifier.fillMaxWidth()
-                                            .padding(vertical = 59.dp),
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(vertical = 61.dp),
                                         contentAlignment = Alignment.TopCenter
                                     ) {
                                         Text(
-                                            fontSize = 24.sp,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            text = "No Post Yet",
+                                            fontSize = 18.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            text = "You're not completed anything yet",
                                             modifier = Modifier.padding(16.dp)
                                         )
                                     }
-                                }
-                            } else {
-                                Row(
-                                    modifier = Modifier
-                                        .horizontalScroll(rememberScrollState())
-                                ) {
+                                } else {
                                     currentlyWatch.forEach { data ->
                                         WatchCardItem(
                                             title = data.title,
@@ -279,14 +290,15 @@ fun ProfileContent(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Box(
-                                    modifier = Modifier.fillMaxSize()
-                                        .padding(vertical = 59.dp),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(vertical = 61.dp),
                                     contentAlignment = Alignment.TopCenter
                                 ) {
                                     Text(
-                                        fontSize = 24.sp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        text = "My Picks",
+                                        fontSize = 18.sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        text = "You're not completed anything yet",
                                         modifier = Modifier.padding(16.dp)
                                     )
                                 }
@@ -299,14 +311,15 @@ fun ProfileContent(
                                 verticalArrangement = Arrangement.Top,
                             ) {
                                 Box(
-                                    modifier = Modifier.fillMaxSize()
-                                        .padding(vertical = 59.dp),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(vertical = 61.dp),
                                     contentAlignment = Alignment.TopCenter
                                 ) {
                                     Text(
-                                        fontSize = 24.sp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        text = "My Picks",
+                                        fontSize = 18.sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        text = "There is no plan yet",
                                         modifier = Modifier.padding(16.dp)
                                     )
                                 }
@@ -339,21 +352,6 @@ fun ProfileContent(
                         )
                     }
                 }
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .background(
-//                            color = MaterialTheme.colorScheme.background
-//                        )
-//                ) {
-//                    Text(
-//                        text = "Post",
-//                        fontSize = 24.sp,
-//                        fontWeight = FontWeight.Bold,
-//                        color = MaterialTheme.colorScheme.primary,
-//                        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 16.dp, bottom = 12.dp)
-//                    )
-//                }
             }
 
             item {
@@ -365,14 +363,15 @@ fun ProfileContent(
                 ) { index ->
                     when (index) {
                         0 -> {
-                            if (posts.isNullOrEmpty()) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                if (posts.isNullOrEmpty()) {
                                     Box(
                                         modifier = Modifier.fillMaxWidth(),
-                                        contentAlignment = Alignment.TopCenter
+                                        contentAlignment = Alignment.Center
                                     ) {
                                         Text(
                                             fontSize = 24.sp,
@@ -381,12 +380,7 @@ fun ProfileContent(
                                             modifier = Modifier.padding(16.dp)
                                         )
                                     }
-                                }
-                            } else {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                ) {
+                                } else {
                                     posts.forEach { data ->
                                         PostCardItem(
                                             displayname = data.displayname,
@@ -403,8 +397,9 @@ fun ProfileContent(
                         }
                         1 -> {
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Top
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Top,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Image(
                                     modifier = Modifier
@@ -417,7 +412,10 @@ fun ProfileContent(
                                     text = "Sugoi Picks coming soon! Stay tuned for amazing contents.",
                                     style = MaterialTheme.typography.bodyMedium,
                                     textAlign = TextAlign.Justify,
-                                    modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
+                                    modifier = Modifier.padding(
+                                        horizontal = 100.dp,
+                                        vertical = 12.dp
+                                    )
                                 )
                             }
                         }
@@ -442,6 +440,9 @@ fun ProfileSection(
     friends: Int?,
     follows: Int?,
     biography: String?,
+    onEdtBtnClick: () -> Unit,
+    onShareBtnClick: () -> Unit,
+    onFriendCountClick: () -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -499,7 +500,7 @@ fun ProfileSection(
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = {},
+                onClick = onEdtBtnClick,
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             ) {
@@ -512,7 +513,7 @@ fun ProfileSection(
             }
             Button(
                 modifier = Modifier.padding(start = 8.dp),
-                onClick = {},
+                onClick = onShareBtnClick,
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             ) {
@@ -563,6 +564,9 @@ fun ProfileSection(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
+                    modifier = Modifier.clickable {
+                        onFriendCountClick()
+                    },
                     text = friends.toString(),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
@@ -652,6 +656,7 @@ fun ProfileTopAppBar(
             }) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_arrow_back),
+                    modifier = Modifier.aspectRatio(0.8f),
                     contentDescription = "back button"
                 )
             }
@@ -662,100 +667,8 @@ fun ProfileTopAppBar(
                 fontWeight = FontWeight.Bold,
             )
         },
-
     )
 }
-
-//@OptIn(ExperimentalFoundationApi::class)
-//@Composable
-//fun ProfileTabs(
-//    posts: List<Post>,
-//    onCommentClick: () -> Unit
-//) {
-//    val tabItems = listOf(
-//        TabItem(title = "Post"),
-//        TabItem(title = "My Picks")
-//    )
-//    val coroutineScope = rememberCoroutineScope()
-//    val pagerState = rememberPagerState(
-//        initialPage = 0
-//    ) {
-//        tabItems.size
-//    }
-//
-//    // Untuk update tabIndex saat user swipe
-//    val selectedTabIndex by remember {
-//        derivedStateOf { pagerState.currentPage }
-//    }
-//
-//    Column(modifier = Modifier.fillMaxSize()) {
-//        TabRow(selectedTabIndex = selectedTabIndex) {
-//            tabItems.forEachIndexed { index, item ->
-//                Tab(
-//                    selected = index == selectedTabIndex,
-//                    onClick = {
-//                        // Saat klik tab, scroll ke page tanpa trigger konflik dari swipe
-//                        coroutineScope.launch {
-//                            pagerState.animateScrollToPage(index)
-//                        }
-//                    },
-//                    text = {
-//                        Text(
-//                            text = item.title,
-//                            fontSize = 16.sp,
-//                            fontWeight = FontWeight.Bold,
-//                        )
-//                    },
-//                )
-//            }
-//        }
-//
-//        HorizontalPager(
-//            state = pagerState,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .weight(1f)
-//        ) { index ->
-//            when (index) {
-//                0 -> {
-//                    if (posts.isNullOrEmpty()) {
-//                        Text(
-//                            text = "No Post Yet.",
-//                            style = MaterialTheme.typography.bodyMedium,
-//                            modifier = Modifier.padding(16.dp)
-//                        )
-//                    } else {
-//                        LazyColumn(
-//                            modifier = Modifier.fillMaxSize(),
-//                            contentPadding = PaddingValues(0.dp),
-//                            verticalArrangement = Arrangement.spacedBy(8.dp),
-//                        ) {
-//                            items(posts) { data ->
-//                                PostCardItem(
-//                                    displayname = data.displayname,
-//                                    username = data.username,
-//                                    timestamp = data.timestamp,
-//                                    profilePict = data.profilePict,
-//                                    image = data.image,
-//                                    caption = data.caption,
-//                                    onCommentsClick = onCommentClick,
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//                1 -> {
-//                    Box(
-//                        modifier = Modifier.fillMaxSize(),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Text(text = "My Picks", modifier = Modifier.padding(16.dp))
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -840,6 +753,9 @@ private fun ProfileScreenPreview() {
             showCommentSectionSheet = false,
             commentSectionState = dummySheetState,
             onDismissCommentSheet = {},
+            onEdtBtnClick = {},
+            onShareBtnClick = {},
+            onFriendCountClick = {},
         )
     }
 }

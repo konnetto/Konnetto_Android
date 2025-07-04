@@ -7,12 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
@@ -75,13 +76,19 @@ fun PostCardItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                painter = painterResource(profilePict),
-                contentDescription = "profile picture",
+            Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(CircleShape)
-            )
+                    .fillMaxSize()
+            ) {
+                Image(
+                    painter = painterResource(profilePict),
+                    contentDescription = "profile picture",
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(40.dp))
+                )
+            }
             Spacer(Modifier.widthIn(min = 8.dp))
             Column {
                 Text(
@@ -143,7 +150,7 @@ fun PostCardItem(
                 )
             }
         }
-        Spacer(Modifier.heightIn(min =8.dp))
+        Spacer(Modifier.height(8.dp))
         if (image != null) {
             Image(
                 painter = painterResource(image),
@@ -155,7 +162,7 @@ fun PostCardItem(
                 contentScale = ContentScale.FillBounds
             )
         }
-        Spacer(Modifier.heightIn(min = 8.dp))
+        Spacer(Modifier.height( 8.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -184,7 +191,7 @@ fun PostCardItem(
                     Box(
                         modifier = Modifier
                             .widthIn(min = 20.dp)
-                            .clickable {  }
+                            .clickable { }
                     ) {
                         Text(
                             text = likeCount.formatCount(),

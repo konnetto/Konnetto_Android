@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -45,11 +44,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zulfadar.konnetto.R
 import com.zulfadar.konnetto.data.model.NotificationsTile
 import com.zulfadar.konnetto.di.Injection
-import com.zulfadar.konnetto.ui.ViewModelFactory
 import com.zulfadar.konnetto.ui.common.UiState
 import com.zulfadar.konnetto.ui.navigation.TabItem
 import com.zulfadar.konnetto.ui.screen.notification.component.NotificationTile
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
+import com.zulfadar.konnetto.ui.viewModelFactory.NotificationViewModelFactory
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,11 +58,8 @@ fun NotificationScreen(
     onNotificationTileClick: () -> Unit,
     onSlideToDelete: () -> Unit,
     viewModel: NotificationViewModel = viewModel(
-        factory = ViewModelFactory(
-            Injection.provideRepositoy(),
-            Injection.provideCurretnlyWatchingRepository(),
-            Injection.provideNotificationsRepository(),
-            Injection.provideFriendRequestsRepository()
+        factory = NotificationViewModelFactory(
+            Injection.provideNotificationsRepository()
         )
     )
 ) {
@@ -202,8 +198,8 @@ fun NotificationPageContent(
                     // Tampilkan daftar notifikasi
                     LazyColumn(
                         modifier = Modifier
+                            .fillMaxSize()
                             .padding(vertical = 12.dp)
-                            .heightIn(min = 1400.dp)
                     ) {
                         items(filteredNotifications) { data ->
                             NotificationTile(
