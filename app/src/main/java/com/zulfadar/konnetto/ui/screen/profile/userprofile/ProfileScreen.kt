@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.screen.profile
+package com.zulfadar.konnetto.ui.screen.profile.userprofile
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -39,7 +39,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -56,7 +55,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,8 +67,7 @@ import com.zulfadar.konnetto.ui.components.PostCardItem
 import com.zulfadar.konnetto.ui.navigation.TabItem
 import com.zulfadar.konnetto.ui.navigation.WatchingTabItem
 import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
-import com.zulfadar.konnetto.ui.screen.profile.components.WatchCardItem
-import com.zulfadar.konnetto.ui.theme.KonnettoTheme
+import com.zulfadar.konnetto.ui.screen.profile.userprofile.components.WatchCardItem
 import com.zulfadar.konnetto.ui.viewModelFactory.ProfileViewModelFactory
 import kotlinx.coroutines.launch
 
@@ -383,13 +380,17 @@ fun ProfileContent(
                                 } else {
                                     posts.forEach { data ->
                                         PostCardItem(
-                                            displayname = data.displayname,
-                                            username = data.username,
-                                            timestamp = data.timestamp,
-                                            profilePict = data.profilePict,
+                                            displayname = data.author.displayname,
+                                            username = data.author.username,
+                                            timestamp = data.createdAt.toString(),
+                                            profilePict = data.author.photo,
                                             image = data.image,
                                             caption = data.caption,
                                             onCommentsClick = onCommentClick,
+                                            totalLike = data.totalLike,
+                                            totalComment = data.totalComments,
+                                            totalShare = data.totalShare,
+                                            isLiked = data.isLiked,
                                         )
                                     }
                                 }
@@ -670,93 +671,93 @@ fun ProfileTopAppBar(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
-@Composable
-private fun ProfileScreenPreview() {
-    KonnettoTheme {
-        val dummySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ProfileContent(
-            displayname = "Uzumaki Uchiha bambank",
-            username = "Bambank",
-            profilePict = R.drawable.logo.toString(),
-            friends = 500,
-            follows = 50,
-            biography = "AwikWok awok awok asaok asdao asdas asdas sdaddf fgrg rthr rthr wew erge rrth rthrth rthr rthrthr yj6uj6 6yj6yj6 6yj6yj 6yj6 lr ehr yjtyj  ege",
-            posts = listOf(
-                Post(
-                    id = 0,
-                    displayname = "bambank",
-                    username = "Bambank",
-                    profilePict = R.drawable.logo,
-                    caption = "Awikwok Test",
-                    image = R.drawable.memespongebob,
-                    timestamp = "16 h",
-                    comments = null,
-                    isLiked = false,
-                    isSaved = false,
-                ),
-                Post(
-                    id = 1,
-                    displayname = "bambank",
-                    username = "Bambank",
-                    profilePict = R.drawable.logo,
-                    caption = "Awikwok Test",
-                    image = null,
-                    timestamp = "16 h",
-                    comments = null,
-                    isLiked = false,
-                    isSaved = false,
-                ),
-                Post(
-                    id = 2,
-                    displayname = "bambank",
-                    username = "Bambank",
-                    profilePict = R.drawable.logo,
-                    caption = "Awikwok Test",
-                    image = R.drawable.memespongebob,
-                    timestamp = "16 h",
-                    comments = null,
-                    isLiked = false,
-                    isSaved = false,
-                )
-            ),
-            onBackClick = {},
-            onCommentClick = {},
-            currentlyWatch = listOf(
-                CurrentlyWatching(
-                    id = 0,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 1,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 2,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 3,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 4,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-            ),
-            showCommentSectionSheet = false,
-            commentSectionState = dummySheetState,
-            onDismissCommentSheet = {},
-            onEdtBtnClick = {},
-            onShareBtnClick = {},
-            onFriendCountClick = {},
-        )
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Preview(showBackground = true)
+//@Composable
+//private fun ProfileScreenPreview() {
+//    KonnettoTheme {
+//        val dummySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+//        ProfileContent(
+//            displayname = "Uzumaki Uchiha bambank",
+//            username = "Bambank",
+//            profilePict = R.drawable.logo.toString(),
+//            friends = 500,
+//            follows = 50,
+//            biography = "AwikWok awok awok asaok asdao asdas asdas sdaddf fgrg rthr rthr wew erge rrth rthrth rthr rthrthr yj6uj6 6yj6yj6 6yj6yj 6yj6 lr ehr yjtyj  ege",
+//            posts = listOf(
+//                Post(
+//                    id = 0,
+//                    displayname = "bambank",
+//                    username = "Bambank",
+//                    profilePict = R.drawable.logo,
+//                    caption = "Awikwok Test",
+//                    image = R.drawable.memespongebob,
+//                    timestamp = "16 h",
+//                    comments = null,
+//                    isLiked = false,
+//                    isSaved = false,
+//                ),
+//                Post(
+//                    id = 1,
+//                    displayname = "bambank",
+//                    username = "Bambank",
+//                    profilePict = R.drawable.logo,
+//                    caption = "Awikwok Test",
+//                    image = null,
+//                    timestamp = "16 h",
+//                    comments = null,
+//                    isLiked = false,
+//                    isSaved = false,
+//                ),
+//                Post(
+//                    id = 2,
+//                    displayname = "bambank",
+//                    username = "Bambank",
+//                    profilePict = R.drawable.logo,
+//                    caption = "Awikwok Test",
+//                    image = R.drawable.memespongebob,
+//                    timestamp = "16 h",
+//                    comments = null,
+//                    isLiked = false,
+//                    isSaved = false,
+//                )
+//            ),
+//            onBackClick = {},
+//            onCommentClick = {},
+//            currentlyWatch = listOf(
+//                CurrentlyWatching(
+//                    id = 0,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 1,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 2,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 3,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 4,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//            ),
+//            showCommentSectionSheet = false,
+//            commentSectionState = dummySheetState,
+//            onDismissCommentSheet = {},
+//            onEdtBtnClick = {},
+//            onShareBtnClick = {},
+//            onFriendCountClick = {},
+//        )
+//    }
+//}
 

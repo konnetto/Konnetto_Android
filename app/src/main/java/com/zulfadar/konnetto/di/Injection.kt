@@ -5,6 +5,7 @@ import com.zulfadar.konnetto.data.repository.FriendListRepository
 import com.zulfadar.konnetto.data.repository.FriendRequestRepository
 import com.zulfadar.konnetto.data.repository.NotificationRepository
 import com.zulfadar.konnetto.data.repository.PostRepository
+import com.zulfadar.konnetto.data.repository.UserRepository
 
 object Injection {
     fun provideRepositoy(): PostRepository {
@@ -25,5 +26,9 @@ object Injection {
 
     fun provideFriendListRepository(): FriendListRepository {
         return FriendListRepository.getInstance()
+    }
+
+    fun provideCurrentUserRepository(): UserRepository {
+        return UserRepository.getInstance()
     }
 }

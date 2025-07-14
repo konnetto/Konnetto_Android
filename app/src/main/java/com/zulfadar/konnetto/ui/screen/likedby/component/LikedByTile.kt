@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.friendlist.component
+package com.zulfadar.konnetto.ui.screen.likedby.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -18,8 +18,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,13 +37,15 @@ import androidx.compose.ui.unit.sp
 import com.zulfadar.konnetto.R
 
 @Composable
-fun FriendTile(
+fun LikedByTile(
     modifier: Modifier = Modifier,
     onFriendTileClick: () -> Unit,
     profilePict: Int?,
     displayname: String,
     username: String,
+    isFriend: Boolean,
 ) {
+    val isAFriend by remember { mutableStateOf(isFriend) }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -50,7 +56,8 @@ fun FriendTile(
     ) {
         Box {
             Image(
-                painter = if (profilePict != null) painterResource(profilePict) else painterResource(R.drawable.img),
+                painter = if (profilePict != null) painterResource(profilePict) else painterResource(
+                    R.drawable.img),
                 contentDescription = "Profile picture",
                 modifier = Modifier
                     .size(45.dp)
@@ -67,7 +74,7 @@ fun FriendTile(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = displayname,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
@@ -76,7 +83,7 @@ fun FriendTile(
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = username,
+                text = "@"+username,
                 fontSize = 12.sp,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray,
@@ -86,34 +93,55 @@ fun FriendTile(
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
-        Button(
-            modifier = Modifier
-                .height(40.dp)
-                .width(110.dp),
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                Color.White
-            ),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
-            enabled = true
-        ) {
-            Text(
-                text = "Unfriend",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+        if (isAFriend == true ) {
+            OutlinedButton(
+                modifier = Modifier
+                    .height(40.dp)
+                    .width(110.dp),
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.surfaceContainerLow
+                ),
+                enabled = true,
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+            ) {
+                Text(
+                    text = "Unfriend",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        } else {
+            Button(
+                modifier = Modifier
+                    .height(40.dp)
+                    .width(110.dp),
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.primary
+                ),
+                enabled = true
+            ) {
+                Text(
+                    text = "Add Friend",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun FriendTilePrev() {
-    FriendTile(
+private fun LikedByTilePrev() {
+    LikedByTile(
         onFriendTileClick = {},
         profilePict = null,
-        displayname = "Comoli Harcourt asda asda asda asda asdasf dg",
-        username = "halo",
+        displayname = "Comoli Harcourt",
+        username = "comoliiscute",
+        isFriend = true,
     )
 }

@@ -46,7 +46,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.zulfadar.konnetto.ui.components.BottomBar
-import com.zulfadar.konnetto.ui.friendlist.FriendListScreen
 import com.zulfadar.konnetto.ui.navigation.Screen
 import com.zulfadar.konnetto.ui.screen.addnewpost.CreateNewPostScreen
 import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
@@ -56,9 +55,11 @@ import com.zulfadar.konnetto.ui.screen.home.HomeScreen
 import com.zulfadar.konnetto.ui.screen.library.LibraryPageScreen
 import com.zulfadar.konnetto.ui.screen.login.LoginScreen
 import com.zulfadar.konnetto.ui.screen.notification.NotificationScreen
-import com.zulfadar.konnetto.ui.screen.profile.ProfileScreen
+import com.zulfadar.konnetto.ui.screen.profile.friendlist.FriendListScreen
+import com.zulfadar.konnetto.ui.screen.profile.userprofile.ProfileScreen
 import com.zulfadar.konnetto.ui.screen.register.RegisterScreen
 import com.zulfadar.konnetto.ui.screen.saved.SavedPageScreen
+import com.zulfadar.konnetto.ui.screen.search.SearchPageScreen
 import com.zulfadar.konnetto.ui.screen.settings.SettingsPageScreen
 import kotlinx.coroutines.launch
 
@@ -149,10 +150,12 @@ fun KonnettoApp(
                             },
                             selected = false,
                             onClick = {
-                                navController.navigate(Screen.ProfilePage.route) {
-                                    launchSingleTop = true
+                                scope.launch {
+                                    drawerState.close()
+                                    navController.navigate(Screen.ProfilePage.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                                scope.launch { drawerState.close() }
                             },
                             colors = NavigationDrawerItemDefaults.colors(
                                 unselectedContainerColor = Color.Transparent
@@ -177,10 +180,12 @@ fun KonnettoApp(
                             },
                             selected = false,
                             onClick = {
-                                navController.navigate(Screen.SavedPage.route) {
-                                    launchSingleTop = true
+                                scope.launch {
+                                    drawerState.close()
+                                    navController.navigate(Screen.SavedPage.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                                scope.launch { drawerState.close() }
                             },
                             colors = NavigationDrawerItemDefaults.colors(
                                 unselectedContainerColor = Color.Transparent
@@ -205,10 +210,12 @@ fun KonnettoApp(
                             },
                             selected = false,
                             onClick = {
-                                navController.navigate(Screen.FriendRequestPage.route) {
-                                    launchSingleTop = true
+                                scope.launch {
+                                    drawerState.close()
+                                    navController.navigate(Screen.FriendRequestPage.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                                scope.launch { drawerState.close() }
                             },
                             colors = NavigationDrawerItemDefaults.colors(
                                 unselectedContainerColor = Color.Transparent
@@ -233,10 +240,12 @@ fun KonnettoApp(
                             },
                             selected = false,
                             onClick = {
-                                navController.navigate(Screen.LibraryPage.route) {
-                                    launchSingleTop = true
+                                scope.launch {
+                                    drawerState.close()
+                                    navController.navigate(Screen.LibraryPage.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                                scope.launch { drawerState.close() }
                             },
                             colors = NavigationDrawerItemDefaults.colors(
                                 unselectedContainerColor = Color.Transparent
@@ -261,10 +270,12 @@ fun KonnettoApp(
                             },
                             selected = false,
                             onClick = {
-                                navController.navigate(Screen.SettingsPage.route) {
-                                    launchSingleTop = true
+                                scope.launch {
+                                    drawerState.close()
+                                    navController.navigate(Screen.SettingsPage.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                                scope.launch { drawerState.close() }
                             },
                             colors = NavigationDrawerItemDefaults.colors(
                                 unselectedContainerColor = Color.Transparent
@@ -336,7 +347,19 @@ fun KonnettoApp(
                                     }
                                 }
                             },
-                            onSearchClick = {},
+                            onSearchClick = {
+                                navController.navigate(Screen.SearchPage.route) {
+                                    launchSingleTop = true
+                                }
+                            },
+                        )
+                    }
+
+                    composable(Screen.SearchPage.route) {
+                        SearchPageScreen(
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
                         )
                     }
 
@@ -358,11 +381,17 @@ fun KonnettoApp(
                     }
 
                     composable(Screen.SavedPage.route) {
-                        SavedPageScreen()
+                        SavedPageScreen(
+                            onBackClick = { navController.popBackStack() },
+                            onMoreVertClick = {}
+                        )
                     }
 
                     composable(Screen.LibraryPage.route) {
-                        LibraryPageScreen()
+                        LibraryPageScreen(
+                            onBackClick = { navController.popBackStack() },
+                            onMoreVertClick = {}
+                        )
                     }
 
                     composable(Screen.FriendRequestPage.route) {

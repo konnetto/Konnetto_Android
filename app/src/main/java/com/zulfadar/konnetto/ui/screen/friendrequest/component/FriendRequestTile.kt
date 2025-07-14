@@ -1,5 +1,6 @@
 package com.zulfadar.konnetto.ui.screen.friendrequest.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -100,23 +102,23 @@ fun FriendRequestTile(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(
+                    OutlinedButton(
                         modifier = Modifier
                             .padding(2.dp)
                             .height(40.dp)
                             .width(130.dp),
-                        onClick = onDeclineClick,
+                        onClick = {},
                         colors = ButtonDefaults.buttonColors(
-                            Color.White
+                            MaterialTheme.colorScheme.surfaceContainerLow
                         ),
                         enabled = true,
-                        border = ButtonDefaults.outlinedButtonBorder
+                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
                     ) {
                         Text(
                             text = "Decline",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                     Button(

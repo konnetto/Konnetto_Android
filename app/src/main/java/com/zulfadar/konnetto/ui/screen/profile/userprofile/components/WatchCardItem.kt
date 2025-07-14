@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.screen.profile.components
+package com.zulfadar.konnetto.ui.screen.profile.userprofile.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

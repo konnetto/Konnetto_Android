@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zulfadar.konnetto.data.repository.CurrentlyWatchingRepository
 import com.zulfadar.konnetto.data.repository.PostRepository
-import com.zulfadar.konnetto.ui.screen.profile.ProfileViewModel
+import com.zulfadar.konnetto.ui.screen.profile.userprofile.ProfileViewModel
 
 class ProfileViewModelFactory(
     private val repository: PostRepository,

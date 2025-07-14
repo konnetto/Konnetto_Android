@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.friendlist
+package com.zulfadar.konnetto.ui.screen.profile.friendlist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import com.zulfadar.konnetto.R
 import com.zulfadar.konnetto.data.model.FriendList
 import com.zulfadar.konnetto.di.Injection
 import com.zulfadar.konnetto.ui.common.UiState
-import com.zulfadar.konnetto.ui.friendlist.component.FriendTile
+import com.zulfadar.konnetto.ui.screen.profile.friendlist.component.FriendTile
 import com.zulfadar.konnetto.ui.viewModelFactory.FriendListViewModelFactory
 
 @Composable

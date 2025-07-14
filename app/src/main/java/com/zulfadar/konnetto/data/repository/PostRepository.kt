@@ -10,7 +10,7 @@ class PostRepository {
 
     init {
         if (posts.isEmpty()) {
-            FakePostDataSource.dummyPosting.forEach {
+            FakePostDataSource.otherDummyPost.forEach {
                 posts.add(it)
             }
         }
