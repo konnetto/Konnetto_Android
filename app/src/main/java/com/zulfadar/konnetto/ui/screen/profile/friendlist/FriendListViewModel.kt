@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.friendlist
+package com.zulfadar.konnetto.ui.screen.profile.friendlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

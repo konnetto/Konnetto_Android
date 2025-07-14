@@ -3,7 +3,7 @@ package com.zulfadar.konnetto.ui.viewModelFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zulfadar.konnetto.data.repository.FriendListRepository
-import com.zulfadar.konnetto.ui.friendlist.FriendListViewModel
+import com.zulfadar.konnetto.ui.screen.profile.friendlist.FriendListViewModel
 
 class FriendListViewModelFactory(
     private val friendListRepository: FriendListRepository

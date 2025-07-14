@@ -54,14 +54,18 @@ fun PostCardItem(
     profilePict: Int,
     image: Int? = null,
     caption: String,
+    totalLike: Int,
+    totalComment: Int,
+    totalShare: Int,
+    isLiked: Boolean,
     onCommentsClick: () -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    var isLiked by remember { mutableStateOf(false) }
+    var isLiked by remember { mutableStateOf(isLiked) }
     var isSaved by remember { mutableStateOf(false) }
-    var likeCount by remember { mutableIntStateOf(0) }
-    var commentCount by remember { mutableIntStateOf(0) }
-    var shareCount by remember { mutableIntStateOf(0) }
+    var likeCount by remember { mutableIntStateOf(totalLike) }
+    var commentCount by remember { mutableIntStateOf(totalComment) }
+    var shareCount by remember { mutableIntStateOf(totalShare) }
 
     Column(
         modifier = modifier
@@ -285,6 +289,10 @@ private fun PostCardItemPreview() {
             image = R.drawable.memespongebob,
             caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
             onCommentsClick = {},
+            totalLike = 0,
+            totalComment = 0,
+            totalShare = 0,
+            isLiked = false,
         )
     }
 }

@@ -4,6 +4,7 @@ sealed class Screen(val route: String, val showBottomBar: Boolean = false) {
     data object LoginPage : Screen("loginPage")
     data object RegisterPage : Screen("registerPage")
     data object HomePage : Screen("homePage", showBottomBar = true)
+    data object SearchPage : Screen("searchPage")
     data object ProfilePage : Screen("profilPage")
     data object EditProflePage : Screen("editProfilePage")
     data object FriendListPage : Screen("friendListPage")

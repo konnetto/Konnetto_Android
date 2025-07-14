@@ -25,7 +25,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -43,6 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zulfadar.konnetto.R
+import com.zulfadar.konnetto.data.FakeUserDataSource.currentUserDummy
+import com.zulfadar.konnetto.data.FakeUserDataSource.otherUserDummy1
+import com.zulfadar.konnetto.data.FakeUserDataSource.otherUserDummy2
+import com.zulfadar.konnetto.data.FakeUserDataSource.otherUserDummy3
 import com.zulfadar.konnetto.data.model.Post
 import com.zulfadar.konnetto.di.Injection
 import com.zulfadar.konnetto.ui.common.UiState
@@ -83,7 +86,7 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
@@ -202,13 +205,17 @@ fun HomeTabs(
                                 key = { post -> post.id } // <- gunakan ID unik dari post
                             ) { data ->
                                 PostCardItem(
-                                    displayname = data.displayname,
-                                    username = data.username,
-                                    timestamp = data.timestamp,
-                                    profilePict = data.profilePict,
+                                    displayname = data.author.displayname,
+                                    username = data.author.username,
+                                    timestamp = data.createdAt.toString(),
+                                    profilePict = data.author.photo,
                                     image = data.image,
                                     caption = data.caption,
                                     onCommentsClick = onCommentClick,
+                                    totalLike = data.totalLike,
+                                    totalComment = data.totalComments,
+                                    totalShare = data.totalShare,
+                                    isLiked = data.isLiked,
                                 )
                             }
                         }
@@ -287,7 +294,7 @@ fun HomeTopAppBar(
             )
         },
         actions = {
-            IconButton(onClick = {} ) {
+            IconButton(onClick = onSearchClick ) {
                 Icon(
                     painter = painterResource(R.drawable.icons8_search),
                     contentDescription = "Search",
@@ -295,7 +302,7 @@ fun HomeTopAppBar(
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
-            IconButton(onClick = onSearchClick ) {
+            IconButton(onClick = {} ) {
                 Icon(
                     painter = painterResource(R.drawable.icons8_chat),
                     contentDescription = "Search",
@@ -309,49 +316,72 @@ fun HomeTopAppBar(
 
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
     KonnettoTheme {
-        val dummySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         HomeContent(
             postings = listOf(
                 Post(
                     id = 0,
-                    displayname = "Char Aznable",
-                    username = "charaznable",
-                    profilePict = R.drawable.logo,
-                    caption = "Awikwok Test",
+                    author = currentUserDummy,
                     image = R.drawable.memespongebob,
-                    timestamp = "16 h",
-                    comments = null,
-                    isLiked = false,
+                    caption = "test",
+                    isLiked = true,
                     isSaved = false,
+                    totalLike = 1,
+                    totalComments = 2,
+                    createdAt = 2,
+                    updatedAt = "2025-07-05T14:30:00Z"
                 ),
                 Post(
                     id = 1,
-                    displayname = "Char Aznable",
-                    username = "charaznable",
-                    profilePict = R.drawable.logo,
-                    caption = "Awikwok Test",
+                    author = otherUserDummy1,
                     image = null,
-                    timestamp = "16 h",
-                    comments = null,
+                    caption = "Bjir wkwkwkwkwkwkwk",
                     isLiked = false,
                     isSaved = false,
+                    totalLike = 200,
+                    totalComments = 200,
+                    totalShare = 0,
+                    createdAt = 2,
+                    updatedAt = "2025-07-04T13:00:00Z"
                 ),
                 Post(
                     id = 2,
-                    displayname = "Char Aznable",
-                    username = "charaznable",
-                    profilePict = R.drawable.logo,
-                    caption = "Awikwok Test",
+                    caption = "America ya, Halo, Halo, Halo, Halo, Halo",
+                    image = null,
+                    isLiked = true,
+                    isSaved = false,
+                    author = otherUserDummy2,
+                    totalLike = 1,
+                    totalComments = 0,
+                    totalShare = 1,
+                    createdAt = 5,
+                ),
+                Post(
+                    id = 3,
+                    caption = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at metus id eros dapibus venenatis. Duis volutpat, lacus in fermentum dapibus, mauris sapien rhoncus sapien, nec feugiat nisl risus non risus. Nulla facilisi. Cras eget felis nec odio tincidunt elementum. Curabitur sit amet leo vel nunc posuere dapibus. Aliquam erat volutpat. Suspendisse tincidunt arcu at lorem efficitur, in cursus nisl maximus. Integer tristique tincidunt massa, eu sollicitudin nisi suscipit non. Pellentesque in eros eget justo eleifend hendrerit. Aenean scelerisque, magna non convallis rhoncus, lorem elit ullamcorper augue, sit amet tincidunt turpis nisl sed nulla. Nam a leo at justo venenatis sodales. Vivamus id dui nec nulla sagittis vestibulum. Integer tempus purus sed turpis pharetra varius.",
                     image = R.drawable.memespongebob,
-                    timestamp = "16 h",
-                    comments = null,
                     isLiked = false,
                     isSaved = false,
+                    author = otherUserDummy3,
+                    totalLike = 0,
+                    totalComments = 0,
+                    totalShare = 0,
+                    createdAt = 10,
+                ),
+                Post(
+                    id = 4,
+                    caption = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at metus id eros dapibus venenatis. Duis volutpat, lacus in fermentum dapibus, mauris sapien rhoncus sapien, nec feugiat nisl risus non risus. Nulla facilisi. Cras eget felis nec odio tincidunt elementum. Curabitur sit amet leo vel nunc posuere dapibus. Aliquam erat volutpat. Suspendisse tincidunt arcu at lorem efficitur, in cursus nisl maximus. Integer tristique tincidunt massa, eu sollicitudin nisi suscipit non. Pellentesque in eros eget justo eleifend hendrerit. Aenean scelerisque, magna non convallis rhoncus, lorem elit ullamcorper augue, sit amet tincidunt turpis nisl sed nulla. Nam a leo at justo venenatis sodales. Vivamus id dui nec nulla sagittis vestibulum. Integer tempus purus sed turpis pharetra varius.",
+                    image = null,
+                    isLiked = true,
+                    isSaved = false,
+                    author = otherUserDummy3,
+                    totalLike = 10,
+                    totalComments = 5,
+                    totalShare = 3,
+                    createdAt = 11,
                 ),
             ),
             navigateToComments = {},

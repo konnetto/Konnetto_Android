@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.screen.profile
+package com.zulfadar.konnetto.ui.screen.profile.userprofile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,7 +30,8 @@ class ProfileViewModel(
                     _uiStatePost.value = UiState.Error(it.message.toString())
                 }
                 .collect { postings ->
-                    _uiStatePost.value = UiState.Success(postings)
+                    val currentUserPosts = postings.filter { it.author.isCurrentUser }
+                    _uiStatePost.value = UiState.Success(currentUserPosts)
                 }
         }
     }
