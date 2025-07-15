@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.screen.register
+package com.zulfadar.konnetto.ui.screen.auth.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -27,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -73,21 +77,42 @@ fun RegisterContent(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.height(40.dp))
-        Image(
-            painter = painterResource(R.drawable.logo),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(30.dp)
-                .size(70.dp)
-                .clip(CircleShape)
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.konnetto_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .size(70.dp)
+                    .clip(CircleShape)
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                text = "Konnetto",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Text(
+            text = "Create your account",
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp
         )
         Text(
-            text = "Sign In",
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp
+            text = "Join the anime community",
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            color = Color.Gray
         )
         Spacer(Modifier.heightIn(min = 30.dp))
         InputTextField(
@@ -159,9 +184,9 @@ fun RegisterContent(
         Spacer(Modifier.heightIn(min = 30.dp))
         RegularButton(
             text = "Register",
-            onClick = onClickToRegister
+            onClick = onClickToRegister,
+            modifier = Modifier.imePadding()
         )
-        Spacer(Modifier.heightIn(min = 70.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -169,7 +194,7 @@ fun RegisterContent(
             Text(
                 text = "Already have acccount?",
                 fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 modifier = Modifier.padding(start = 20.dp)
             )
             Text(
@@ -183,6 +208,7 @@ fun RegisterContent(
                     }
             )
         }
+        Spacer(Modifier.heightIn(min = 30.dp))
     }
 }
 

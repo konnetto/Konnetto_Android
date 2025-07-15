@@ -1,4 +1,4 @@
-package com.zulfadar.konnetto.ui.screen.login
+package com.zulfadar.konnetto.ui.screen.auth.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -76,19 +77,39 @@ fun LoginContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        Spacer(Modifier.height(40.dp))
-        Image(
-            painter = painterResource(R.drawable.logo),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(30.dp)
-                .size(70.dp)
-                .clip(CircleShape)
-        )
+        Spacer(Modifier.height(60.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.konnetto_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .size(70.dp)
+                    .clip(CircleShape)
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                text = "Konnetto",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
         Text(
-            text = "Log in",
+            text = "Welcome back!",
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp
+        )
+        Text(
+            modifier = Modifier.padding(vertical = 8.dp),
+            text = "Sign in to continue",
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            color = Color.Gray
         )
         Spacer(Modifier.heightIn(min = 30.dp))
         InputTextField(
@@ -130,18 +151,18 @@ fun LoginContent(
         }
         Spacer(Modifier.heightIn(min = 30.dp))
         RegularButton(
-            text = "Continue",
+            text = "Sign",
             onClick = onClickToLogin,
         )
-        Spacer(Modifier.heightIn(min = 70.dp))
+        Spacer(Modifier.heightIn(min = 30.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Don't have acccount?",
+                text = "Don't have an acccount?",
                 fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 modifier = Modifier.padding(start = 20.dp)
             )
             Text(

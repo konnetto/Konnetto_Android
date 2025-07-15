@@ -3,6 +3,7 @@ package com.zulfadar.konnetto.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -16,7 +17,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
-import com.zulfadar.konnetto.ui.theme.Shape
 
 
 //@Composable
@@ -98,7 +98,8 @@ fun InputTextField(
         )},
         keyboardOptions =  KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
-        shape = Shape.large
+//        shape = Shape.large,
+        shape = RoundedCornerShape(12.dp),
     )
 }
 
