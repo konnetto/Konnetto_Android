@@ -3,11 +3,9 @@ package com.zulfadar.konnetto.ui.screen.search.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
@@ -44,13 +42,12 @@ fun HistorySearchTile(
             tint = Color.LightGray
         )
         Text(
-            modifier = Modifier.weight(1f).padding(start = 8.dp),
+            modifier = Modifier.weight(1f).padding(start = 8.dp, end = 8.dp),
             text = historySearch,
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Medium
         )
-        Spacer(Modifier.width(12.dp))
         IconButton(onClick = onDeleteClick ) {
             Icon(
                 imageVector = Icons.Default.Clear,

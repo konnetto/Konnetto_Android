@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,12 +29,12 @@ fun RegularButton(
     Button(
         onClick = onClick,
         enabled = enable,
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
         modifier = modifier
             .fillMaxWidth()
             .padding(18.dp)
-            .height(50.dp)
-
+            .height(50.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Text(
             text = text,
@@ -45,9 +46,20 @@ fun RegularButton(
     }
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true)
 @Composable
 private fun RegularButtonPreview() {
+    KonnettoTheme {
+        RegularButton(
+            text = "Continue",
+            onClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = false, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun RegularButtonDarkPreview() {
     KonnettoTheme {
         RegularButton(
             text = "Continue",

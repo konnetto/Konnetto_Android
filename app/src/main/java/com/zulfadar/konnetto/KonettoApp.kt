@@ -27,37 +27,47 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.zulfadar.konnetto.ui.common.OtpAction
 import com.zulfadar.konnetto.ui.components.BottomBar
 import com.zulfadar.konnetto.ui.navigation.Screen
 import com.zulfadar.konnetto.ui.screen.addnewpost.CreateNewPostScreen
+import com.zulfadar.konnetto.ui.screen.auth.login.LoginScreen
+import com.zulfadar.konnetto.ui.screen.auth.otppages.OtpScreen
+import com.zulfadar.konnetto.ui.screen.auth.otppages.OtpViewModel
+import com.zulfadar.konnetto.ui.screen.auth.register.RegisterScreen
 import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
 import com.zulfadar.konnetto.ui.screen.editprofilescreen.EditProfileScreen
 import com.zulfadar.konnetto.ui.screen.friendrequest.FriendRequestScreen
 import com.zulfadar.konnetto.ui.screen.home.HomeScreen
 import com.zulfadar.konnetto.ui.screen.library.LibraryPageScreen
-import com.zulfadar.konnetto.ui.screen.login.LoginScreen
 import com.zulfadar.konnetto.ui.screen.notification.NotificationScreen
 import com.zulfadar.konnetto.ui.screen.profile.friendlist.FriendListScreen
 import com.zulfadar.konnetto.ui.screen.profile.userprofile.ProfileScreen
-import com.zulfadar.konnetto.ui.screen.register.RegisterScreen
 import com.zulfadar.konnetto.ui.screen.saved.SavedPageScreen
 import com.zulfadar.konnetto.ui.screen.search.SearchPageScreen
 import com.zulfadar.konnetto.ui.screen.settings.SettingsPageScreen
@@ -86,6 +96,32 @@ fun KonnettoApp(
     val commentSectionState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     )
+
+    //Otp
+    val otpViewModel = viewModel<OtpViewModel>()
+    val otpState by otpViewModel.uiState.collectAsStateWithLifecycle()
+    val focusRequester = remember {
+        List(6) { FocusRequester() }
+    }
+    val focusManager = LocalFocusManager.current
+    val keyboardManager = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(otpState.focusIndex) {
+        otpState.focusIndex?.let { index ->
+            focusRequester.getOrNull(index)?.requestFocus()
+        }
+    }
+
+    LaunchedEffect(otpState.code, keyboardManager) {
+        val allNumberEntered = otpState.code.none { it == null }
+        if (allNumberEntered) {
+            focusRequester.forEach {
+                it.freeFocus()
+            }
+            focusManager.clearFocus()
+            keyboardManager?.hide()
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         ModalNavigationDrawer(
@@ -289,13 +325,13 @@ fun KonnettoApp(
             Box(modifier = Modifier.fillMaxSize()) {
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.HomePage.route,
+                    startDestination = Screen.LoginPage.route,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     composable(Screen.LoginPage.route) {
                         LoginScreen(
                             onClickToLogin = {
-                                navController.navigate(Screen.HomePage.route) {
+                                navController.navigate(Screen.OtpPage.route) {
                                     popUpTo(Screen.LoginPage.route) { inclusive = true }
                                     launchSingleTop = true
                                 }
@@ -311,13 +347,37 @@ fun KonnettoApp(
                     composable(Screen.RegisterPage.route) {
                         RegisterScreen(
                             onClickToRegister = {
-                                navController.navigate(Screen.LoginPage.route) {
+                                navController.navigate(Screen.OtpPage.route) {
                                     popUpTo(Screen.RegisterPage.route) { inclusive = true }
                                     launchSingleTop = true
                                 }
                             },
                             navigateToLogin = {
                                 navController.navigate(Screen.LoginPage.route) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
+                    }
+
+                    composable(Screen.OtpPage.route) {
+                        OtpScreen(
+                            state = otpState,
+                            onAction = { action ->
+                                when (action) {
+                                    is OtpAction.OnEnterNumber -> {
+                                        if(action.number != null) {
+                                            focusRequester[action.index].freeFocus()
+                                        }
+                                    }
+                                    else -> Unit
+                                }
+                                otpViewModel.onAction(action)
+                            },
+                            focusRequester = focusRequester,
+                            onConfirmClick = {
+                                navController.navigate(Screen.HomePage.route) {
+                                    popUpTo(Screen.OtpPage.route) { inclusive = true }
                                     launchSingleTop = true
                                 }
                             }
