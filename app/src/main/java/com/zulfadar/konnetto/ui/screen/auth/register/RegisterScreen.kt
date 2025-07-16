@@ -54,6 +54,7 @@ fun RegisterScreen(
         username = "",
         email = "",
         password = "",
+        confirmPassword = "",
         onClickToRegister = onClickToRegister,
         navigateToLogin = navigateToLogin,
         modifier = modifier
@@ -66,6 +67,7 @@ fun RegisterContent(
     username: String,
     email: String,
     password: String,
+    confirmPassword: String,
     onClickToRegister: () -> Unit,
     navigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
@@ -74,6 +76,7 @@ fun RegisterContent(
     var username by remember { mutableStateOf(username) }
     var email by remember { mutableStateOf(email) }
     var password by remember { mutableStateOf(password) }
+    var confirmPassword by remember { mutableStateOf(confirmPassword) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,7 +131,7 @@ fun RegisterContent(
         InputTextField(
             input = username,
             onValueChange = { newInput ->
-                username = newInput
+                username = newInput.filterNot { it.isWhitespace() }
             },
             labelText = "Username",
             leadingIcon = Icons.Filled.Person,
@@ -138,7 +141,7 @@ fun RegisterContent(
         InputTextField(
             input = email,
             onValueChange = { newInput ->
-                email = newInput
+                email = newInput.filterNot { it.isWhitespace() }
             },
             labelText = "Email",
             leadingIcon = Icons.Filled.Email,
@@ -157,9 +160,9 @@ fun RegisterContent(
         )
         Spacer(Modifier.heightIn(min = 10.dp))
         InputTextField(
-            input = password,
+            input = confirmPassword,
             onValueChange = { newInput ->
-                password = newInput
+                confirmPassword = newInput
             },
             labelText = "Password Confirmation",
             leadingIcon = Icons.Filled.Lock,
@@ -222,7 +225,8 @@ private fun RegisterScreenPreview() {
             email = "",
             password = "",
             onClickToRegister = {},
-            navigateToLogin = {}
+            navigateToLogin = {},
+            confirmPassword = "",
         )
     }
 }

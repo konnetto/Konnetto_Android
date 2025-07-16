@@ -96,6 +96,7 @@ fun InputTextField(
             contentDescription = null,
             modifier = Modifier.clickable { onTrailingIconClick?.invoke() }
         )},
+        singleLine = true,
         keyboardOptions =  KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
 //        shape = Shape.large,

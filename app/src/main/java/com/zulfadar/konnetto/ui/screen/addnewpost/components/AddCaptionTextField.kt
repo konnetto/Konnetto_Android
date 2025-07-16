@@ -2,8 +2,8 @@ package com.zulfadar.konnetto.ui.screen.addnewpost.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
@@ -40,7 +40,7 @@ fun AddCaptionTextField(
         modifier = modifier
             .fillMaxWidth()
             .padding(12.dp)
-            .defaultMinSize(minHeight = 150.dp), // minimal tinggi
+            .height(150.dp), // minimal tinggi
         placeholder = {
             Text(text = "Share your thoughts about anime, manga, cosplay, etc...", color = Color.LightGray)
         },
