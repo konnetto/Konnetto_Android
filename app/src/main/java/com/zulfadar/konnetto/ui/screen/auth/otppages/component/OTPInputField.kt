@@ -1,5 +1,6 @@
 package com.zulfadar.konnetto.ui.screen.auth.otppages.component
 
+import android.view.KeyEvent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -43,7 +44,8 @@ fun OTPInputField(
     focusRequester: FocusRequester,
     onFocusChange: (Boolean) -> Unit,
     onNumberChange: (Int?) -> Unit,
-    onKeyboardBack: () -> Unit
+    onKeyboardBack: () -> Unit,
+    onPaste: (String) -> Unit
 ) {
     var text by remember(number) {
         mutableStateOf(
@@ -78,7 +80,7 @@ fun OTPInputField(
                     onFocusChange(it.isFocused)
                 }
                 .onKeyEvent { event ->
-                    val pressedDelete = event.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_DEL
+                    val pressedDelete = event.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_DEL
                     if (pressedDelete && number == null) {
                         onKeyboardBack()
                     }
@@ -102,8 +104,16 @@ fun OTPInputField(
             value = text,
             onValueChange = { newText ->
                 val newNumber = newText.text
-                if (newNumber.length <= 1 && newNumber.isDigitsOnly()) {
-                    onNumberChange(newNumber.toIntOrNull())
+//                if (newNumber.length <= 1 && newNumber.isDigitsOnly()) {
+//                    onNumberChange(newNumber.toIntOrNull())
+//                }
+                when {
+                    newNumber.length > 1 -> {
+                        onPaste(newNumber)
+                    }
+                    newNumber.isDigitsOnly() -> {
+                        onNumberChange(newNumber.toIntOrNull())
+                    }
                 }
             },
             cursorBrush = SolidColor(
@@ -133,7 +143,8 @@ private fun OTPInputFieldPrev() {
             focusRequester = remember { FocusRequester() },
             onFocusChange = {},
             onNumberChange = {},
-            onKeyboardBack = {}
+            onKeyboardBack = {},
+            onPaste = {}
         )
     }
 }

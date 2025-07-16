@@ -37,6 +37,20 @@ class OtpViewModel: ViewModel() {
                     focusIndex = previousIndex
                 ) }
             }
+            is OtpAction.OnPaste -> handlePaste(action.code)
+        }
+    }
+
+    private fun handlePaste(pasteCode: List<Int?>) {
+        val newCode = pasteCode.take(6) + List(6 - pasteCode.size) { null }
+        _uiState.update {
+            it.copy(
+                code = newCode,
+                focusIndex = pasteCode.size.coerceAtMost(5),
+                isValid = if (newCode.none { n -> n == null }) {
+                    newCode.joinToString("") == VALID_OTP_CODE
+                } else null
+            )
         }
     }
 

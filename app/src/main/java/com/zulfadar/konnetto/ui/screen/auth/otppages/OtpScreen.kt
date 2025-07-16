@@ -122,6 +122,12 @@ fun OtpContent(
                     },
                     onKeyboardBack = {
                         onAction(OtpAction.OnKeyboardBack)
+                    },
+                    onPaste = { pastedText ->
+                        val digits = pastedText
+                            .take(6)
+                            .map { it.toString().toIntOrNull() }
+                        onAction(OtpAction.OnPaste(digits))
                     }
                 )
 
