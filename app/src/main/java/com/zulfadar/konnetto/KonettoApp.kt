@@ -48,14 +48,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.zulfadar.konnetto.ui.common.OtpAction
 import com.zulfadar.konnetto.ui.components.BottomBar
 import com.zulfadar.konnetto.ui.navigation.Screen
 import com.zulfadar.konnetto.ui.screen.addnewpost.CreateNewPostScreen
+import com.zulfadar.konnetto.ui.screen.auth.forgotpassword.ForgotPassWordScreen
+import com.zulfadar.konnetto.ui.screen.auth.forgotpassword.NewPassWordScreen
 import com.zulfadar.konnetto.ui.screen.auth.login.LoginScreen
 import com.zulfadar.konnetto.ui.screen.auth.otppages.OtpScreen
 import com.zulfadar.konnetto.ui.screen.auth.otppages.OtpViewModel
@@ -340,6 +344,11 @@ fun KonnettoApp(
                                 navController.navigate(Screen.RegisterPage.route) {
                                     launchSingleTop = true
                                 }
+                            },
+                            onForgotPasswordClick = {
+                                navController.navigate(Screen.ForgotPasswordPage.route) {
+                                    launchSingleTop = true
+                                }
                             }
                         )
                     }
@@ -347,7 +356,7 @@ fun KonnettoApp(
                     composable(Screen.RegisterPage.route) {
                         RegisterScreen(
                             onClickToRegister = {
-                                navController.navigate(Screen.OtpPage.route) {
+                                navController.navigate("${Screen.OtpPage.route}?source=login") {
                                     popUpTo(Screen.RegisterPage.route) { inclusive = true }
                                     launchSingleTop = true
                                 }
@@ -360,24 +369,64 @@ fun KonnettoApp(
                         )
                     }
 
-                    composable(Screen.OtpPage.route) {
+                    composable(
+                        route = "${Screen.OtpPage.route}?source={source}",
+                        arguments = listOf(
+                            navArgument("source") {
+                                type = NavType.StringType
+                                defaultValue = "login" // fallback jika tidak dikirim
+                            }
+                        )
+                    ) { backStackEntry ->
+                        val source = backStackEntry.arguments?.getString("source") ?: "login"
+
                         OtpScreen(
                             state = otpState,
                             onAction = { action ->
-                                when (action) {
-                                    is OtpAction.OnEnterNumber -> {
-                                        if(action.number != null) {
-                                            focusRequester[action.index].freeFocus()
-                                        }
-                                    }
-                                    else -> Unit
+                                if (action is OtpAction.OnEnterNumber && action.number != null) {
+                                    focusRequester[action.index].freeFocus()
                                 }
                                 otpViewModel.onAction(action)
                             },
                             focusRequester = focusRequester,
                             onConfirmClick = {
-                                navController.navigate(Screen.HomePage.route) {
-                                    popUpTo(Screen.OtpPage.route) { inclusive = true }
+                                if (source == "forgot") {
+                                    navController.navigate(Screen.NewPasswordPage.route) {
+                                        popUpTo(Screen.OtpPage.route) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                } else {
+                                    navController.navigate(Screen.HomePage.route) {
+                                        popUpTo(Screen.LoginPage.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    composable(Screen.ForgotPasswordPage.route) {
+                        ForgotPassWordScreen(
+                            onBackClick = {
+                                navController.navigate(Screen.LoginPage.route) {
+                                    popUpTo(Screen.ForgotPasswordPage.route) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            },
+                            onSendClick = {
+                                navController.navigate("${Screen.OtpPage.route}?source=forgot") {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
+                    }
+
+                    composable(Screen.NewPasswordPage.route) {
+                        NewPassWordScreen(
+                            onSendClick = {
+                                navController.navigate(Screen.LoginPage.route) {
+                                    popUpTo(Screen.NewPasswordPage.route) { inclusive = true }
                                     launchSingleTop = true
                                 }
                             }

@@ -1,28 +1,24 @@
-package com.zulfadar.konnetto.ui.screen.auth.register
+package com.zulfadar.konnetto.ui.screen.auth.forgotpassword
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,49 +41,39 @@ import com.zulfadar.konnetto.ui.components.RegularButton
 import com.zulfadar.konnetto.ui.theme.KonnettoTheme
 
 @Composable
-fun RegisterScreen(
+fun NewPassWordScreen(
     modifier: Modifier = Modifier,
-    onClickToRegister: () -> Unit,
-    navigateToLogin: () -> Unit
+    onSendClick: () -> Unit,
 ) {
-    RegisterContent(
-        displayname = "",
-        username = "",
-        email = "",
+    NewPasswordContent(
+        modifier = modifier,
+        onSendClick = onSendClick,
         password = "",
-        confirmPassword = "",
-        onClickToRegister = onClickToRegister,
-        navigateToLogin = navigateToLogin,
-        modifier = modifier
+        confirmPassword = ""
     )
 }
 
 @Composable
-fun RegisterContent(
-    displayname: String,
-    username: String,
-    email: String,
+fun NewPasswordContent(
+    modifier: Modifier = Modifier,
     password: String,
     confirmPassword: String,
-    onClickToRegister: () -> Unit,
-    navigateToLogin: () -> Unit,
-    modifier: Modifier = Modifier
+    onSendClick: () -> Unit
 ) {
-    var displayname by remember { mutableStateOf(displayname) }
-    var username by remember { mutableStateOf(username) }
-    var email by remember { mutableStateOf(email) }
     var password by remember { mutableStateOf(password) }
     var confirmPassword by remember { mutableStateOf(confirmPassword) }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            NewPasswordTopBar()
+        }
+    ) {innerPadding ->
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier.padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(40.dp))
+            Spacer(Modifier.height(60.dp))
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -110,45 +96,9 @@ fun RegisterContent(
                 )
             }
             Text(
-                text = "Create your account",
+                text = "Enter your new password!",
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
-            )
-            Text(
-                text = "Join the anime community",
-                fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-            Spacer(Modifier.heightIn(min = 30.dp))
-            InputTextField(
-                input = displayname,
-                onValueChange = { newInput ->
-                    displayname = newInput
-                },
-                labelText = "Name",
-                leadingIcon = Icons.Filled.Person,
-                keyboardType = KeyboardType.Text
-            )
-            Spacer(Modifier.heightIn(min = 10.dp))
-            InputTextField(
-                input = username,
-                onValueChange = { newInput ->
-                    username = newInput.filterNot { it.isWhitespace() }
-                },
-                labelText = "Username",
-                leadingIcon = Icons.Filled.Person,
-                keyboardType = KeyboardType.Text
-            )
-            Spacer(Modifier.heightIn(min = 10.dp))
-            InputTextField(
-                input = email,
-                onValueChange = { newInput ->
-                    email = newInput.filterNot { it.isWhitespace() }
-                },
-                labelText = "Email",
-                leadingIcon = Icons.Filled.Email,
-                keyboardType = KeyboardType.Email
+                fontSize = 18.sp
             )
             Spacer(Modifier.heightIn(min = 10.dp))
             InputTextField(
@@ -172,50 +122,50 @@ fun RegisterContent(
                 keyboardType = KeyboardType.Password,
                 visualTransformation = PasswordVisualTransformation()
             )
-            Spacer(Modifier.heightIn(min = 30.dp))
+            Spacer(Modifier.heightIn(min = 20.dp))
             RegularButton(
-                text = "Register",
-                onClick = onClickToRegister,
-                modifier = Modifier.imePadding()
+                text = "Send",
+                onClick = onSendClick,
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Already have acccount?",
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(start = 20.dp)
-                )
-                Text(
-                    text = "Log in now",
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                        .clickable {
-                            navigateToLogin()
-                        }
-                )
-            }
-            Spacer(Modifier.heightIn(min = 30.dp))
         }
     }
 }
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RegisterScreenPreview() {
+fun NewPasswordTopBar(
+    modifier: Modifier = Modifier,
+) {
+    TopAppBar(
+        modifier = modifier,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent
+        ),
+        title = {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(30.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    "New Password",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        },
+    )
+}
+
+@Preview
+@Composable
+private fun NewPasswordPreview() {
     KonnettoTheme {
-        RegisterContent(
-            displayname = "",
-            username = "",
-            email = "",
+        NewPasswordContent(
+            onSendClick = {},
             password = "",
-            onClickToRegister = {},
-            navigateToLogin = {},
-            confirmPassword = "",
+            confirmPassword = ""
         )
     }
 }

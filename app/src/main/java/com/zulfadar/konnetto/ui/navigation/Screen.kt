@@ -3,6 +3,8 @@ package com.zulfadar.konnetto.ui.navigation
 sealed class Screen(val route: String) {
     data object LoginPage : Screen("loginPage")
     data object RegisterPage : Screen("registerPage")
+    data object ForgotPasswordPage : Screen("forgotPasswordPage")
+    data object NewPasswordPage : Screen("newPasswordPage")
     data object OtpPage : Screen("otpPage")
     data object HomePage : Screen("homePage")
     data object SearchPage : Screen("searchPage")
