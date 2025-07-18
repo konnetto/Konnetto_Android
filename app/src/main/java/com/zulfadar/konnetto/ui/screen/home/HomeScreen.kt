@@ -64,6 +64,7 @@ fun HomeScreen(
         )
     ),
     navigateToComment: () -> Unit,
+    navigateToLikedBy: () -> Unit,
     onMenuClick: () -> Unit,
     onSearchClick: () -> Unit
 ) {
@@ -79,6 +80,7 @@ fun HomeScreen(
                     navigateToComments = navigateToComment,
                     onMenuClick = onMenuClick,
                     onSearchClick = onSearchClick,
+                    navigateToLikedBy = navigateToLikedBy
                 )
             }
             is UiState.Error -> {}
@@ -92,6 +94,7 @@ fun HomeContent(
     modifier: Modifier = Modifier,
     postings: List<Post>,
     navigateToComments: () -> Unit,
+    navigateToLikedBy: () -> Unit,
     onMenuClick: () -> Unit,
     onSearchClick: () -> Unit
 ) {
@@ -111,7 +114,8 @@ fun HomeContent(
         ) {
             HomeTabs(
                 posts = postings,
-                onCommentClick = navigateToComments
+                onCommentClick = navigateToComments,
+                onLikeCountClick = navigateToLikedBy
             )
         }
     }
@@ -121,7 +125,8 @@ fun HomeContent(
 @Composable
 fun HomeTabs(
     posts: List<Post>,
-    onCommentClick: () -> Unit
+    onCommentClick: () -> Unit,
+    onLikeCountClick: () -> Unit
 ) {
     val tabItems = listOf(
         TabItem(title = "For You"),
@@ -216,6 +221,7 @@ fun HomeTabs(
                                     totalComment = data.totalComments,
                                     totalShare = data.totalShare,
                                     isLiked = data.isLiked,
+                                    onLikedCountClick = onLikeCountClick,
                                 )
                             }
                         }
@@ -387,6 +393,7 @@ private fun HomeScreenPreview() {
             navigateToComments = {},
             onMenuClick = {},
             onSearchClick = {},
+            navigateToLikedBy = {},
         )
     }
 }

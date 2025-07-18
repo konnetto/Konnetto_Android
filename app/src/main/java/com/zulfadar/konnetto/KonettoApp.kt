@@ -25,7 +25,6 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +54,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.zulfadar.konnetto.ui.common.OtpAction
+import com.zulfadar.konnetto.ui.common.OverlayManager
 import com.zulfadar.konnetto.ui.components.BottomBar
 import com.zulfadar.konnetto.ui.navigation.Screen
 import com.zulfadar.konnetto.ui.screen.addnewpost.CreateNewPostScreen
@@ -64,7 +64,6 @@ import com.zulfadar.konnetto.ui.screen.auth.login.LoginScreen
 import com.zulfadar.konnetto.ui.screen.auth.otppages.OtpScreen
 import com.zulfadar.konnetto.ui.screen.auth.otppages.OtpViewModel
 import com.zulfadar.konnetto.ui.screen.auth.register.RegisterScreen
-import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
 import com.zulfadar.konnetto.ui.screen.editprofilescreen.EditProfileScreen
 import com.zulfadar.konnetto.ui.screen.friendrequest.FriendRequestScreen
 import com.zulfadar.konnetto.ui.screen.home.HomeScreen
@@ -95,11 +94,9 @@ fun KonnettoApp(
     val isHomePage = currentRoute == Screen.HomePage.route
 
     //commentSection
-    val coroutineScope = rememberCoroutineScope()
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
-    val commentSectionState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-    )
+    //liked by section
+    var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
 
     //Otp
     val otpViewModel = viewModel<OtpViewModel>()
@@ -461,6 +458,7 @@ fun KonnettoApp(
                                     launchSingleTop = true
                                 }
                             },
+                            navigateToLikedBy = { showLikedBySectionSheet = true},
                         )
                     }
 
@@ -524,14 +522,6 @@ fun KonnettoApp(
                         ProfileScreen(
                             onBackClick = { navController.popBackStack() },
                             onCommentClick = { showCommentSectionSheet = true },
-                            showCommentSectionSheet = showCommentSectionSheet,
-                            commentSectionSheetState = commentSectionState,
-                            onDismissCommentSheet = {
-                                coroutineScope.launch {
-                                    commentSectionState.hide()
-                                    showCommentSectionSheet = false
-                                }
-                            },
                             onShareBtnClick = {},
                             onEdtBtnClick = {
                                 navController.navigate(Screen.EditProflePage.route) {
@@ -567,17 +557,16 @@ fun KonnettoApp(
             }
         }
     }
-    if (showCommentSectionSheet) {
-        CommentSection(
-            commentSheetState = commentSectionState,
-            onDismissCommentSheet = {
-                coroutineScope.launch {
-                    commentSectionState.hide()
-                    showCommentSectionSheet = false
-                }
-            }
-        )
-    }
+    OverlayManager(
+        showCommentSectionSheet = showCommentSectionSheet,
+        onDismissCommentSheet = {
+            showCommentSectionSheet = false
+        },
+        showLikedBySectionSHeet = showLikedBySectionSheet,
+        onDismissLikedBySheet = {
+            showLikedBySectionSheet = false
+        }
+    ) 
 }
 
 

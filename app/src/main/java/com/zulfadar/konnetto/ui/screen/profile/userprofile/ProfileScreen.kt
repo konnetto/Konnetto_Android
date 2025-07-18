@@ -66,7 +66,6 @@ import com.zulfadar.konnetto.ui.common.UiState
 import com.zulfadar.konnetto.ui.components.PostCardItem
 import com.zulfadar.konnetto.ui.navigation.TabItem
 import com.zulfadar.konnetto.ui.navigation.WatchingTabItem
-import com.zulfadar.konnetto.ui.screen.commentSection.CommentSection
 import com.zulfadar.konnetto.ui.screen.profile.userprofile.components.WatchCardItem
 import com.zulfadar.konnetto.ui.viewModelFactory.ProfileViewModelFactory
 import kotlinx.coroutines.launch
@@ -77,9 +76,6 @@ fun ProfileScreen(
     onBackClick: () -> Unit,
     onShareBtnClick: () -> Unit,
     onEdtBtnClick: () -> Unit,
-    showCommentSectionSheet: Boolean,
-    commentSectionSheetState: SheetState,
-    onDismissCommentSheet: () -> Unit,
     onCommentClick: () -> Unit,
     onFriendCountClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -118,9 +114,6 @@ fun ProfileScreen(
                 currentlyWatch = currentlyWatchingList,
                 onBackClick = onBackClick,
                 onCommentClick = onCommentClick,
-                showCommentSectionSheet = showCommentSectionSheet,
-                commentSectionState = commentSectionSheetState,
-                onDismissCommentSheet = onDismissCommentSheet,
                 onEdtBtnClick = onEdtBtnClick,
                 onShareBtnClick = onShareBtnClick,
                 onFriendCountClick = onFriendCountClick,
@@ -145,9 +138,6 @@ fun ProfileContent(
     biography: String?,
     posts: List<Post>,
     currentlyWatch: List<CurrentlyWatching>,
-    showCommentSectionSheet: Boolean,
-    commentSectionState: SheetState,
-    onDismissCommentSheet: () -> Unit,
     onCommentClick: () -> Unit,
     onEdtBtnClick: () -> Unit,
     onShareBtnClick: () -> Unit,
@@ -391,6 +381,7 @@ fun ProfileContent(
                                             totalComment = data.totalComments,
                                             totalShare = data.totalShare,
                                             isLiked = data.isLiked,
+                                            onLikedCountClick = {},
                                         )
                                     }
                                 }
@@ -423,12 +414,6 @@ fun ProfileContent(
                     }
                 }
             }
-        }
-        if (showCommentSectionSheet) {
-            CommentSection(
-                commentSheetState = commentSectionState,
-                onDismissCommentSheet = onDismissCommentSheet
-            )
         }
     }
 }

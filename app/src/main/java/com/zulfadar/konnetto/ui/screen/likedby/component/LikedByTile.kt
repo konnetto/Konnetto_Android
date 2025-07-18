@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zulfadar.konnetto.R
+import com.zulfadar.konnetto.ui.theme.KonnettoTheme
 
 @Composable
 fun LikedByTile(
@@ -137,11 +138,13 @@ fun LikedByTile(
 @Preview(showBackground = true)
 @Composable
 private fun LikedByTilePrev() {
-    LikedByTile(
-        onFriendTileClick = {},
-        profilePict = null,
-        displayname = "Comoli Harcourt",
-        username = "comoliiscute",
-        isFriend = true,
-    )
+    KonnettoTheme {
+        LikedByTile(
+            onFriendTileClick = {},
+            profilePict = null,
+            displayname = "Comoli Harcourt",
+            username = "comoliiscute",
+            isFriend = true,
+        )
+    }
 }

@@ -58,6 +58,7 @@ fun PostCardItem(
     totalComment: Int,
     totalShare: Int,
     isLiked: Boolean,
+    onLikedCountClick: () -> Unit,
     onCommentsClick: () -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -195,7 +196,9 @@ fun PostCardItem(
                     Box(
                         modifier = Modifier
                             .widthIn(min = 20.dp)
-                            .clickable { }
+                            .clickable {
+                                onLikedCountClick()
+                            }
                     ) {
                         Text(
                             text = likeCount.formatCount(),
@@ -293,6 +296,7 @@ private fun PostCardItemPreview() {
             totalComment = 0,
             totalShare = 0,
             isLiked = false,
+            onLikedCountClick = {},
         )
     }
 }
