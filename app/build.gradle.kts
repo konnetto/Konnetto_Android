@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.zulfadar.konnetto"
+    namespace = "com.konnettoco.konnetto"
     compileSdk = 35
 
     defaultConfig {
