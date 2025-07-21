@@ -1,9 +1,11 @@
 package com.konnettoco.konnetto.ui.screen.profile.userprofile.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,9 +24,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konnettoco.konnetto.R
+import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 
 @Composable
 fun WatchCardItem(
@@ -55,10 +59,10 @@ fun WatchCardItem(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Green,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
             )
         }
-        LinearProgressIndicator(
+        RoundedLinearProgressIndicator(
             progress = 0.7f,
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 10.dp)
@@ -66,7 +70,32 @@ fun WatchCardItem(
                 .height(8.dp)
                 .width(120.dp),
             color = MaterialTheme.colorScheme.primary,
-            trackColor = Color.LightGray
+            trackColor = Color.LightGray,
+        )
+    }
+}
+
+@Composable
+fun RoundedLinearProgressIndicator(
+    progress: Float,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.primary,
+    trackColor: Color = Color.LightGray,
+    cornerRadius: Dp = 50.dp
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(trackColor),
+        contentAlignment = Alignment.Center
+    ) {
+        LinearProgressIndicator(
+            progress = progress,
+            color = color,
+            trackColor = Color.Transparent, // agar latar belakang tidak menimpa rounded track
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(cornerRadius)) // penting agar foreground juga rounded
         )
     }
 }
@@ -74,8 +103,10 @@ fun WatchCardItem(
 @Preview(showBackground = true)
 @Composable
 private fun WatchCardItemPreview() {
-    WatchCardItem(
-        posterImage = R.drawable.memespongebob,
-        title = "Spongbob"
-    )
+    KonnettoTheme {
+        WatchCardItem(
+            posterImage = R.drawable.memespongebob,
+            title = "Spongbob"
+        )
+    }
 }

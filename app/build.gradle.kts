@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.zulfadar.konnetto"
+        applicationId = "com.konnettoco.konnetto"
         minSdk = 28
         targetSdk = 35
         versionCode = 1

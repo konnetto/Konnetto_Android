@@ -1,5 +1,6 @@
 package com.konnettoco.konnetto.ui.screen.profile.userprofile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,18 +20,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -54,10 +58,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
+import com.konnettoco.konnetto.data.FakeUserDataSource.currentUserDummy
 import com.konnettoco.konnetto.data.model.CurrentlyWatching
 import com.konnettoco.konnetto.data.model.Post
 import com.konnettoco.konnetto.di.Injection
@@ -66,6 +72,7 @@ import com.konnettoco.konnetto.ui.components.PostCardItem
 import com.konnettoco.konnetto.ui.navigation.TabItem
 import com.konnettoco.konnetto.ui.navigation.WatchingTabItem
 import com.konnettoco.konnetto.ui.screen.profile.userprofile.components.WatchCardItem
+import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.ui.viewModelFactory.ProfileViewModelFactory
 import kotlinx.coroutines.launch
 
@@ -92,7 +99,6 @@ fun ProfileScreen(
         postState is UiState.Loading || currentlyWatchingState is UiState.Loading -> {
             viewModel.getAllPostings()
             viewModel.getAllCurrentlyWatching()
-            // Optional: tampilkan loading indicator
         }
 
         postState is UiState.Success && currentlyWatchingState is UiState.Success -> {
@@ -101,10 +107,10 @@ fun ProfileScreen(
 
             ProfileContent(
                 modifier = modifier,
-                displayname = "Uzumai Uchiha bambank",
-                username = "BamBank",
+                displayname = "Char Aznable",
+                username = "charaznable08",
                 profilePict = R.drawable.logo.toString(),
-                friends = 500,
+                friends = 4,
                 follows = 12,
                 biography = "\uD83D\uDC68\u200D\uD83D\uDCBB Mobile & Web Developer | Kotlin • Flutter • Java Spring\n" +
                         "\uD83C\uDF93 S1 Teknologi Informasi | Bangkit 2023 Graduate\n" +
@@ -226,7 +232,11 @@ fun ProfileContent(
                                     text = item.title,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = if (selectWatchTabIndex == index) {
+                                        MaterialTheme.colorScheme.onSurface
+                                    } else {
+                                        Color.LightGray
+                                    }
                                 )
                             },
                         )
@@ -436,16 +446,16 @@ fun ProfileSection(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .padding(start = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(profilePict?.toInt() ?: R.drawable.img),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
-                    .size(130.dp)
+                    .size(120.dp)
                     .aspectRatio(1f, matchHeightConstraintsFirst = true)
                     .border(
                         width = 4.dp,
@@ -459,7 +469,8 @@ fun ProfileSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp),
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = displayname,
@@ -468,7 +479,7 @@ fun ProfileSection(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = username,
+                    text = "@"+username,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -476,69 +487,6 @@ fun ProfileSection(
 
             }
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, end = 50.dp),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Button(
-                onClick = onEdtBtnClick,
-                enabled = true,
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-            ) {
-                Text(
-                    text = "Edit Profile",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            }
-            Button(
-                modifier = Modifier.padding(start = 8.dp),
-                onClick = onShareBtnClick,
-                enabled = true,
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-            ) {
-                Text(
-                    text = "Share Profile",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            }
-        }
-        Spacer(Modifier.heightIn(8.dp))
-        Column {
-            val displayedText = if (isExpanded || (biography?.length ?: 0) <= 50) biography else "${biography?.take(100) ?: ""}..."
-
-            if (displayedText != null) {
-                Text(
-                    text = displayedText,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Justify,
-                    lineHeight = 14.sp,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(start = 12.dp, end = 12.dp)
-                )
-            }
-            if (biography?.length!! > 100) {
-                Text(
-                    text = if (isExpanded) "See Less" else "See More",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp,
-                    modifier = Modifier
-                        .clickable { isExpanded = !isExpanded }
-                        .padding(start = 12.dp)
-                        .align(Alignment.Start)
-                )
-            }
-        }
-        Spacer(Modifier.heightIn(8.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -620,7 +568,74 @@ fun ProfileSection(
                 )
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                modifier = Modifier.width(180.dp).height(40.dp),
+                onClick = onEdtBtnClick,
+                enabled = true,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(12.dp),
+            ) {
+                Text(
+                    text = "Edit Profile",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
+                )
+            }
+            OutlinedButton(
+                modifier = Modifier.width(180.dp).height(40.dp),
+                onClick = onShareBtnClick,
+                enabled = true,
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.surfaceContainerLowest
+                ),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(12.dp),
+            ) {
+                Text(
+                    text = "Share Profile",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Column {
+            val displayedText = if (isExpanded || (biography?.length ?: 0) <= 50) biography else "${biography?.take(100) ?: ""}..."
 
+            if (displayedText != null) {
+                Text(
+                    text = displayedText,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Justify,
+                    lineHeight = 14.sp,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(start = 12.dp, end = 12.dp)
+                )
+            }
+            if (biography?.length!! > 100) {
+                Text(
+                    text = if (isExpanded) "See Less" else "See More",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(start = 12.dp)
+                        .align(Alignment.Start)
+                )
+            }
+        }
+        Spacer(Modifier.heightIn(8.dp))
     }
 }
 
@@ -647,7 +662,8 @@ fun ProfileTopAppBar(
             }
         },
         title = {
-            Text("Profile",
+            Text(
+                text = username,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -655,93 +671,77 @@ fun ProfileTopAppBar(
     )
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Preview(showBackground = true)
-//@Composable
-//private fun ProfileScreenPreview() {
-//    KonnettoTheme {
-//        val dummySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-//        ProfileContent(
-//            displayname = "Uzumaki Uchiha bambank",
-//            username = "Bambank",
-//            profilePict = R.drawable.logo.toString(),
-//            friends = 500,
-//            follows = 50,
-//            biography = "AwikWok awok awok asaok asdao asdas asdas sdaddf fgrg rthr rthr wew erge rrth rthrth rthr rthrthr yj6uj6 6yj6yj6 6yj6yj 6yj6 lr ehr yjtyj  ege",
-//            posts = listOf(
-//                Post(
-//                    id = 0,
-//                    displayname = "bambank",
-//                    username = "Bambank",
-//                    profilePict = R.drawable.logo,
-//                    caption = "Awikwok Test",
-//                    image = R.drawable.memespongebob,
-//                    timestamp = "16 h",
-//                    comments = null,
-//                    isLiked = false,
-//                    isSaved = false,
-//                ),
-//                Post(
-//                    id = 1,
-//                    displayname = "bambank",
-//                    username = "Bambank",
-//                    profilePict = R.drawable.logo,
-//                    caption = "Awikwok Test",
-//                    image = null,
-//                    timestamp = "16 h",
-//                    comments = null,
-//                    isLiked = false,
-//                    isSaved = false,
-//                ),
-//                Post(
-//                    id = 2,
-//                    displayname = "bambank",
-//                    username = "Bambank",
-//                    profilePict = R.drawable.logo,
-//                    caption = "Awikwok Test",
-//                    image = R.drawable.memespongebob,
-//                    timestamp = "16 h",
-//                    comments = null,
-//                    isLiked = false,
-//                    isSaved = false,
-//                )
-//            ),
-//            onBackClick = {},
-//            onCommentClick = {},
-//            currentlyWatch = listOf(
-//                CurrentlyWatching(
-//                    id = 0,
-//                    title = "Spongebob",
-//                    poster = R.drawable.memespongebob
-//                ),
-//                CurrentlyWatching(
-//                    id = 1,
-//                    title = "Spongebob",
-//                    poster = R.drawable.memespongebob
-//                ),
-//                CurrentlyWatching(
-//                    id = 2,
-//                    title = "Spongebob",
-//                    poster = R.drawable.memespongebob
-//                ),
-//                CurrentlyWatching(
-//                    id = 3,
-//                    title = "Spongebob",
-//                    poster = R.drawable.memespongebob
-//                ),
-//                CurrentlyWatching(
-//                    id = 4,
-//                    title = "Spongebob",
-//                    poster = R.drawable.memespongebob
-//                ),
-//            ),
-//            showCommentSectionSheet = false,
-//            commentSectionState = dummySheetState,
-//            onDismissCommentSheet = {},
-//            onEdtBtnClick = {},
-//            onShareBtnClick = {},
-//            onFriendCountClick = {},
-//        )
-//    }
-//}
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun ProfileScreenPreview() {
+    KonnettoTheme {
+        ProfileContent(
+            displayname = "Char Aznable",
+            username = "charaznable08",
+            profilePict = R.drawable.logo.toString(),
+            friends = 4,
+            follows = 12,
+            biography = "AwikWok awok awok asaok asdao asdas asdas sdaddf fgrg rthr rthr wew erge rrth rthrth rthr rthrthr yj6uj6 6yj6yj6 6yj6yj 6yj6 lr ehr yjtyj  ege",
+            posts = listOf(
+                Post(
+                    id = 0,
+                    author = currentUserDummy,
+                    image = R.drawable.memespongebob,
+                    caption = "test",
+                    isLiked = true,
+                    isSaved = false,
+                    totalLike = 1,
+                    totalComments = 2,
+                    createdAt = 20,
+                    updatedAt = "2025-07-05T14:30:00Z"
+                ),
+                Post(
+                    id = 1,
+                    author = currentUserDummy,
+                    image = R.drawable.memespongebob,
+                    caption = "test",
+                    isLiked = true,
+                    isSaved = false,
+                    totalLike = 1,
+                    totalComments = 2,
+                    createdAt = 20,
+                    updatedAt = "2025-07-05T14:30:00Z"
+                ),
+            ),
+            onBackClick = {},
+            onCommentClick = {},
+            currentlyWatch = listOf(
+                CurrentlyWatching(
+                    id = 0,
+                    title = "Spongebob",
+                    poster = R.drawable.memespongebob
+                ),
+                CurrentlyWatching(
+                    id = 1,
+                    title = "Spongebob",
+                    poster = R.drawable.memespongebob
+                ),
+                CurrentlyWatching(
+                    id = 2,
+                    title = "Spongebob",
+                    poster = R.drawable.memespongebob
+                ),
+                CurrentlyWatching(
+                    id = 3,
+                    title = "Spongebob",
+                    poster = R.drawable.memespongebob
+                ),
+                CurrentlyWatching(
+                    id = 4,
+                    title = "Spongebob",
+                    poster = R.drawable.memespongebob
+                ),
+            ),
+            onEdtBtnClick = {},
+            onShareBtnClick = {},
+            onFriendCountClick = {},
+        )
+    }
+}
 

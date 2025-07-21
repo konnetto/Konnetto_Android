@@ -308,14 +308,14 @@ fun HomeTopAppBar(
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
-            IconButton(onClick = {} ) {
-                Icon(
-                    painter = painterResource(R.drawable.icons8_chat),
-                    contentDescription = "Search",
-                    modifier = Modifier.aspectRatio(0.8f),
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-            }
+//            IconButton(onClick = {} ) {
+//                Icon(
+//                    painter = painterResource(R.drawable.icons8_chat),
+//                    contentDescription = "Search",
+//                    modifier = Modifier.aspectRatio(0.8f),
+//                    tint = MaterialTheme.colorScheme.onBackground
+//                )
+//            }
         }
     )
 }
