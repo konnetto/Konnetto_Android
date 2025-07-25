@@ -43,12 +43,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,6 +69,7 @@ import com.konnettoco.konnetto.data.FakeUserDataSource.currentUserDummy
 import com.konnettoco.konnetto.data.model.CurrentlyWatching
 import com.konnettoco.konnetto.data.model.Post
 import com.konnettoco.konnetto.di.Injection
+import com.konnettoco.konnetto.ui.common.OverlayManager
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.components.PostCardItem
 import com.konnettoco.konnetto.ui.navigation.TabItem
@@ -82,7 +85,6 @@ fun ProfileScreen(
     onBackClick: () -> Unit,
     onShareBtnClick: () -> Unit,
     onEdtBtnClick: () -> Unit,
-    onCommentClick: () -> Unit,
     onFriendCountClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = viewModel(
@@ -92,19 +94,25 @@ fun ProfileScreen(
         )
     )
 ) {
+    //commentSection
+    var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
+    //liked by section
+    var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
+
     val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
     val currentlyWatchingState by viewModel.uiStateCurrentlyWatching.collectAsState(initial = UiState.Loading)
 
     when {
         postState is UiState.Loading || currentlyWatchingState is UiState.Loading -> {
-            viewModel.getAllPostings()
-            viewModel.getAllCurrentlyWatching()
+            LaunchedEffect(Unit) {
+                viewModel.getAllPostings()
+                viewModel.getAllCurrentlyWatching()
+            }
         }
 
         postState is UiState.Success && currentlyWatchingState is UiState.Success -> {
             val posts = (postState as UiState.Success).data
             val currentlyWatchingList = (currentlyWatchingState as UiState.Success).data
-
             ProfileContent(
                 modifier = modifier,
                 displayname = "Char Aznable",
@@ -118,10 +126,21 @@ fun ProfileScreen(
                 posts = posts,
                 currentlyWatch = currentlyWatchingList,
                 onBackClick = onBackClick,
-                onCommentClick = onCommentClick,
+                onCommentClick = { showCommentSectionSheet = true },
                 onEdtBtnClick = onEdtBtnClick,
                 onShareBtnClick = onShareBtnClick,
                 onFriendCountClick = onFriendCountClick,
+                onLikeCountClick = { showLikedBySectionSheet = true},
+            )
+            OverlayManager(
+                showCommentSectionSheet = showCommentSectionSheet,
+                onDismissCommentSheet = {
+                    showCommentSectionSheet = false
+                },
+                showLikedBySectionSHeet = showLikedBySectionSheet,
+                onDismissLikedBySheet = {
+                    showLikedBySectionSheet = false
+                }
             )
         }
 
@@ -144,6 +163,7 @@ fun ProfileContent(
     posts: List<Post>,
     currentlyWatch: List<CurrentlyWatching>,
     onCommentClick: () -> Unit,
+    onLikeCountClick: () -> Unit,
     onEdtBtnClick: () -> Unit,
     onShareBtnClick: () -> Unit,
     onFriendCountClick: () -> Unit,
@@ -390,7 +410,7 @@ fun ProfileContent(
                                             totalComment = data.totalComments,
                                             totalShare = data.totalShare,
                                             isLiked = data.isLiked,
-                                            onLikedCountClick = {},
+                                            onLikedCountClick = onLikeCountClick,
                                         )
                                     }
                                 }
@@ -741,6 +761,7 @@ private fun ProfileScreenPreview() {
             onEdtBtnClick = {},
             onShareBtnClick = {},
             onFriendCountClick = {},
+            onLikeCountClick = {},
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.konnettoco.konnetto.data.model
 
+import androidx.compose.runtime.Immutable
+
 //data class Post(
 //    val id: Long,
 //    val displayname: String,
@@ -13,6 +15,7 @@ package com.konnettoco.konnetto.data.model
 //    val isSaved: Boolean = false,
 //)
 
+@Immutable
 data class Post(
     val id: Long,
     val author: User,

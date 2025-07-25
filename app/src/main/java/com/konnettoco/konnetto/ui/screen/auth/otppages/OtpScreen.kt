@@ -20,16 +20,23 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.common.OTPState
 import com.konnettoco.konnetto.ui.common.OtpAction
@@ -40,15 +47,48 @@ import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 @Composable
 fun OtpScreen(
     modifier: Modifier = Modifier,
-    state: OTPState,
-    onAction: (OtpAction) -> Unit,
     onConfirmClick: () -> Unit,
-    focusRequester: List<FocusRequester>,
+    otpViewModel: OtpViewModel = viewModel(),
 ) {
+    val otpState by otpViewModel.uiState.collectAsStateWithLifecycle()
+    val focusRequester = remember { List(6) { FocusRequester() } }
+    val focusManager = LocalFocusManager.current
+    val keyboardManager = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(otpState.focusIndex) {
+        otpState.focusIndex?.let { index ->
+            focusRequester.getOrNull(index)?.requestFocus()
+        }
+    }
+
+    LaunchedEffect(otpState.code, keyboardManager) {
+        val allNumberEntered = otpState.code.none { it == null }
+        if (allNumberEntered) {
+            focusRequester.forEach { it.freeFocus() }
+            focusManager.clearFocus()
+            keyboardManager?.hide()
+        }
+    }
+
+    LaunchedEffect(otpState.code, keyboardManager) {
+        val allNumberEntered = otpState.code.none { it == null }
+        if (allNumberEntered) {
+            focusRequester.forEach {
+                it.freeFocus()
+            }
+            focusManager.clearFocus()
+            keyboardManager?.hide()
+        }
+    }
     OtpContent(
         modifier = modifier,
-        state = state,
-        onAction = onAction,
+        state = otpState,
+        onAction = { action ->
+            if (action is OtpAction.OnEnterNumber && action.number != null) {
+                focusRequester[action.index].freeFocus()
+            }
+            otpViewModel.onAction(action)
+        },
         focusRequester = focusRequester,
         onConfirmClick = onConfirmClick
     )

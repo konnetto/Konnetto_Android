@@ -7,3 +7,12 @@ fun Int.formatCount(): String {
         else -> this.toString()
     }
 }
+
+fun Int.commentLikeFormatCount(): String {
+    return when {
+        this >= 1000000 -> "${this / 1000000}M"
+        this >= 10000 -> "${this / 1000}k"
+        this >= 1000 -> "${this / 1000}k"
+        else -> this.toString()
+    }
+}

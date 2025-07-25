@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -125,7 +122,6 @@ fun LoginContent(
                     email = newInput.filterNot { it.isWhitespace() }
                 },
                 labelText = "Email",
-                leadingIcon = Icons.Filled.Email,
                 keyboardType = KeyboardType.Email
             )
             Spacer(Modifier.heightIn(min = 10.dp))
@@ -135,7 +131,6 @@ fun LoginContent(
                     password = newInput.filterNot { it.isWhitespace() } // Mencegah input spasi
                 },
                 labelText = "Password",
-                leadingIcon = Icons.Filled.Lock,
                 trailingIcon = icon,
                 onTrailingIconClick = { visible = !visible},
                 keyboardType = KeyboardType.Password,

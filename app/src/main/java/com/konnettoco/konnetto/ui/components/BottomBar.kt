@@ -75,7 +75,6 @@ fun BottomBar(
                         )
                     }
                 },
-//                label = { Text(item.title) },
                 selected = currentRoute == item.screen.route,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
@@ -87,8 +86,8 @@ fun BottomBar(
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
-                        restoreState = true
                         launchSingleTop = true
+                        restoreState = true
                     }
                 }
             )

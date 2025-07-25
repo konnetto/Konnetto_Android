@@ -59,7 +59,7 @@ fun WatchCardItem(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.inverseOnSurface,
+                color = Color.White,
             )
         }
         RoundedLinearProgressIndicator(
