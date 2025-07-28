@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto.ui.screen.editprofilescreen
+package com.konnettoco.konnetto.ui.screen.profile.editprofilescreen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -104,7 +104,7 @@ fun EditProfileContent(
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Image(
-                        painter = painterResource(profilePict?.toInt() ?: R.drawable.img),
+                        painter = painterResource(profilePict?.toInt() ?: R.drawable.logo),
                         contentDescription = "Profile Picture",
                         modifier = Modifier
                             .size(120.dp)

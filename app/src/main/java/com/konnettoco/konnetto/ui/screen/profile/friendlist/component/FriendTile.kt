@@ -50,7 +50,7 @@ fun FriendTile(
     ) {
         Box {
             Image(
-                painter = if (profilePict != null) painterResource(profilePict) else painterResource(R.drawable.img),
+                painter = if (profilePict != null) painterResource(profilePict) else painterResource(R.drawable.logo),
                 contentDescription = "Profile picture",
                 modifier = Modifier
                     .size(45.dp)

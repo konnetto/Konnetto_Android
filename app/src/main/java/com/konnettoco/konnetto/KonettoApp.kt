@@ -50,10 +50,10 @@ import com.konnettoco.konnetto.ui.screen.auth.forgotpassword.NewPassWordScreen
 import com.konnettoco.konnetto.ui.screen.auth.login.LoginScreen
 import com.konnettoco.konnetto.ui.screen.auth.otppages.OtpScreen
 import com.konnettoco.konnetto.ui.screen.auth.register.RegisterScreen
-import com.konnettoco.konnetto.ui.screen.editprofilescreen.EditProfileScreen
+import com.konnettoco.konnetto.ui.screen.profile.editprofilescreen.EditProfileScreen
 import com.konnettoco.konnetto.ui.screen.friendrequest.FriendRequestScreen
 import com.konnettoco.konnetto.ui.screen.home.HomeScreen
-import com.konnettoco.konnetto.ui.screen.library.LibraryPageScreen
+import com.konnettoco.konnetto.ui.screen.library.mylibrary.LibraryPageScreen
 import com.konnettoco.konnetto.ui.screen.notification.NotificationScreen
 import com.konnettoco.konnetto.ui.screen.profile.friendlist.FriendListScreen
 import com.konnettoco.konnetto.ui.screen.profile.userprofile.ProfileScreen

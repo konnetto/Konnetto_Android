@@ -472,7 +472,7 @@ fun ProfileSection(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(profilePict?.toInt() ?: R.drawable.img),
+                painter = painterResource(profilePict?.toInt() ?: R.drawable.logo),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(120.dp)

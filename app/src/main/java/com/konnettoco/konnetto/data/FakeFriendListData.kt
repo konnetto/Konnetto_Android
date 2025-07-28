@@ -26,7 +26,7 @@ object FakeFriendListData {
         FriendList(
             id = 3,
             displayname = "Comoli Hartcourt",
-            profilePict = R.drawable.img,
+            profilePict = R.drawable.logo,
             username = "comoli",
         )
     )

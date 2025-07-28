@@ -58,7 +58,7 @@ fun LikedByTile(
         Box {
             Image(
                 painter = if (profilePict != null) painterResource(profilePict) else painterResource(
-                    R.drawable.img),
+                    R.drawable.logo),
                 contentDescription = "Profile picture",
                 modifier = Modifier
                     .size(45.dp)

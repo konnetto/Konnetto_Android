@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -35,7 +34,7 @@ fun BottomBar(
 ) {
     NavigationBar(
         modifier = modifier
-            .padding(top = 40.dp)
+//            .padding(top = 40.dp)
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
             .windowInsetsBottomHeight(
                 WindowInsets.navigationBars.add(WindowInsets(bottom = 56.dp))

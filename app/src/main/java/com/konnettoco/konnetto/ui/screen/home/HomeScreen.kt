@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -116,40 +117,26 @@ fun HomeContent(
     onMenuClick: () -> Unit,
     onSearchClick: () -> Unit
 ) {
-//    Scaffold(
-//        topBar = {
-//            HomeTopAppBar(
-//                onMenuClick = onMenuClick,
-//                onSearchClick = onSearchClick
-//            )
-//        },
-//        modifier = modifier.fillMaxWidth()
-//    ) { paddingValues ->
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(paddingValues)
-//        ) {
-//            HomeTabs(
-//                posts = postings,
-//                onCommentClick = navigateToComments,
-//                onLikeCountClick = navigateToLikedBy
-//            )
-//        }
-//    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        HomeTopAppBar(
-            onMenuClick = onMenuClick,
-            onSearchClick = onSearchClick
-        )
-        HomeTabs(
-            posts = postings,
-            onCommentClick = navigateToComments,
-            onLikeCountClick = navigateToLikedBy
-        )
+    Scaffold(
+        topBar = {
+            HomeTopAppBar(
+                onMenuClick = onMenuClick,
+                onSearchClick = onSearchClick
+            )
+        },
+        modifier = modifier.fillMaxWidth()
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            HomeTabs(
+                posts = postings,
+                onCommentClick = navigateToComments,
+                onLikeCountClick = navigateToLikedBy
+            )
+        }
     }
 }
 
