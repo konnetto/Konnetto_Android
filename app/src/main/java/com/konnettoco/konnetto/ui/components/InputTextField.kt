@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,7 +76,7 @@ fun InputTextField(
     input: String,
     onValueChange: (String) -> Unit,
     labelText: String,
-    leadingIcon: ImageVector? = null,
+//    leadingIcon: ImageVector? = null,
     trailingIcon: Painter? = null,
     onTrailingIconClick: (() -> Unit)? = null,
     keyboardType: KeyboardType,
@@ -90,7 +89,7 @@ fun InputTextField(
         value = input,
         onValueChange = onValueChange,
         label = { Text(labelText) },
-        leadingIcon = {if (leadingIcon != null) Icon(imageVector = leadingIcon, null)},
+//        leadingIcon = {if (leadingIcon != null) Icon(imageVector = leadingIcon, null)},
         trailingIcon = {if (trailingIcon != null) Icon(
             painter = trailingIcon,
             contentDescription = null,

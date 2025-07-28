@@ -16,10 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -127,7 +123,6 @@ fun RegisterContent(
                     displayname = newInput
                 },
                 labelText = "Name",
-                leadingIcon = Icons.Filled.Person,
                 keyboardType = KeyboardType.Text
             )
             Spacer(Modifier.heightIn(min = 10.dp))
@@ -137,7 +132,6 @@ fun RegisterContent(
                     username = newInput.filterNot { it.isWhitespace() }
                 },
                 labelText = "Username",
-                leadingIcon = Icons.Filled.Person,
                 keyboardType = KeyboardType.Text
             )
             Spacer(Modifier.heightIn(min = 10.dp))
@@ -147,7 +141,6 @@ fun RegisterContent(
                     email = newInput.filterNot { it.isWhitespace() }
                 },
                 labelText = "Email",
-                leadingIcon = Icons.Filled.Email,
                 keyboardType = KeyboardType.Email
             )
             Spacer(Modifier.heightIn(min = 10.dp))
@@ -157,7 +150,6 @@ fun RegisterContent(
                     password = newInput
                 },
                 labelText = "Password",
-                leadingIcon = Icons.Filled.Lock,
                 keyboardType = KeyboardType.Password,
                 visualTransformation = PasswordVisualTransformation()
             )
@@ -168,7 +160,6 @@ fun RegisterContent(
                     confirmPassword = newInput
                 },
                 labelText = "Password Confirmation",
-                leadingIcon = Icons.Filled.Lock,
                 keyboardType = KeyboardType.Password,
                 visualTransformation = PasswordVisualTransformation()
             )

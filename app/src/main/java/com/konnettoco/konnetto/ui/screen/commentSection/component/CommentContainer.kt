@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.utils.formatCount
+import com.konnettoco.konnetto.utils.commentLikeFormatCount
 
 @Composable
 fun CommentContainer(
@@ -103,7 +103,7 @@ fun CommentContainer(
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray
             )
-            Spacer(modifier = Modifier.width(190.dp))
+            Spacer(modifier = Modifier.width(200.dp))
             if (likeCount > 0) {
                 Box(
                     modifier = Modifier
@@ -111,14 +111,13 @@ fun CommentContainer(
                         .clickable {  }
                 ) {
                     Text(
-                        text = likeCount.formatCount(),
+                        text = likeCount.commentLikeFormatCount(),
                         fontSize = 12.sp,
                         color = if (likeCount > 0) Color.Gray
                         else Color.Transparent
                     )
                 }
             }
-            Spacer(modifier = Modifier.width(8.dp))
             IconButton(
                 modifier = Modifier
                     .size(18.dp),

@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto.ui.screen.library
+package com.konnettoco.konnetto.ui.screen.library.mylibrary
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
