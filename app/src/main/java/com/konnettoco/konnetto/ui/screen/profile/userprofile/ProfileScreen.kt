@@ -36,7 +36,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -79,7 +78,6 @@ import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.ui.viewModelFactory.ProfileViewModelFactory
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onBackClick: () -> Unit,
@@ -176,9 +174,11 @@ fun ProfileContent(
         TabItem(title = "My Picks")
     )
     val watchTabItem = listOf(
-        WatchingTabItem(title = "Currently Watching"),
+        WatchingTabItem(
+            title = "Currently\nWatching"
+        ),
         WatchingTabItem(title = "Completed"),
-        WatchingTabItem(title = "Plan to Watch")
+        WatchingTabItem(title = "Plan to\nWatch")
     )
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
@@ -232,9 +232,9 @@ fun ProfileContent(
                 )
             }
             item {
-                ScrollableTabRow(
+                TabRow(
                     selectedTabIndex = selectWatchTabIndex,
-                    edgePadding = 0.dp
+//                    edgePadding = 0.dp
                 ) {
                     watchTabItem.forEachIndexed { index, item ->
                         Tab(
@@ -253,7 +253,7 @@ fun ProfileContent(
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = if (selectWatchTabIndex == index) {
-                                        MaterialTheme.colorScheme.onSurface
+                                        MaterialTheme.colorScheme.primary
                                     } else {
                                         Color.LightGray
                                     }
@@ -410,6 +410,7 @@ fun ProfileContent(
                                             totalComment = data.totalComments,
                                             totalShare = data.totalShare,
                                             isLiked = data.isLiked,
+                                            isSaved = data.isSaved,
                                             onLikedCountClick = onLikeCountClick,
                                         )
                                     }

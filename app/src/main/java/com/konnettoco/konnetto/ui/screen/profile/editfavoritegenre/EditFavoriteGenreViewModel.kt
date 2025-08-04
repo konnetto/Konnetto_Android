@@ -1,0 +1,4 @@
+package com.konnettoco.konnetto.ui.screen.profile.editfavoritegenre
+
+class EditFavoriteGenreViewModel {
+}

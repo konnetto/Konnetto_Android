@@ -1,10 +1,14 @@
 package com.konnettoco.konnetto.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -13,13 +17,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,21 +42,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
+import com.konnettoco.konnetto.utils.getGenreColor
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun PostCardItem(
+fun SugoiPicksCardItem(
     modifier: Modifier = Modifier,
+    posterImage: Int,
+    title: String,
+    rating: Double,
+    releaseDate: String,
+    Genres: List<String>,
     displayname: String,
     username: String,
     timestamp: String,
@@ -58,13 +76,12 @@ fun PostCardItem(
     totalComment: Int,
     totalShare: Int,
     isLiked: Boolean,
-    isSaved: Boolean,
     onLikedCountClick: () -> Unit,
     onCommentsClick: () -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var isLiked by remember { mutableStateOf(isLiked) }
-    var isSaved by remember { mutableStateOf(isSaved) }
+    var isSaved by remember { mutableStateOf(false) }
     var likeCount by remember { mutableIntStateOf(totalLike) }
     var commentCount by remember { mutableIntStateOf(totalComment) }
     var shareCount by remember { mutableIntStateOf(totalShare) }
@@ -73,9 +90,156 @@ fun PostCardItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
-//        elevation = CardDefaults.cardElevation(4.dp),
-//        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
+
     ) {
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(4.dp),
+            elevation = CardDefaults.cardElevation(2.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xB0C5FFD2),
+                                Color(0xC3C7FFF6)
+                            )
+                        )
+                    )
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(150.dp)
+                                .padding(horizontal = 6.dp, vertical = 4.dp)
+                                .clip(RoundedCornerShape(12.dp)),
+                            painter = painterResource(posterImage),
+                            contentDescription = "poster image",
+                            contentScale = ContentScale.Crop
+                        )
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    modifier = Modifier.width(180.dp).clickable {  },
+                                    text = title,
+                                    fontSize = 16.sp,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Row(
+                                    modifier = Modifier.width(80.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(30.dp),
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = null,
+                                        tint = Color.Yellow
+                                    )
+                                    Text(
+                                        text = rating.toString(),
+                                        fontSize = 16.sp,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                }
+                            }
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = "Release date: ${releaseDate}",
+                                fontSize = 14.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            //Genres
+                            FlowRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Genres.forEach { genre ->
+                                    val (bgColor, textColor) = getGenreColor(genre)
+                                    Box(
+                                        modifier = Modifier
+                                            .border(
+                                                width = 1.dp,
+                                                color = textColor, // atau gunakan warna lain
+                                                shape = RoundedCornerShape(50)
+                                            )
+                                            .background(
+                                                color = bgColor,
+                                                shape = RoundedCornerShape(50)
+                                            )
+                                            .padding(vertical = 2.dp, horizontal = 8.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = genre,
+                                            fontSize = 12.sp,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = textColor,
+                                            modifier = Modifier.clickable { }
+                                        )
+                                    }
+                                    Spacer(Modifier.width(4.dp))
+                                }
+                            }
+                        }
+                    }
+                    Button(
+                        onClick = {},
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                text = "Add to Library",
+                                fontSize = 14.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White,
+                                modifier = Modifier.clickable {  }
+                            )
+                        }
+                    }
+                }
+            }
+        }
         Row(
             modifier = Modifier
                 .padding(4.dp)
@@ -271,7 +435,8 @@ fun PostCardItem(
                 Icon(
                     modifier = Modifier
                         .size(24.dp),
-                    painter = if (isSaved) painterResource(R.drawable.baseline_bookmark_24) else painterResource(R.drawable.baseline_bookmark_border_24),
+                    painter = if (isSaved) painterResource(R.drawable.baseline_bookmark_24) else painterResource(
+                        R.drawable.baseline_bookmark_border_24),
                     contentDescription = null,
                 )
             }
@@ -283,9 +448,20 @@ fun PostCardItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun PostCardItemPreview() {
+private fun SugoiPicksCardItemPreview() {
     KonnettoTheme {
-        PostCardItem(
+        SugoiPicksCardItem(
+            posterImage = R.drawable.header,
+            title = "Mobile Suit Gundam GQuuuuuuux",
+            rating = 8.9,
+            releaseDate = "summer 2025",
+            Genres = listOf(
+                "Mecha",
+                "Military",
+                "Action",
+                "romance",
+                "drama"
+            ),
             displayname = "Char",
             username = "charaznable123",
             timestamp = "16 h",
@@ -297,7 +473,6 @@ private fun PostCardItemPreview() {
             totalComment = 0,
             totalShare = 0,
             isLiked = false,
-            isSaved = true,
             onLikedCountClick = {},
         )
     }

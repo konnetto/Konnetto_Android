@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,10 +53,12 @@ import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy1
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy2
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy3
 import com.konnettoco.konnetto.data.model.Post
+import com.konnettoco.konnetto.data.model.SugoiPicks
 import com.konnettoco.konnetto.di.Injection
 import com.konnettoco.konnetto.ui.common.OverlayManager
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.components.PostCardItem
+import com.konnettoco.konnetto.ui.components.SugoiPicksCardItem
 import com.konnettoco.konnetto.ui.navigation.TabItem
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.ui.viewModelFactory.ViewModelFactory
@@ -66,6 +70,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(
         factory = ViewModelFactory(
             Injection.provideRepositoy(),
+            Injection.provideSugoiPicksRepository()
         )
     ),
     onMenuClick: () -> Unit,
@@ -75,43 +80,81 @@ fun HomeScreen(
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
     //liked by section
     var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
-    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-        when (uiState) {
-            is  UiState.Loading -> {
-                LaunchedEffect(Unit) {
-                    viewModel.getAllPostings()
+    val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
+    val sugoiPicksState by viewModel.sugoiPicksState.collectAsState(initial = UiState.Loading)
+    when {
+        postState is UiState.Loading || sugoiPicksState is UiState.Loading -> {
+            LaunchedEffect(Unit) {
+                viewModel.getAllPostings()
+                viewModel.getAllSugoiPicks()
+            }
+        }
+
+        postState is UiState.Success && sugoiPicksState is UiState.Success -> {
+            val posts = (postState as UiState.Success).data
+            val sugoiPicks = (sugoiPicksState as UiState.Success).data
+            HomeContent(
+                postings = posts,
+                sugoiPicks = sugoiPicks,
+                modifier = modifier,
+                navigateToComments = { showCommentSectionSheet = true },
+                onMenuClick = onMenuClick,
+                onSearchClick = onSearchClick,
+                navigateToLikedBy = { showLikedBySectionSheet = true }
+            )
+            OverlayManager(
+                showCommentSectionSheet = showCommentSectionSheet,
+                onDismissCommentSheet = {
+                    showCommentSectionSheet = false
+                },
+                showLikedBySectionSHeet = showLikedBySectionSheet,
+                onDismissLikedBySheet = {
+                    showLikedBySectionSheet = false
                 }
-            }
-            is UiState.Success -> {
-                HomeContent(
-                    postings = uiState.data,
-                    modifier = modifier,
-                    navigateToComments = { showCommentSectionSheet = true },
-                    onMenuClick = onMenuClick,
-                    onSearchClick = onSearchClick,
-                    navigateToLikedBy = { showLikedBySectionSheet = true }
-                )
-                OverlayManager(
-                    showCommentSectionSheet = showCommentSectionSheet,
-                    onDismissCommentSheet = {
-                        showCommentSectionSheet = false
-                    },
-                    showLikedBySectionSHeet = showLikedBySectionSheet,
-                    onDismissLikedBySheet = {
-                        showLikedBySectionSheet = false
-                    }
-                )
-            }
-            is UiState.Error -> {}
+            )
+        }
+        postState is UiState.Error || sugoiPicksState is UiState.Error -> {
+            // Tampilkan error state
         }
     }
+//    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+//        when (uiState) {
+//            is  UiState.Loading -> {
+//                LaunchedEffect(Unit) {
+//                    viewModel.getAllPostings()
+//                }
+//            }
+//            is UiState.Success -> {
+//                HomeContent(
+//                    postings = uiState.data,
+//                    sugoiPicks = ui,
+//                    modifier = modifier,
+//                    navigateToComments = { showCommentSectionSheet = true },
+//                    onMenuClick = onMenuClick,
+//                    onSearchClick = onSearchClick,
+//                    navigateToLikedBy = { showLikedBySectionSheet = true }
+//                )
+//                OverlayManager(
+//                    showCommentSectionSheet = showCommentSectionSheet,
+//                    onDismissCommentSheet = {
+//                        showCommentSectionSheet = false
+//                    },
+//                    showLikedBySectionSHeet = showLikedBySectionSheet,
+//                    onDismissLikedBySheet = {
+//                        showLikedBySectionSheet = false
+//                    }
+//                )
+//            }
+//            is UiState.Error -> {}
+//        }
+//    }
 }
-
 
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
     postings: List<Post>,
+    sugoiPicks: List<SugoiPicks>,
     navigateToComments: () -> Unit,
     navigateToLikedBy: () -> Unit,
     onMenuClick: () -> Unit,
@@ -134,7 +177,8 @@ fun HomeContent(
             HomeTabs(
                 posts = postings,
                 onCommentClick = navigateToComments,
-                onLikeCountClick = navigateToLikedBy
+                onLikeCountClick = navigateToLikedBy,
+                sugoiPicks = sugoiPicks
             )
         }
     }
@@ -144,6 +188,7 @@ fun HomeContent(
 @Composable
 fun HomeTabs(
     posts: List<Post>,
+    sugoiPicks: List<SugoiPicks>,
     onCommentClick: () -> Unit,
     onLikeCountClick: () -> Unit
 ) {
@@ -168,11 +213,11 @@ fun HomeTabs(
         TabRow(selectedTabIndex = selectedTabIndex) {
             tabItems.forEachIndexed { index, item ->
                 Tab(
+                    modifier = Modifier.height(40.dp),
                     selected = index == selectedTabIndex,
                     selectedContentColor = MaterialTheme.colorScheme.primary,
-                    unselectedContentColor = MaterialTheme.colorScheme.onSurface,
+                    unselectedContentColor = Color.LightGray,
                     onClick = {
-                        // Saat klik tab, scroll ke page tanpa trigger konflik dari swipe
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
                         }
@@ -180,7 +225,7 @@ fun HomeTabs(
                     text = {
                         Text(
                             text = item.title,
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                         )
                     },
@@ -240,6 +285,7 @@ fun HomeTabs(
                                     totalComment = data.totalComments,
                                     totalShare = data.totalShare,
                                     isLiked = data.isLiked,
+                                    isSaved = data.isSaved,
                                     onLikedCountClick = onLikeCountClick,
                                 )
                             }
@@ -261,29 +307,65 @@ fun HomeTabs(
                         Text(
                             text = "No post from friends yet. Make friend with some poeple now!",
                             style = MaterialTheme.typography.bodyMedium,
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
                         )
                     }
                 }
                 2 -> {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(CircleShape),
-                            painter = painterResource(R.drawable.image_mascot),
-                            contentDescription = null
-                        )
-                        Text(
-                            text = "Sugoi Picks coming soon! Stay tuned for amazing contents.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            textAlign = TextAlign.Justify,
-                            modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
-                        )
+                    if (sugoiPicks.isNullOrEmpty()) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape),
+                                painter = painterResource(R.drawable.image_mascot),
+                                contentDescription = null
+                            )
+                            Text(
+                                text = "Sugoi Picks coming soon! Stay tuned for amazing contents.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                bottom = 150.dp, // atau kira-kira setinggi BottomBar
+                                top = 8.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(
+                                items = sugoiPicks,
+                                key = { sugoiPicks -> sugoiPicks.id } // <- gunakan ID unik dari post
+                            ) { data ->
+                                SugoiPicksCardItem(
+                                    displayname = data.author.displayname,
+                                    username = data.author.username,
+                                    timestamp = data.createdAt.toString(),
+                                    profilePict = data.author.photo,
+                                    image = data.image,
+                                    caption = data.caption,
+                                    totalLike = data.totalLike,
+                                    totalComment = data.totalComments,
+                                    totalShare = data.totalShare,
+                                    isLiked = data.isLiked,
+                                    onLikedCountClick = onLikeCountClick,
+                                    onCommentsClick = onCommentClick,
+                                    posterImage = data.posterImage,
+                                    title = data.title,
+                                    rating = data.rating,
+                                    releaseDate = data.createdAt.toString(),
+                                    Genres = data.genres
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -294,6 +376,7 @@ fun HomeTabs(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeTopAppBar(
+    modifier: Modifier = Modifier,
     onMenuClick: () -> Unit,
     onSearchClick: () -> Unit
 ) {
@@ -312,7 +395,8 @@ fun HomeTopAppBar(
             }
         },
         title = {
-            Text("Konnetto",
+            Text(
+                "Konnetto",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -413,6 +497,25 @@ private fun HomeScreenPreview() {
             onMenuClick = {},
             onSearchClick = {},
             navigateToLikedBy = {},
+            sugoiPicks = listOf(
+                SugoiPicks(
+                    id = 0,
+                    author = currentUserDummy,
+                    image = R.drawable.memespongebob,
+                    title = "Mobile Suit Gundam GQuuuuuuux",
+                    posterImage = R.drawable.header,
+                    rating = 8.9,
+                    genres = listOf("Military", "Mecha", "Romance", "Drama", "Crossover"),
+                    caption = "Gokil awokawok",
+                    isLiked = true,
+                    isSaved = true,
+                    totalLike = 200,
+                    totalComments = 30,
+                    totalShare = 23,
+                    createdAt = 12,
+                    updatedAt = ""
+                ),
+            ),
         )
     }
 }

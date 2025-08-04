@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -109,8 +110,9 @@ fun FriendRequestTile(
                             .width(130.dp),
                         onClick = {},
                         colors = ButtonDefaults.buttonColors(
-                            MaterialTheme.colorScheme.surfaceContainerLow
+                            MaterialTheme.colorScheme.surfaceContainerLowest
                         ),
+                        shape = RoundedCornerShape(12.dp),
                         enabled = true,
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
                     ) {
@@ -130,6 +132,7 @@ fun FriendRequestTile(
                         colors = ButtonDefaults.buttonColors(
                             MaterialTheme.colorScheme.primary
                         ),
+                        shape = RoundedCornerShape(12.dp),
                         enabled = true
                     ) {
                         Text(
