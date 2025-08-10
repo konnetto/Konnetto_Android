@@ -47,7 +47,7 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew assembleDebug
         env:
-          JAVA_HOME: ${{ env.JAVA_HOME }}
+          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
