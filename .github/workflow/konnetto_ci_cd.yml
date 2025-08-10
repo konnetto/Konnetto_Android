@@ -41,8 +41,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Decode Firebase service account
-        run: echo "${{ secrets.CREDENTIAL_FILE_CONTENT }}" > firebase_service_account.json
+      - name: Create Firebase service account file
+        run: |
+          echo '${{ secrets.CREDENTIAL_FILE_CONTENT }}' > firebase_service_account.json
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
