@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -173,8 +174,10 @@ fun EditProfileContent(
                     colors = OutlinedTextFieldDefaults.colors(
                         cursorColor = MaterialTheme.colorScheme.primary,
                         unfocusedTextColor = Color.LightGray,
+                        unfocusedBorderColor = Color(0xFFC7C7C7),
                         focusedTextColor = MaterialTheme.colorScheme.onSurface
-                    )
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -217,8 +220,10 @@ fun EditProfileContent(
                     colors = OutlinedTextFieldDefaults.colors(
                         cursorColor = MaterialTheme.colorScheme.primary,
                         unfocusedTextColor = Color.LightGray,
+                        unfocusedBorderColor = Color(0xFFC7C7C7),
                         focusedTextColor = MaterialTheme.colorScheme.onSurface
-                    )
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
             Spacer(Modifier.height(12.dp))
