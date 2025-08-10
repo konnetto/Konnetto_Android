@@ -24,7 +24,18 @@ fun ShareProfileScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
-
+    ShareProfileContent(
+        modifier = modifier,
+        onBackClick = onBackClick,
+        onCopyClick = {},
+        profilePict = R.drawable.logo.toString(),
+        username = "charaznable08",
+        displayname = "Char Aznable",
+        bio = "asda awa aomsdasma awokawokawok wkwkwkwk",
+        friendsCount = 4,
+        watchedCount = 12,
+        profileLink = "https://www.konnnetto.com/charaznable08"
+    )
 }
 
 @Composable

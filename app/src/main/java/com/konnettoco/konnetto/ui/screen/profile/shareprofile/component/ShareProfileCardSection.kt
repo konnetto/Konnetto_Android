@@ -110,14 +110,14 @@ fun ShareProfileCardSection(
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = displayname,
-                                    fontSize = 24.sp,
+                                    fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White
                                 )
                                 Spacer(Modifier.width(12.dp))
                                 Text(
                                     text = "@"+username,
-                                    fontSize = 18.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White
                                 )

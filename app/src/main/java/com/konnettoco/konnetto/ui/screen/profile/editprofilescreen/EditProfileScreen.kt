@@ -1,9 +1,9 @@
 package com.konnettoco.konnetto.ui.screen.profile.editprofilescreen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -49,6 +50,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konnettoco.konnetto.R
+import com.konnettoco.konnetto.ui.screen.profile.editprofilescreen.component.AdditionalOptionSection
+import com.konnettoco.konnetto.ui.screen.profile.editprofilescreen.component.EditBioTextField
+import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 
 @Composable
 fun EditProfileScreen(
@@ -58,14 +62,13 @@ fun EditProfileScreen(
     EditProfileContent(
         modifier = modifier,
         profilePict = R.drawable.logo.toString(),
-        displayname = "Uzumaki Uchiha bambank",
-        username = "bambank",
+        displayname = "Char Aznable",
+        username = "charaznable",
         bio = "awok awoako asdaomda faf a0jsda sdas0fasf asf0sd sdsdf-sd sdg",
         onBackClick = onBackClick
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditProfileContent(
     modifier: Modifier = Modifier,
@@ -100,7 +103,7 @@ fun EditProfileContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
-                    modifier = Modifier.padding(vertical = 12.dp),
+                    modifier = Modifier.padding(vertical = 12.dp).clickable {  },
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Image(
@@ -149,7 +152,7 @@ fun EditProfileContent(
                     text = "Name",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 OutlinedTextField(
                     modifier = Modifier
@@ -171,8 +174,10 @@ fun EditProfileContent(
                     colors = OutlinedTextFieldDefaults.colors(
                         cursorColor = MaterialTheme.colorScheme.primary,
                         unfocusedTextColor = Color.LightGray,
+                        unfocusedBorderColor = Color(0xFFC7C7C7),
                         focusedTextColor = MaterialTheme.colorScheme.onSurface
-                    )
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -185,7 +190,7 @@ fun EditProfileContent(
                     text = "Username",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 OutlinedTextField(
                     modifier = Modifier
@@ -215,8 +220,10 @@ fun EditProfileContent(
                     colors = OutlinedTextFieldDefaults.colors(
                         cursorColor = MaterialTheme.colorScheme.primary,
                         unfocusedTextColor = Color.LightGray,
+                        unfocusedBorderColor = Color(0xFFC7C7C7),
                         focusedTextColor = MaterialTheme.colorScheme.onSurface
-                    )
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -229,35 +236,17 @@ fun EditProfileContent(
                     text = "Bio",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .padding(vertical = 8.dp),
-                    value = bioEdt,
-                    onValueChange = {
-                        bioEdt = it
-                    },
-                    placeholder = {
-                        Text(bioEdt)
-                    },
-                    maxLines = 6,
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "displayname Icon",
-                            tint = Color.LightGray
-                        )
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        cursorColor = MaterialTheme.colorScheme.primary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface
-                    )
+                EditBioTextField(
+                    bio = bio
                 )
             }
+            Spacer(Modifier.height(12.dp))
+            AdditionalOptionSection(
+                onEditFavoriteGenreClick = {},
+                onSocialLinksClick = {}
+            )
         }
     }
 }
@@ -315,11 +304,13 @@ fun EditProfileTopAppBar(
 @Preview
 @Composable
 private fun EditProfilePreview() {
-    EditProfileContent(
-        profilePict = R.drawable.logo.toString(),
-        displayname = "Bambank",
-        username = "uzumakibambank",
-        bio = "wkwkwkwkwkwkwk",
-        onBackClick = {}
-    )
+    KonnettoTheme {
+        EditProfileContent(
+            profilePict = R.drawable.logo.toString(),
+            displayname = "Char Aznable",
+            username = "charaznable08",
+            bio = "wkwkwkwkwkwkwk",
+            onBackClick = {}
+        )
+    }
 }

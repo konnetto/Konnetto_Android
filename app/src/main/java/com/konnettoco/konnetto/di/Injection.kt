@@ -5,6 +5,7 @@ import com.konnettoco.konnetto.data.repository.FriendListRepository
 import com.konnettoco.konnetto.data.repository.FriendRequestRepository
 import com.konnettoco.konnetto.data.repository.NotificationRepository
 import com.konnettoco.konnetto.data.repository.PostRepository
+import com.konnettoco.konnetto.data.repository.SugoiPicksRepository
 import com.konnettoco.konnetto.data.repository.UserRepository
 
 object Injection {
@@ -30,5 +31,9 @@ object Injection {
 
     fun provideCurrentUserRepository(): UserRepository {
         return UserRepository.getInstance()
+    }
+
+    fun provideSugoiPicksRepository(): SugoiPicksRepository {
+        return SugoiPicksRepository.getInstance()
     }
 }

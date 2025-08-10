@@ -69,11 +69,11 @@ fun LikedBySection(
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(12.dp))
-            CustomSearchBar(
-                modifier = Modifier.padding(24.dp),
-                query = query,
-                onQueryChange = onQueryChange,
-            )
+//            CustomSearchBar(
+//                modifier = Modifier.padding(24.dp),
+//                query = query,
+//                onQueryChange = onQueryChange,
+//            )
         }
     }
 }

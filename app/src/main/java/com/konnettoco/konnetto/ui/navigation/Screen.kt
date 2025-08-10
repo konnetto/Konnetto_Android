@@ -10,6 +10,7 @@ sealed class Screen(val route: String) {
     data object SearchPage : Screen("searchPage")
     data object ProfilePage : Screen("profilPage")
     data object EditProflePage : Screen("editProfilePage")
+    data object ShareProfilePage : Screen("shareProfilePage")
     data object FriendListPage : Screen("friendListPage")
     data object CommunityPage : Screen("communityPage")
     data object CreateNewPostPage : Screen("createNewPostPage")
