@@ -13,10 +13,7 @@ on:
 
 jobs:
   build:
-    name: Building and distributing Konnetto app
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout repository
@@ -27,6 +24,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+
+      - name: Verify Java version
+        run: java -version
 
       - name: Cache Gradle
         uses: actions/cache@v4
@@ -46,6 +46,8 @@ jobs:
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
