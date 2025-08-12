@@ -33,7 +33,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -80,6 +79,10 @@ fun HomeScreen(
 ) {
     val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
     val sugoiPicksState by viewModel.sugoiPicksState.collectAsState(initial = UiState.Loading)
+//    LaunchedEffect(Unit) {
+//        viewModel.getAllPostings()
+//        viewModel.getAllSugoiPicks()
+//    }
     //commentSection
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
     //liked by section
@@ -122,10 +125,6 @@ fun HomeScreen(
             )
             when {
                 postState is UiState.Loading || sugoiPicksState is UiState.Loading -> {
-                    LaunchedEffect(Unit) {
-                        viewModel.getAllPostings()
-                        viewModel.getAllSugoiPicks()
-                    }
                     Box(
                         modifier = modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
