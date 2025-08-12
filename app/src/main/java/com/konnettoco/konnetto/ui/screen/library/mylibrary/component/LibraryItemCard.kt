@@ -1,7 +1,5 @@
 package com.konnettoco.konnetto.ui.screen.library.mylibrary.component
 
-import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,14 +7,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,10 +40,12 @@ fun LibraryItemCard(
     modifier: Modifier = Modifier,
     image: String,
     title: String,
-    description: String,
-    ownerName: String,
-    category: String,
-    location: String,
+    synopsis: String,
+    genre: String,
+    rating: Double,
+    studio: String,
+    currentEpisode: Int,
+    totalEpisode: Int,
     onItemClick: () -> Unit,
 ) {
 //    val painter = rememberAsyncImagePainter(model = image)
@@ -56,7 +58,7 @@ fun LibraryItemCard(
                 onItemClick()
             }
             .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Box(
@@ -83,13 +85,15 @@ fun LibraryItemCard(
 //            }
         }
         Column(
-            modifier = Modifier.fillMaxWidth().padding(4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = title,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 fontStyle = FontStyle.Italic,
@@ -97,19 +101,59 @@ fun LibraryItemCard(
                 overflow = TextOverflow.Ellipsis
             )
             Row(
+                modifier = Modifier.width(80.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.size(30.dp),
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = Color.Yellow
+                )
+                Text(
+                    text = rating.toString(),
+                    fontSize = 16.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "oleh: ",
+                    text = "Studio: ",
                     fontSize = 12.sp,
                     textAlign = TextAlign.Start,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = ownerName,
+                    text = studio,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Start,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Genre: ",
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Start,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = genre,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Start,
                     maxLines = 1,
@@ -118,7 +162,7 @@ fun LibraryItemCard(
                 )
             }
             Text(
-                text = description,
+                text = synopsis,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Start,
                 maxLines = 1,
@@ -126,33 +170,71 @@ fun LibraryItemCard(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SuggestionChip(
-                    onClick = { Log.d("Category", category) },
-                    enabled = false,
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.primary
-                    ),
-                    label = {
-                        Text(
-                            text = category,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.primary
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(50)
                         )
-                    },
-                )
-                Spacer(Modifier.width(30.dp))
-                Text(
-                    text = "lokasi: "+location,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Start,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                        .padding(vertical = 2.dp, horizontal = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        modifier = Modifier.width(90.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (currentEpisode == totalEpisode) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                            Text(
+                                text = "Completed",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Start,
+                                maxLines = 1,
+                                fontWeight = FontWeight.SemiBold,
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
+                            )
+                        } else {
+                            Text(
+                                text = "Episode: ",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Start,
+                                maxLines = 1,
+                                fontWeight = FontWeight.SemiBold,
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "${currentEpisode}/${totalEpisode}",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+                if (currentEpisode == totalEpisode) {
+                    Text(
+                        text = "${currentEpisode} Episodes",
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Start,
+                        maxLines = 1,
+                        fontWeight = FontWeight.SemiBold,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.LightGray
+                    )
+                }
             }
         }
     }
@@ -164,12 +246,14 @@ private fun EventItemCardPrev() {
     KonnettoTheme {
         LibraryItemCard(
             image = "",
-            title = "Seminar Android developer",
-            description = "Anasida asodas da aojqwe qweq apjfas asdao asda aosda",
-            ownerName = "Konnetto",
-            category = "seminar",
-            location = "Semarang",
-            onItemClick = {}
+            title = "Mobile Suit Gundam GQuuuuuux",
+            synopsis = "Anasida asodas da aojqwe qweq apjfas asdao asda aosda",
+            genre = "mecha, action, military",
+            rating = 9.5,
+            currentEpisode = 12,
+            totalEpisode = 12,
+            onItemClick = {},
+            studio = "Sunrise, Khara",
         )
     }
 }

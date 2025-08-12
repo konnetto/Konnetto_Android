@@ -340,7 +340,7 @@ fun KonnettoApp(
                                     }
                                 } else {
                                     navController.navigate(Screen.HomePage.route) {
-                                        popUpTo(Screen.LoginPage.route) {
+                                        popUpTo(Screen.OtpPage.route) {
                                             inclusive = true
                                         }
                                     }
@@ -510,12 +510,3 @@ fun KonnettoApp(
         }
     }
 }
-
-
-//@Preview
-//@Composable
-//private fun KonnettoAppPreview() {
-//    KonnettoTheme {
-//        KonnettoApp()
-//    }
-//}
