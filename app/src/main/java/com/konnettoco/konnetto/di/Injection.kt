@@ -3,6 +3,7 @@ package com.konnettoco.konnetto.di
 import com.konnettoco.konnetto.data.repository.CurrentlyWatchingRepository
 import com.konnettoco.konnetto.data.repository.FriendListRepository
 import com.konnettoco.konnetto.data.repository.FriendRequestRepository
+import com.konnettoco.konnetto.data.repository.MyLibraryItemRepository
 import com.konnettoco.konnetto.data.repository.NotificationRepository
 import com.konnettoco.konnetto.data.repository.PostRepository
 import com.konnettoco.konnetto.data.repository.SugoiPicksRepository
@@ -35,5 +36,9 @@ object Injection {
 
     fun provideSugoiPicksRepository(): SugoiPicksRepository {
         return SugoiPicksRepository.getInstance()
+    }
+
+    fun provideLibraryRepository(): MyLibraryItemRepository {
+        return MyLibraryItemRepository.getInstance()
     }
 }

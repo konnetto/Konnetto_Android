@@ -6,17 +6,19 @@ import com.konnettoco.konnetto.data.model.FriendRequest
 import com.konnettoco.konnetto.data.repository.FriendRequestRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class FriendRequestViewModel(
     private val friendRequestRepository: FriendRequestRepository
 ): ViewModel() {
-    private val _uiState: MutableStateFlow<UiState<List<FriendRequest>>> = MutableStateFlow(
-        UiState.Loading)
-    val uiState: StateFlow<UiState<List<FriendRequest>>>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<UiState<List<FriendRequest>>>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        getAllFriendRequests()
+    }
 
     fun getAllFriendRequests() {
         viewModelScope.launch {

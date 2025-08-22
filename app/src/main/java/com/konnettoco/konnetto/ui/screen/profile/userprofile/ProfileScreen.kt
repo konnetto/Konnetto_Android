@@ -24,12 +24,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,7 +44,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -59,13 +60,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.FakeUserDataSource.currentUserDummy
-import com.konnettoco.konnetto.data.model.CurrentlyWatching
 import com.konnettoco.konnetto.data.model.Post
 import com.konnettoco.konnetto.di.Injection
 import com.konnettoco.konnetto.ui.common.OverlayManager
@@ -74,10 +72,11 @@ import com.konnettoco.konnetto.ui.components.PostCardItem
 import com.konnettoco.konnetto.ui.navigation.TabItem
 import com.konnettoco.konnetto.ui.navigation.WatchingTabItem
 import com.konnettoco.konnetto.ui.screen.profile.userprofile.components.WatchCardItem
-import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.ui.viewModelFactory.ProfileViewModelFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
     onBackClick: () -> Unit,
@@ -92,82 +91,11 @@ fun ProfileScreen(
         )
     )
 ) {
-    //commentSection
-    var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
-    //liked by section
-    var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
-
     val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
     val currentlyWatchingState by viewModel.uiStateCurrentlyWatching.collectAsState(initial = UiState.Loading)
 
-    when {
-        postState is UiState.Loading || currentlyWatchingState is UiState.Loading -> {
-            LaunchedEffect(Unit) {
-                viewModel.getAllPostings()
-                viewModel.getAllCurrentlyWatching()
-            }
-        }
+    val username = "charaznable08"
 
-        postState is UiState.Success && currentlyWatchingState is UiState.Success -> {
-            val posts = (postState as UiState.Success).data
-            val currentlyWatchingList = (currentlyWatchingState as UiState.Success).data
-            ProfileContent(
-                modifier = modifier,
-                displayname = "Char Aznable",
-                username = "charaznable08",
-                profilePict = R.drawable.logo.toString(),
-                friends = 4,
-                follows = 12,
-                biography = "\uD83D\uDC68\u200D\uD83D\uDCBB Mobile & Web Developer | Kotlin • Flutter • Java Spring\n" +
-                        "\uD83C\uDF93 S1 Teknologi Informasi | Bangkit 2023 Graduate\n" +
-                        "\uD83D\uDE80 Passionate about building useful & meaningful apps",
-                posts = posts,
-                currentlyWatch = currentlyWatchingList,
-                onBackClick = onBackClick,
-                onCommentClick = { showCommentSectionSheet = true },
-                onEdtBtnClick = onEdtBtnClick,
-                onShareBtnClick = onShareBtnClick,
-                onFriendCountClick = onFriendCountClick,
-                onLikeCountClick = { showLikedBySectionSheet = true},
-            )
-            OverlayManager(
-                showCommentSectionSheet = showCommentSectionSheet,
-                onDismissCommentSheet = {
-                    showCommentSectionSheet = false
-                },
-                showLikedBySectionSHeet = showLikedBySectionSheet,
-                onDismissLikedBySheet = {
-                    showLikedBySectionSheet = false
-                }
-            )
-        }
-
-        postState is UiState.Error || currentlyWatchingState is UiState.Error -> {
-            // Tampilkan error state
-        }
-    }
-
-}
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun ProfileContent(
-    displayname: String,
-    username: String,
-    profilePict: String?,
-    friends: Int?,
-    follows: Int?,
-    biography: String?,
-    posts: List<Post>,
-    currentlyWatch: List<CurrentlyWatching>,
-    onCommentClick: () -> Unit,
-    onLikeCountClick: () -> Unit,
-    onEdtBtnClick: () -> Unit,
-    onShareBtnClick: () -> Unit,
-    onFriendCountClick: () -> Unit,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
     val lazyListState = rememberLazyListState()
     val tabItems = listOf(
         TabItem(title = "Post"),
@@ -199,6 +127,11 @@ fun ProfileContent(
     val selectWatchTabIndex by remember {
         derivedStateOf { pagerWatchState.currentPage }
     }
+    //commentSection
+    var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
+    //liked by section
+    var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             ProfileTopAppBar(
@@ -209,10 +142,10 @@ fun ProfileContent(
         modifier = modifier
     ) { paddingValues ->
         LazyColumn(
-           state = lazyListState,
-           modifier = modifier
-               .padding(paddingValues)
-               .fillMaxSize(),
+            state = lazyListState,
+            modifier = modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
             contentPadding = PaddingValues(
                 bottom = 150.dp, // atau kira-kira setinggi BottomBar
                 top = 8.dp
@@ -220,50 +153,25 @@ fun ProfileContent(
         ) {
             item {
                 ProfileSection(
-                    displayname = displayname,
-                    username = username,
-                    profilePict = profilePict,
-                    friends = friends,
-                    follows = follows,
-                    biography = biography,
+                    displayname = "Char Aznable",
+                    username = "charaznable08",
+                    profilePict = R.drawable.logo.toString(),
+                    friends = 4,
+                    follows = 12,
+                    biography = "\uD83D\uDC68\u200D\uD83D\uDCBB Mobile & Web Developer | Kotlin • Flutter • Java Spring\n" +
+                            "\uD83C\uDF93 S1 Teknologi Informasi | Bangkit 2023 Graduate\n" +
+                            "\uD83D\uDE80 Passionate about building useful & meaningful apps",
                     onEdtBtnClick = onEdtBtnClick,
                     onShareBtnClick = onShareBtnClick,
-                    onFriendCountClick = onFriendCountClick,
+                    onFriendCountClick = onFriendCountClick
                 )
-            }
-            item {
-                TabRow(
-                    selectedTabIndex = selectWatchTabIndex,
-//                    edgePadding = 0.dp
-                ) {
-                    watchTabItem.forEachIndexed { index, item ->
-                        Tab(
-                            selected = index == selectWatchTabIndex,
-                            selectedContentColor = MaterialTheme.colorScheme.primary,
-                            unselectedContentColor = MaterialTheme.colorScheme.onSurface,
-                            onClick = {
-                                // Saat klik tab, scroll ke page tanpa trigger konflik dari swipe
-                                coroutineScope.launch {
-                                    pagerWatchState.animateScrollToPage(index)
-                                }
-                            },
-                            text = {
-                                Text(
-                                    text = item.title,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (selectWatchTabIndex == index) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        Color.LightGray
-                                    }
-                                )
-                            },
-                        )
-                    }
-                }
-            }
-            item {
+                WatchListTabRow(
+                    modifier = modifier,
+                    selectWatchTabIndex = selectWatchTabIndex,
+                    watchTabItem = watchTabItem,
+                    coroutineScope = coroutineScope,
+                    watchPagerState = pagerWatchState
+                )
                 HorizontalPager(
                     state = pagerWatchState,
                     modifier = Modifier
@@ -275,28 +183,47 @@ fun ProfileContent(
                                 modifier = Modifier
                                     .horizontalScroll(rememberScrollState())
                             ) {
-                                if (currentlyWatch.isNullOrEmpty()) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(vertical = 61.dp),
-                                        contentAlignment = Alignment.TopCenter
-                                    ) {
-                                        Text(
-                                            fontSize = 18.sp,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            text = "You're not completed anything yet",
-                                            modifier = Modifier.padding(16.dp)
-                                        )
+                                when {
+                                    currentlyWatchingState is UiState.Loading -> {
+                                        Box(
+                                            modifier = modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
                                     }
-                                } else {
-                                    currentlyWatch.forEach { data ->
-                                        WatchCardItem(
-                                            title = data.title,
-                                            posterImage = data.poster,
-                                        )
+
+                                    currentlyWatchingState is UiState.Success -> {
+                                        val currentlyWatchingList = (currentlyWatchingState as UiState.Success).data
+                                        if (currentlyWatchingList.isNullOrEmpty()) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .padding(vertical = 61.dp),
+                                                contentAlignment = Alignment.TopCenter
+                                            ) {
+                                                Text(
+                                                    fontSize = 18.sp,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                    text = "You're not completed anything yet",
+                                                    modifier = Modifier.padding(16.dp)
+                                                )
+                                            }
+                                        } else {
+                                            currentlyWatchingList.forEach { data ->
+                                                WatchCardItem(
+                                                    title = data.title,
+                                                    posterImage = data.poster,
+                                                )
+                                            }
+                                        }
+                                    }
+
+                                    postState is UiState.Error || currentlyWatchingState is UiState.Error -> {
+                                        // Tampilkan error state
                                     }
                                 }
+
                             }
                         }
                         1 -> {
@@ -342,34 +269,17 @@ fun ProfileContent(
                             }
                         }
                     }
+
                 }
             }
-
             stickyHeader {
-                TabRow(selectedTabIndex = selectedTabIndex) {
-                    tabItems.forEachIndexed { index, item ->
-                        Tab(
-                            selected = index == selectedTabIndex,
-                            selectedContentColor = MaterialTheme.colorScheme.primary,
-                            unselectedContentColor = MaterialTheme.colorScheme.onSurface,
-                            onClick = {
-                                // Saat klik tab, scroll ke page tanpa trigger konflik dari swipe
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            },
-                            text = {
-                                Text(
-                                    text = item.title,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            },
-                        )
-                    }
-                }
+                UserContentTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    tabItems = tabItems,
+                    coroutineScope = coroutineScope,
+                    pagerState = pagerState
+                )
             }
-
             item {
                 HorizontalPager(
                     state = pagerState,
@@ -379,41 +289,38 @@ fun ProfileContent(
                 ) { index ->
                     when (index) {
                         0 -> {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                verticalArrangement = Arrangement.Top
-                            ) {
-                                if (posts.isNullOrEmpty()) {
+                            when {
+                                postState is UiState.Loading -> {
                                     Box(
-                                        modifier = Modifier.fillMaxWidth(),
+                                        modifier = modifier.fillMaxSize(),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(
-                                            fontSize = 24.sp,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            text = "No Post Yet",
-                                            modifier = Modifier.padding(16.dp)
-                                        )
+                                        CircularProgressIndicator()
                                     }
-                                } else {
-                                    posts.forEach { data ->
-                                        PostCardItem(
-                                            displayname = data.author.displayname,
-                                            username = data.author.username,
-                                            timestamp = data.createdAt.toString(),
-                                            profilePict = data.author.photo,
-                                            image = data.image,
-                                            caption = data.caption,
-                                            onCommentsClick = onCommentClick,
-                                            totalLike = data.totalLike,
-                                            totalComment = data.totalComments,
-                                            totalShare = data.totalShare,
-                                            isLiked = data.isLiked,
-                                            isSaved = data.isSaved,
-                                            onLikedCountClick = onLikeCountClick,
-                                        )
-                                    }
+                                }
+
+                                postState is UiState.Success -> {
+                                    val posts = (postState as UiState.Success).data
+                                    PostList(
+                                        modifier = modifier,
+                                        posts = posts,
+                                        onCommentClick = { showCommentSectionSheet = true },
+                                        onLikeCountClick = { showLikedBySectionSheet = true }
+                                    )
+                                    OverlayManager(
+                                        showCommentSectionSheet = showCommentSectionSheet,
+                                        onDismissCommentSheet = {
+                                            showCommentSectionSheet = false
+                                        },
+                                        showLikedBySectionSHeet = showLikedBySectionSheet,
+                                        onDismissLikedBySheet = {
+                                            showLikedBySectionSheet = false
+                                        }
+                                    )
+                                }
+
+                                postState is UiState.Error || currentlyWatchingState is UiState.Error -> {
+                                    // Tampilkan error state
                                 }
                             }
                         }
@@ -443,6 +350,52 @@ fun ProfileContent(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun PostList(
+    modifier: Modifier = Modifier,
+    posts: List<Post>,
+    onCommentClick: () -> Unit,
+    onLikeCountClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Top
+    ) {
+        if (posts.isNullOrEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    text = "No Post Yet",
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        } else {
+            posts.forEach { data ->
+                PostCardItem(
+                    displayname = data.author.displayname,
+                    username = data.author.username,
+                    timestamp = data.createdAt.toString(),
+                    profilePict = data.author.photo,
+                    image = data.image,
+                    caption = data.caption,
+                    onCommentsClick = onCommentClick,
+                    totalLike = data.totalLike,
+                    totalComment = data.totalComments,
+                    totalShare = data.totalShare,
+                    isLiked = data.isLiked,
+                    isSaved = data.isSaved,
+                    onLikedCountClick = onLikeCountClick,
+                )
             }
         }
     }
@@ -597,7 +550,9 @@ fun ProfileSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
-                modifier = Modifier.width(180.dp).height(40.dp),
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(40.dp),
                 onClick = onEdtBtnClick,
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
@@ -611,7 +566,9 @@ fun ProfileSection(
                 )
             }
             OutlinedButton(
-                modifier = Modifier.width(180.dp).height(40.dp),
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(40.dp),
                 onClick = onShareBtnClick,
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(
@@ -660,6 +617,80 @@ fun ProfileSection(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun WatchListTabRow(
+    modifier: Modifier = Modifier,
+    selectWatchTabIndex: Int,
+    watchTabItem: List<WatchingTabItem>,
+    coroutineScope: CoroutineScope,
+    watchPagerState: PagerState,
+) {
+    TabRow(
+        modifier = modifier,
+        selectedTabIndex = selectWatchTabIndex,
+//                    edgePadding = 0.dp
+    ) {
+        watchTabItem.forEachIndexed { index, item ->
+            Tab(
+                selected = index == selectWatchTabIndex,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurface,
+                onClick = {
+                    // Saat klik tab, scroll ke page tanpa trigger konflik dari swipe
+                    coroutineScope.launch {
+                        watchPagerState.animateScrollToPage(index)
+                    }
+                },
+                text = {
+                    Text(
+                        text = item.title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (selectWatchTabIndex == index) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            Color.LightGray
+                        }
+                    )
+                },
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun UserContentTabRow(
+    selectedTabIndex: Int,
+    tabItems: List<TabItem>,
+    coroutineScope: CoroutineScope,
+    pagerState: PagerState,
+) {
+    TabRow(selectedTabIndex = selectedTabIndex) {
+        tabItems.forEachIndexed { index, item ->
+            Tab(
+                selected = index == selectedTabIndex,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurface,
+                onClick = {
+                    // Saat klik tab, scroll ke page tanpa trigger konflik dari swipe
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                },
+                text = {
+                    Text(
+                        text = item.title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+            )
+        }
+    }
+}
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun ProfileTopAppBar(
@@ -692,78 +723,78 @@ fun ProfileTopAppBar(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
-@Composable
-private fun ProfileScreenPreview() {
-    KonnettoTheme {
-        ProfileContent(
-            displayname = "Char Aznable",
-            username = "charaznable08",
-            profilePict = R.drawable.logo.toString(),
-            friends = 4,
-            follows = 12,
-            biography = "AwikWok awok awok asaok asdao asdas asdas sdaddf fgrg rthr rthr wew erge rrth rthrth rthr rthrthr yj6uj6 6yj6yj6 6yj6yj 6yj6 lr ehr yjtyj  ege",
-            posts = listOf(
-                Post(
-                    id = 0,
-                    author = currentUserDummy,
-                    image = R.drawable.memespongebob,
-                    caption = "test",
-                    isLiked = true,
-                    isSaved = false,
-                    totalLike = 1,
-                    totalComments = 2,
-                    createdAt = 20,
-                    updatedAt = "2025-07-05T14:30:00Z"
-                ),
-                Post(
-                    id = 1,
-                    author = currentUserDummy,
-                    image = R.drawable.memespongebob,
-                    caption = "test",
-                    isLiked = true,
-                    isSaved = false,
-                    totalLike = 1,
-                    totalComments = 2,
-                    createdAt = 20,
-                    updatedAt = "2025-07-05T14:30:00Z"
-                ),
-            ),
-            onBackClick = {},
-            onCommentClick = {},
-            currentlyWatch = listOf(
-                CurrentlyWatching(
-                    id = 0,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 1,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 2,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 3,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-                CurrentlyWatching(
-                    id = 4,
-                    title = "Spongebob",
-                    poster = R.drawable.memespongebob
-                ),
-            ),
-            onEdtBtnClick = {},
-            onShareBtnClick = {},
-            onFriendCountClick = {},
-            onLikeCountClick = {},
-        )
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Preview(showBackground = true)
+//@Composable
+//private fun ProfileScreenPreview() {
+//    KonnettoTheme {
+//        ProfileContent(
+//            displayname = "Char Aznable",
+//            username = "charaznable08",
+//            profilePict = R.drawable.logo.toString(),
+//            friends = 4,
+//            follows = 12,
+//            biography = "AwikWok awok awok asaok asdao asdas asdas sdaddf fgrg rthr rthr wew erge rrth rthrth rthr rthrthr yj6uj6 6yj6yj6 6yj6yj 6yj6 lr ehr yjtyj  ege",
+//            posts = listOf(
+//                Post(
+//                    id = 0,
+//                    author = currentUserDummy,
+//                    image = R.drawable.memespongebob,
+//                    caption = "test",
+//                    isLiked = true,
+//                    isSaved = false,
+//                    totalLike = 1,
+//                    totalComments = 2,
+//                    createdAt = 20,
+//                    updatedAt = "2025-07-05T14:30:00Z"
+//                ),
+//                Post(
+//                    id = 1,
+//                    author = currentUserDummy,
+//                    image = R.drawable.memespongebob,
+//                    caption = "test",
+//                    isLiked = true,
+//                    isSaved = false,
+//                    totalLike = 1,
+//                    totalComments = 2,
+//                    createdAt = 20,
+//                    updatedAt = "2025-07-05T14:30:00Z"
+//                ),
+//            ),
+//            onBackClick = {},
+//            onCommentClick = {},
+//            currentlyWatch = listOf(
+//                CurrentlyWatching(
+//                    id = 0,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 1,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 2,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 3,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//                CurrentlyWatching(
+//                    id = 4,
+//                    title = "Spongebob",
+//                    poster = R.drawable.memespongebob
+//                ),
+//            ),
+//            onEdtBtnClick = {},
+//            onShareBtnClick = {},
+//            onFriendCountClick = {},
+//            onLikeCountClick = {},
+//        )
+//    }
+//}
 

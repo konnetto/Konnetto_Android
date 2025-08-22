@@ -7,11 +7,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -19,6 +24,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -44,9 +53,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
+import com.konnettoco.konnetto.data.model.MyLibraryItem
+import com.konnettoco.konnetto.di.Injection
+import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.navigation.TabItem
+import com.konnettoco.konnetto.ui.screen.library.mylibrary.component.LibraryItemCard
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
+import com.konnettoco.konnetto.ui.viewModelFactory.LibraryViewModelVictory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -55,8 +70,15 @@ import kotlinx.coroutines.launch
 fun LibraryPageScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onMoreVertClick: () -> Unit
+    onMoreVertClick: () -> Unit,
+    viewModel: LibraryViewModel = viewModel(
+        factory = LibraryViewModelVictory(
+            Injection.provideLibraryRepository()
+        )
+    )
 ) {
+    val libraryState by viewModel.uiState.collectAsState(initial = UiState.Loading)
+
     val tabItems = listOf(
         TabItem(title = "Watching"),
         TabItem(title = "Completed"),
@@ -112,94 +134,358 @@ fun LibraryPageScreen(
                 tabCoroutineScope = coroutineScope,
                 selectedTabIndex = selectedTabIndex
             )
-            LibraryPageContent(
-                modifier = modifier,
-                pagerState = pagerState
-            )
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) { index ->
+                when(index) {
+                    0 -> {
+                        when {
+                            libraryState is UiState.Loading -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+
+                            libraryState is UiState.Success -> {
+                                if (libraryState is UiState.Success) {
+                                    val myLibrary = (libraryState as UiState.Success).data
+                                    val watchingList = myLibrary.filter { item ->
+                                        item.currentEpisode > 0 && item.currentEpisode < item.totalEpisode
+                                    }
+                                    WatchingContent(
+                                        modifier = modifier,
+                                        myLibrary = watchingList
+                                    )
+                                }
+                            }
+
+                            libraryState is UiState.Error -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.padding(12.dp),
+                                            text = "No Internet, check your internet connection and then try again..",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            textAlign = TextAlign.Center,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Button(
+                                            onClick = {  },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.primary
+                                            ),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) {
+                                            Text(
+                                                text = "Try again",
+                                                color = Color.White,
+                                                style = MaterialTheme.typography.labelLarge
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    1 -> {
+                        when {
+                            libraryState is UiState.Loading -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+
+                            libraryState is UiState.Success -> {
+                                if (libraryState is UiState.Success) {
+                                    val myLibrary = (libraryState as UiState.Success).data
+                                    val completedList = myLibrary.filter { item ->
+                                        item.currentEpisode == item.totalEpisode && item.totalEpisode > 0
+                                    }
+                                    CompletedContent(
+                                        modifier = modifier,
+                                        myLibrary = completedList
+                                    )
+                                }
+                            }
+
+                            libraryState is UiState.Error -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.padding(12.dp),
+                                            text = "No Internet, check your internet connection and then try again..",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            textAlign = TextAlign.Center,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Button(
+                                            onClick = {  },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.primary
+                                            ),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) {
+                                            Text(
+                                                text = "Try again",
+                                                color = Color.White,
+                                                style = MaterialTheme.typography.labelLarge
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    2 -> {
+                        when {
+                            libraryState is UiState.Loading -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+
+                            libraryState is UiState.Success -> {
+                                if (libraryState is UiState.Success) {
+                                    val myLibrary = (libraryState as UiState.Success).data
+                                    val planToWatchList = myLibrary.filter { item ->
+                                        item.currentEpisode == 0
+                                    }
+                                    PlantToWatchContent(
+                                        modifier = modifier,
+                                        myLibrary = planToWatchList
+                                    )
+                                }
+                            }
+
+                            libraryState is UiState.Error -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.padding(12.dp),
+                                            text = "No Internet, check your internet connection and then try again..",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            textAlign = TextAlign.Center,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Button(
+                                            onClick = {  },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.primary
+                                            ),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) {
+                                            Text(
+                                                text = "Try again",
+                                                color = Color.White,
+                                                style = MaterialTheme.typography.labelLarge
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LibraryPageContent(
+fun WatchingContent(
     modifier: Modifier = Modifier,
-    pagerState: PagerState,
+    myLibrary: List<MyLibraryItem>,
 ) {
-    HorizontalPager(
-        state = pagerState,
-        modifier = Modifier
-            .fillMaxWidth()
-    ) { index ->
-        when(index) {
-            0 -> {
-                Column(
-                    modifier = modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape),
-                        painter = painterResource(R.drawable.image_mascot),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = "You are not watching anything yet.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(horizontal = 80.dp, vertical = 12.dp),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+    if (myLibrary.isNullOrEmpty()) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape),
+                painter = painterResource(R.drawable.image_mascot),
+                contentDescription = null
+            )
+            Text(
+                text = "You are not watching anything yet.",
+                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 80.dp, vertical = 12.dp),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                bottom = 150.dp,
+                top = 8.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(
+                items = myLibrary,
+                key = { mylibrary -> mylibrary.id }
+            ) { data ->
+                LibraryItemCard(
+                    image = data.image,
+                    title = data.title,
+                    synopsis = data.synopsis,
+                    genre = data.genre,
+                    rating = data.rating,
+                    studio = data.studio,
+                    currentEpisode = data.currentEpisode,
+                    totalEpisode = data.totalEpisode,
+                    onItemClick = {}
+                )
             }
-            1 -> {
-                Column(
-                    modifier = modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape),
-                        painter = painterResource(R.drawable.image_mascot),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = "You are not complete anything yet.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(horizontal = 80.dp, vertical = 12.dp),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+        }
+    }
+}
+
+@Composable
+fun CompletedContent(
+    modifier: Modifier = Modifier,
+    myLibrary: List<MyLibraryItem>,
+) {
+    if (myLibrary.isNullOrEmpty()) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape),
+                painter = painterResource(R.drawable.image_mascot),
+                contentDescription = null
+            )
+            Text(
+                text = "You are not complete anything yet.",
+                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 80.dp, vertical = 12.dp),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                bottom = 150.dp,
+                top = 8.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(
+                items = myLibrary,
+                key = { mylibrary -> mylibrary.id }
+            ) { data ->
+                LibraryItemCard(
+                    image = data.image,
+                    title = data.title,
+                    synopsis = data.synopsis,
+                    genre = data.genre,
+                    rating = data.rating,
+                    studio = data.studio,
+                    currentEpisode = data.currentEpisode,
+                    totalEpisode = data.totalEpisode,
+                    onItemClick = {}
+                )
             }
-            2 -> {
-                Column(
-                    modifier = modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape),
-                        painter = painterResource(R.drawable.image_mascot),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = "There is no plan yet.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(horizontal = 80.dp, vertical = 12.dp),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+        }
+    }
+}
+
+@Composable
+fun PlantToWatchContent(
+    modifier: Modifier = Modifier,
+    myLibrary: List<MyLibraryItem>,
+) {
+    if (myLibrary.isNullOrEmpty()) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape),
+                painter = painterResource(R.drawable.image_mascot),
+                contentDescription = null
+            )
+            Text(
+                text = "There is no plan yet.",
+                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 80.dp, vertical = 12.dp),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                bottom = 150.dp,
+                top = 8.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(
+                items = myLibrary,
+                key = { mylibrary -> mylibrary.id }
+            ) { data ->
+                LibraryItemCard(
+                    image = data.image,
+                    title = data.title,
+                    synopsis = data.synopsis,
+                    genre = data.genre,
+                    rating = data.rating,
+                    studio = data.studio,
+                    currentEpisode = data.currentEpisode,
+                    totalEpisode = data.totalEpisode,
+                    onItemClick = {}
+                )
             }
         }
     }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,7 +32,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.konnettoco.konnetto.R
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 
 @Composable
@@ -48,8 +49,8 @@ fun LibraryItemCard(
     totalEpisode: Int,
     onItemClick: () -> Unit,
 ) {
-//    val painter = rememberAsyncImagePainter(model = image)
-//    val painterState = painter.state
+    val painter = rememberAsyncImagePainter(model = image)
+    val painterState = painter.state
 
     Row(
         modifier = modifier
@@ -68,7 +69,7 @@ fun LibraryItemCard(
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(R.drawable.header),
+                painter = painter,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -77,12 +78,12 @@ fun LibraryItemCard(
                     )
                     .size(height = 150.dp, width = 100.dp)
             )
-//            if (painterState is AsyncImagePainter.State.Loading) {
-//                CircularProgressIndicator(
-//                    modifier = Modifier.size(20.dp),
-//                    color = Color.Gray
-//                )
-//            }
+            if (painterState is AsyncImagePainter.State.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = Color.Gray
+                )
+            }
         }
         Column(
             modifier = Modifier
