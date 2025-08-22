@@ -79,10 +79,7 @@ fun HomeScreen(
 ) {
     val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
     val sugoiPicksState by viewModel.sugoiPicksState.collectAsState(initial = UiState.Loading)
-//    LaunchedEffect(Unit) {
-//        viewModel.getAllPostings()
-//        viewModel.getAllSugoiPicks()
-//    }
+
     //commentSection
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
     //liked by section
@@ -103,6 +100,7 @@ fun HomeScreen(
     val selectedTabIndex by remember {
         derivedStateOf { pagerState.currentPage }
     }
+
     Scaffold(
         topBar = {
             HomeTopAppBar(
@@ -123,69 +121,145 @@ fun HomeScreen(
                 tabCoroutineScope = coroutineScope,
                 selectedTabIndex = selectedTabIndex,
             )
-            when {
-                postState is UiState.Loading || sugoiPicksState is UiState.Loading -> {
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) { index ->
+                when (index) {
+                    0 -> {
+                        when {
+                            postState is UiState.Loading -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
 
-                postState is UiState.Success && sugoiPicksState is UiState.Success -> {
-                    val posts = (postState as UiState.Success).data
-                    val sugoiPicks = (sugoiPicksState as UiState.Success).data
+                            postState is UiState.Success -> {
+                                val posts = (postState as UiState.Success).data
 
-                    HomeContent(
-                        posts = posts,
-                        sugoiPicks = sugoiPicks,
-                        pagerState = pagerState,
-                        modifier = modifier,
-                        navigateToComments = { showCommentSectionSheet = true },
-                        navigateToLikedBy = { showLikedBySectionSheet = true }
-                    )
-                    OverlayManager(
-                        showCommentSectionSheet = showCommentSectionSheet,
-                        onDismissCommentSheet = {
-                            showCommentSectionSheet = false
-                        },
-                        showLikedBySectionSHeet = showLikedBySectionSheet,
-                        onDismissLikedBySheet = {
-                            showLikedBySectionSheet = false
-                        }
-                    )
-                }
-                postState is UiState.Error || sugoiPicksState is UiState.Error -> {
-//                    val errorMsg = (uiState as UiState.Error).errorMessage
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "No Internet, check your internet connection and then try again..",
-                                color = MaterialTheme.colorScheme.onSurface,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(
-                                onClick = {  },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = "Try again",
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.labelLarge
+                                ForYouContent(
+                                    posts = posts,
+                                    navigateToComments = { showCommentSectionSheet = true},
+                                    navigateToLikedBy = { showLikedBySectionSheet = true }
                                 )
+                                OverlayManager(
+                                    showCommentSectionSheet = showCommentSectionSheet,
+                                    onDismissCommentSheet = {
+                                        showCommentSectionSheet = false
+                                    },
+                                    showLikedBySectionSHeet = showLikedBySectionSheet,
+                                    onDismissLikedBySheet = {
+                                        showLikedBySectionSheet = false
+                                    }
+                                )
+                            }
+                            postState is UiState.Error -> {
+                //                    val errorMsg = (uiState as UiState.Error).errorMessage
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.padding(12.dp),
+                                            text = "No Internet, check your internet connection and then try again..",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            textAlign = TextAlign.Center,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Button(
+                                            onClick = {  },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.primary
+                                            ),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) {
+                                            Text(
+                                                text = "Try again",
+                                                color = Color.White,
+                                                style = MaterialTheme.typography.labelLarge
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    1 -> {
+                        FriendPostsContent()
+                    }
+                    2 -> {
+                        when {
+                            sugoiPicksState is UiState.Loading -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+
+                            sugoiPicksState is UiState.Success -> {
+                                val sugoiPicks = (sugoiPicksState as UiState.Success).data
+
+                                SugoiPicksContent(
+                                    sugoiPicks = sugoiPicks,
+                                    navigateToComments = { showCommentSectionSheet = true},
+                                    navigateToLikedBy = { showLikedBySectionSheet = true }
+                                )
+                                OverlayManager(
+                                    showCommentSectionSheet = showCommentSectionSheet,
+                                    onDismissCommentSheet = {
+                                        showCommentSectionSheet = false
+                                    },
+                                    showLikedBySectionSHeet = showLikedBySectionSheet,
+                                    onDismissLikedBySheet = {
+                                        showLikedBySectionSheet = false
+                                    }
+                                )
+                            }
+                            postState is UiState.Error -> {
+                                //                    val errorMsg = (uiState as UiState.Error).errorMessage
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.padding(12.dp),
+                                            text = "No Internet, check your internet connection and then try again..",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            textAlign = TextAlign.Center,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Button(
+                                            onClick = {  },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.primary
+                                            ),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) {
+                                            Text(
+                                                text = "Try again",
+                                                color = Color.White,
+                                                style = MaterialTheme.typography.labelLarge
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -193,186 +267,148 @@ fun HomeScreen(
             }
         }
     }
-
-//    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-//        when (uiState) {
-//            is  UiState.Loading -> {
-//                LaunchedEffect(Unit) {
-//                    viewModel.getAllPostings()
-//                }
-//            }
-//            is UiState.Success -> {
-//                HomeContent(
-//                    postings = uiState.data,
-//                    sugoiPicks = ui,
-//                    modifier = modifier,
-//                    navigateToComments = { showCommentSectionSheet = true },
-//                    onMenuClick = onMenuClick,
-//                    onSearchClick = onSearchClick,
-//                    navigateToLikedBy = { showLikedBySectionSheet = true }
-//                )
-//                OverlayManager(
-//                    showCommentSectionSheet = showCommentSectionSheet,
-//                    onDismissCommentSheet = {
-//                        showCommentSectionSheet = false
-//                    },
-//                    showLikedBySectionSHeet = showLikedBySectionSheet,
-//                    onDismissLikedBySheet = {
-//                        showLikedBySectionSheet = false
-//                    }
-//                )
-//            }
-//            is UiState.Error -> {}
-//        }
-//    }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeContent(
-    modifier: Modifier = Modifier,
+fun ForYouContent(
     posts: List<Post>,
-    sugoiPicks: List<SugoiPicks>,
-    pagerState: PagerState,
     navigateToComments: () -> Unit,
     navigateToLikedBy: () -> Unit,
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        HorizontalPager(
-            state = pagerState,
+    if (posts.isNullOrEmpty()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape),
+                painter = painterResource(R.drawable.image_mascot),
+                contentDescription = null
+            )
+            Text(
+                text = "No Post Yet.",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                bottom = 150.dp,
+                top = 8.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(
+                items = posts,
+                key = { post -> post.id }
+            ) { data ->
+                PostCardItem(
+                    displayname = data.author.displayname,
+                    username = data.author.username,
+                    timestamp = data.createdAt.toString(),
+                    profilePict = data.author.photo,
+                    image = data.image,
+                    caption = data.caption,
+                    onCommentsClick = navigateToComments,
+                    totalLike = data.totalLike,
+                    totalComment = data.totalComments,
+                    totalShare = data.totalShare,
+                    isLiked = data.isLiked,
+                    isSaved = data.isSaved,
+                    onLikedCountClick = navigateToLikedBy,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FriendPostsContent(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Image(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) { index ->
-            when (index) {
-                0 -> {
-                    if (posts.isNullOrEmpty()) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape),
-                                painter = painterResource(R.drawable.image_mascot),
-                                contentDescription = null
-                            )
-                            Text(
-                                text = "No Post Yet.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Justify,
-                                modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
-                            )
-                        }
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(
-                                bottom = 150.dp, // atau kira-kira setinggi BottomBar
-                                top = 8.dp
-                            ),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            items(
-                                items = posts,
-                                key = { post -> post.id } // <- gunakan ID unik dari post
-                            ) { data ->
-                                PostCardItem(
-                                    displayname = data.author.displayname,
-                                    username = data.author.username,
-                                    timestamp = data.createdAt.toString(),
-                                    profilePict = data.author.photo,
-                                    image = data.image,
-                                    caption = data.caption,
-                                    onCommentsClick = navigateToComments,
-                                    totalLike = data.totalLike,
-                                    totalComment = data.totalComments,
-                                    totalShare = data.totalShare,
-                                    isLiked = data.isLiked,
-                                    isSaved = data.isSaved,
-                                    onLikedCountClick = navigateToLikedBy,
-                                )
-                            }
-                        }
-                    }
-                }
-                1 -> {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(CircleShape),
-                            painter = painterResource(R.drawable.image_mascot),
-                            contentDescription = null
-                        )
-                        Text(
-                            text = "No post from friends yet. Make friend with some poeple now!",
-                            style = MaterialTheme.typography.bodyMedium,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
-                        )
-                    }
-                }
-                2 -> {
-                    if (sugoiPicks.isNullOrEmpty()) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape),
-                                painter = painterResource(R.drawable.image_mascot),
-                                contentDescription = null
-                            )
-                            Text(
-                                text = "Sugoi Picks coming soon! Stay tuned for amazing contents.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
-                            )
-                        }
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(
-                                bottom = 150.dp, // atau kira-kira setinggi BottomBar
-                                top = 8.dp
-                            ),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            items(
-                                items = sugoiPicks,
-                                key = { sugoiPicks -> sugoiPicks.id } // <- gunakan ID unik dari post
-                            ) { data ->
-                                SugoiPicksCardItem(
-                                    displayname = data.author.displayname,
-                                    username = data.author.username,
-                                    timestamp = data.createdAt.toString(),
-                                    profilePict = data.author.photo,
-                                    image = data.image,
-                                    caption = data.caption,
-                                    totalLike = data.totalLike,
-                                    totalComment = data.totalComments,
-                                    totalShare = data.totalShare,
-                                    isLiked = data.isLiked,
-                                    onLikedCountClick = navigateToLikedBy,
-                                    onCommentsClick = navigateToComments,
-                                    posterImage = data.posterImage,
-                                    title = data.title,
-                                    rating = data.rating,
-                                    releaseDate = data.createdAt.toString(),
-                                    Genres = data.genres
-                                )
-                            }
-                        }
-                    }
-                }
+                .size(100.dp)
+                .clip(CircleShape),
+            painter = painterResource(R.drawable.image_mascot),
+            contentDescription = null
+        )
+        Text(
+            text = "No post from friends yet. Make friend with some poeple now!",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
+        )
+    }
+}
+
+@Composable
+fun SugoiPicksContent(
+    sugoiPicks: List<SugoiPicks>,
+    navigateToComments: () -> Unit,
+    navigateToLikedBy: () -> Unit,
+) {
+    if (sugoiPicks.isNullOrEmpty()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape),
+                painter = painterResource(R.drawable.image_mascot),
+                contentDescription = null
+            )
+            Text(
+                text = "Sugoi Picks coming soon! Stay tuned for amazing contents.",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 100.dp, vertical = 12.dp)
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                bottom = 150.dp, // atau kira-kira setinggi BottomBar
+                top = 8.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(
+                items = sugoiPicks,
+                key = { sugoiPicks -> sugoiPicks.id } // <- gunakan ID unik dari post
+            ) { data ->
+                SugoiPicksCardItem(
+                    displayname = data.author.displayname,
+                    username = data.author.username,
+                    timestamp = data.createdAt.toString(),
+                    profilePict = data.author.photo,
+                    image = data.image,
+                    caption = data.caption,
+                    totalLike = data.totalLike,
+                    totalComment = data.totalComments,
+                    totalShare = data.totalShare,
+                    isLiked = data.isLiked,
+                    onLikedCountClick = navigateToLikedBy,
+                    onCommentsClick = navigateToComments,
+                    posterImage = data.posterImage,
+                    title = data.title,
+                    rating = data.rating,
+                    releaseDate = data.createdAt.toString(),
+                    Genres = data.genres
+                )
             }
         }
     }

@@ -8,7 +8,7 @@ import com.konnettoco.konnetto.data.repository.CurrentlyWatchingRepository
 import com.konnettoco.konnetto.data.repository.PostRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -18,10 +18,13 @@ class ProfileViewModel(
 ): ViewModel() {
     private val _uiStatePost: MutableStateFlow<UiState<List<Post>>> = MutableStateFlow(UiState.Loading)
     private val _uiStateCurrentlyWatch: MutableStateFlow<UiState<List<CurrentlyWatching>>> = MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState<List<Post>>>
-        get() = _uiStatePost
-    val uiStateCurrentlyWatching: StateFlow<UiState<List<CurrentlyWatching>>>
-        get() = _uiStateCurrentlyWatch
+    val uiState = _uiStatePost.asStateFlow()
+    val uiStateCurrentlyWatching = _uiStateCurrentlyWatch.asStateFlow()
+
+    init {
+        getAllPostings()
+        getAllCurrentlyWatching()
+    }
 
     fun getAllPostings() {
         viewModelScope.launch {

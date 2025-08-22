@@ -6,7 +6,7 @@ import com.konnettoco.konnetto.data.model.NotificationsTile
 import com.konnettoco.konnetto.data.repository.NotificationRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -14,8 +14,11 @@ class NotificationViewModel(
     private val notificationRepository: NotificationRepository
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState<List<NotificationsTile>>> = MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState<List<NotificationsTile>>>
-        get() = _uiState
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        getAllNotifications()
+    }
 
     fun getAllNotifications() {
         viewModelScope.launch {

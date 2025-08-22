@@ -203,7 +203,6 @@ fun SugoiPicksCardItem(
                                             overflow = TextOverflow.Ellipsis,
                                             fontWeight = FontWeight.SemiBold,
                                             color = textColor,
-                                            modifier = Modifier.clickable { }
                                         )
                                     }
                                     Spacer(Modifier.width(4.dp))
@@ -233,7 +232,6 @@ fun SugoiPicksCardItem(
                                 overflow = TextOverflow.Ellipsis,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color.White,
-                                modifier = Modifier.clickable {  }
                             )
                         }
                     }
