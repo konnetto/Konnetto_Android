@@ -2,9 +2,9 @@ package com.konnettoco.konnetto.ui.screen.profile.userprofile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konnettoco.konnetto.data.model.CurrentlyWatching
+import com.konnettoco.konnetto.data.model.MyLibraryItem
 import com.konnettoco.konnetto.data.model.Post
-import com.konnettoco.konnetto.data.repository.CurrentlyWatchingRepository
+import com.konnettoco.konnetto.data.repository.MyLibraryItemRepository
 import com.konnettoco.konnetto.data.repository.PostRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,16 +14,16 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val postRepository: PostRepository,
-    private val currentlyWatchingRepository: CurrentlyWatchingRepository
+    private val myLibraryItemRepository: MyLibraryItemRepository
 ): ViewModel() {
     private val _uiStatePost: MutableStateFlow<UiState<List<Post>>> = MutableStateFlow(UiState.Loading)
-    private val _uiStateCurrentlyWatch: MutableStateFlow<UiState<List<CurrentlyWatching>>> = MutableStateFlow(UiState.Loading)
+    private val _uiStateWatchList: MutableStateFlow<UiState<List<MyLibraryItem>>> = MutableStateFlow(UiState.Loading)
     val uiState = _uiStatePost.asStateFlow()
-    val uiStateCurrentlyWatching = _uiStateCurrentlyWatch.asStateFlow()
+    val uiStateWatching = _uiStateWatchList.asStateFlow()
 
     init {
         getAllPostings()
-        getAllCurrentlyWatching()
+        getAllMyLibrary()
     }
 
     fun getAllPostings() {
@@ -39,14 +39,14 @@ class ProfileViewModel(
         }
     }
 
-    fun getAllCurrentlyWatching() {
+    fun getAllMyLibrary() {
         viewModelScope.launch {
-            currentlyWatchingRepository.getAllCurrentlyWatching()
+            myLibraryItemRepository.getAllMyLibraryItems()
                 .catch {
-                    _uiStateCurrentlyWatch.value = UiState.Error(it.message.toString())
+                    _uiStateWatchList.value = UiState.Error(it.message.toString())
                 }
-                .collect { currentlyWatchingss ->
-                    _uiStateCurrentlyWatch.value = UiState.Success(currentlyWatchingss)
+                .collect { watchList ->
+                    _uiStateWatchList.value = UiState.Success(watchList)
                 }
         }
     }

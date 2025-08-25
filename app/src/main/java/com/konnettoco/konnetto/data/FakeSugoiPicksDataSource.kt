@@ -1,6 +1,5 @@
 package com.konnettoco.konnetto.data
 
-import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.data.FakeUserDataSource.currentUserDummy
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy1
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy2
@@ -11,9 +10,9 @@ object FakeSugoiPicksDataSource {
         SugoiPicks(
             id = 0,
             author = currentUserDummy,
-            image = R.drawable.memespongebob,
+            image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV6D4fmxljYS1uPgI3qwcKNIRm0DWQchKisQ&s",
             title = "Mobile Suit Gundam GQuuuuuuux",
-            posterImage = R.drawable.memespongebob,
+            posterImage = "https://m.media-amazon.com/images/M/MV5BNWZkMzEzMzQtNzQwOS00OThjLWFmYWQtMGNmMzllNTUwMDQ5XkEyXkFqcGc@._V1_.jpg",
             rating = 8.9,
             genres = listOf("Military", "Mecha", "Romance", "Drama", "Crossover"),
             caption = "Gokil awokawok",
@@ -30,7 +29,7 @@ object FakeSugoiPicksDataSource {
             author = otherUserDummy1,
             image = null,
             title = "Mobile Suit Gundam Unicorn",
-            posterImage = R.drawable.memespongebob,
+            posterImage = "https://img.sunrise-inc.co.jp/images/datacard/379_main.jpg",
             rating = 8.9,
             genres = listOf("Military", "Mecha", "Action"),
             caption = "Gokil awokawok",
@@ -45,9 +44,9 @@ object FakeSugoiPicksDataSource {
         SugoiPicks(
             id = 2,
             author = otherUserDummy2,
-            image = R.drawable.memespongebob,
+            image = "https://i.pinimg.com/564x/67/b9/4a/67b94abda90218b077da5762a0df0d2c.jpg",
             title = "Mobile Suit Gundam Stardust Memory",
-            posterImage = R.drawable.memespongebob,
+            posterImage = "https://m.media-amazon.com/images/M/MV5BYjAyMjMzYTQtZGNmOC00YjMzLTgzYjMtM2U0MTUzNzNjODljXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
             rating = 8.9,
             genres = listOf("Military", "Mecha", "Drama"),
             caption = "Gokil awokawok",
@@ -64,7 +63,7 @@ object FakeSugoiPicksDataSource {
             author = otherUserDummy2,
             image = null,
             title = "Mobile Suit Gundam Seed",
-            posterImage = R.drawable.memespongebob,
+            posterImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4F0_CE8RHxGa2rOoNbCOlViUEdELUK83t8Q&s",
             rating = 8.9,
             genres = listOf("Military", "Mecha", "Romance", "Drama"),
             caption = "Gokil awokawok",

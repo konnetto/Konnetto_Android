@@ -29,6 +29,7 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +53,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
@@ -61,7 +64,7 @@ import com.konnettoco.konnetto.utils.getGenreColor
 @Composable
 fun SugoiPicksCardItem(
     modifier: Modifier = Modifier,
-    posterImage: Int,
+    posterImage: String,
     title: String,
     rating: Double,
     releaseDate: String,
@@ -70,7 +73,7 @@ fun SugoiPicksCardItem(
     username: String,
     timestamp: String,
     profilePict: Int,
-    image: Int? = null,
+    image: String? = null,
     caption: String,
     totalLike: Int,
     totalComment: Int,
@@ -85,6 +88,11 @@ fun SugoiPicksCardItem(
     var likeCount by remember { mutableIntStateOf(totalLike) }
     var commentCount by remember { mutableIntStateOf(totalComment) }
     var shareCount by remember { mutableIntStateOf(totalShare) }
+
+    val painter = rememberAsyncImagePainter(model = image)
+    val posterPainter = rememberAsyncImagePainter(model = posterImage)
+    val painterState = painter.state
+    val posterPainterState = posterPainter.state
 
     Column(
         modifier = modifier
@@ -118,26 +126,39 @@ fun SugoiPicksCardItem(
                         verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        Image(
+                        Box(
                             modifier = Modifier
-                                .width(100.dp)
-                                .height(150.dp)
-                                .padding(horizontal = 6.dp, vertical = 4.dp)
+                                .padding(horizontal = 8.dp)
                                 .clip(RoundedCornerShape(12.dp)),
-                            painter = painterResource(posterImage),
-                            contentDescription = "poster image",
-                            contentScale = ContentScale.Crop
-                        )
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = posterPainter,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .background(
+                                        color = Color.LightGray
+                                    )
+                                    .size(height = 150.dp, width = 100.dp)
+                            )
+                            if (posterPainterState is AsyncImagePainter.State.Loading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = Color.Gray
+                                )
+                            }
+                        }
                         Column(
                             horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.Top
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
+                                verticalAlignment = Alignment.Top,
                             ) {
                                 Text(
-                                    modifier = Modifier.width(180.dp).clickable {  },
+                                    modifier = Modifier.width(160.dp).clickable {  },
                                     text = title,
                                     fontSize = 16.sp,
                                     maxLines = 2,
@@ -320,15 +341,31 @@ fun SugoiPicksCardItem(
         }
         Spacer(Modifier.height(8.dp))
         if (image != null) {
-            Image(
-                painter = painterResource(image),
-                contentDescription = "image",
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .size(height = 450.dp, width = 388.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.FillBounds
-            )
+                    .padding(horizontal = 8.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = "image post",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(height = 450.dp, width = 388.dp)
+                        .background(
+                            color = Color.LightGray
+                        )
+                        .clip(RoundedCornerShape(16.dp)),
+                )
+                if (painterState is AsyncImagePainter.State.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(70.dp),
+                        color = Color.Gray
+                    )
+                }
+            }
         }
         Spacer(Modifier.height( 8.dp))
         Row(
@@ -449,7 +486,7 @@ fun SugoiPicksCardItem(
 private fun SugoiPicksCardItemPreview() {
     KonnettoTheme {
         SugoiPicksCardItem(
-            posterImage = R.drawable.header,
+            posterImage = "",
             title = "Mobile Suit Gundam GQuuuuuuux",
             rating = 8.9,
             releaseDate = "summer 2025",
@@ -464,7 +501,7 @@ private fun SugoiPicksCardItemPreview() {
             username = "charaznable123",
             timestamp = "16 h",
             profilePict = R.drawable.logo,
-            image = R.drawable.memespongebob,
+            image = "",
             caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
             onCommentsClick = {},
             totalLike = 0,
