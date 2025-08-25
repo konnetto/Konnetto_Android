@@ -18,7 +18,6 @@ data class User(
     val friend: Boolean = false,
     val followed: Boolean = false,
     val post: List<Post> = emptyList(),
-    val currentlyWatch: List<CurrentlyWatching> = emptyList(),
     val picks: List<SugoiPicks> = emptyList(),
     val createdAt: String? = null,
     val updatedAt: String? = null

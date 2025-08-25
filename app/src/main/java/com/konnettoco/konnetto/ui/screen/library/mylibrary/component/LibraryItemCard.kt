@@ -42,7 +42,7 @@ fun LibraryItemCard(
     image: String,
     title: String,
     synopsis: String,
-    genre: String,
+    genre: List<String>,
     rating: Double,
     studio: String,
     currentEpisode: Int,
@@ -154,7 +154,9 @@ fun LibraryItemCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = genre,
+                    text = genre
+                        .filter { it.isNotBlank() }  // buang yg kosong
+                        .joinToString(", "),
                     fontSize = 12.sp,
                     textAlign = TextAlign.Start,
                     maxLines = 1,
@@ -249,7 +251,7 @@ private fun EventItemCardPrev() {
             image = "",
             title = "Mobile Suit Gundam GQuuuuuux",
             synopsis = "Anasida asodas da aojqwe qweq apjfas asdao asda aosda",
-            genre = "mecha, action, military",
+            genre = listOf("mecha", "action", "military"),
             rating = 9.5,
             currentEpisode = 12,
             totalEpisode = 12,

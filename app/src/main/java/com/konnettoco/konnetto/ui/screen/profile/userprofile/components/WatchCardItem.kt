@@ -128,10 +128,10 @@ fun RoundedLinearProgressIndicator(
         LinearProgressIndicator(
             progress = progress,
             color = color,
-            trackColor = Color.Transparent, // agar latar belakang tidak menimpa rounded track
+            trackColor = Color.Transparent,
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(cornerRadius)) // penting agar foreground juga rounded
+                .clip(RoundedCornerShape(cornerRadius))
         )
     }
 }

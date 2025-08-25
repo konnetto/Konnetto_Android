@@ -68,7 +68,7 @@ fun SugoiPicksCardItem(
     title: String,
     rating: Double,
     releaseDate: String,
-    Genres: List<String>,
+    genres: List<String>,
     displayname: String,
     username: String,
     timestamp: String,
@@ -201,7 +201,7 @@ fun SugoiPicksCardItem(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                Genres.forEach { genre ->
+                                genres.forEach { genre ->
                                     val (bgColor, textColor) = getGenreColor(genre)
                                     Box(
                                         modifier = Modifier
@@ -490,7 +490,7 @@ private fun SugoiPicksCardItemPreview() {
             title = "Mobile Suit Gundam GQuuuuuuux",
             rating = 8.9,
             releaseDate = "summer 2025",
-            Genres = listOf(
+            genres = listOf(
                 "Mecha",
                 "Military",
                 "Action",
