@@ -1,6 +1,5 @@
 package com.konnettoco.konnetto.di
 
-import com.konnettoco.konnetto.data.repository.CurrentlyWatchingRepository
 import com.konnettoco.konnetto.data.repository.FriendListRepository
 import com.konnettoco.konnetto.data.repository.FriendRequestRepository
 import com.konnettoco.konnetto.data.repository.MyLibraryItemRepository
@@ -12,10 +11,6 @@ import com.konnettoco.konnetto.data.repository.UserRepository
 object Injection {
     fun provideRepositoy(): PostRepository {
         return PostRepository.getInstance()
-    }
-
-    fun provideCurretnlyWatchingRepository(): CurrentlyWatchingRepository {
-        return CurrentlyWatchingRepository.getInstance()
     }
 
     fun provideNotificationsRepository(): NotificationRepository {

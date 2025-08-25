@@ -1,6 +1,5 @@
 package com.konnettoco.konnetto.data
 
-import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.data.FakeUserDataSource.currentUserDummy
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy1
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy2
@@ -12,7 +11,7 @@ object FakePostDataSource {
         Post(
             id = 0,
             author = currentUserDummy,
-            image = R.drawable.memespongebob,
+            image = "https://i.pinimg.com/564x/67/b9/4a/67b94abda90218b077da5762a0df0d2c.jpg",
             caption = "test",
             isLiked = true,
             isSaved = false,
@@ -49,7 +48,7 @@ object FakePostDataSource {
         Post(
             id = 3,
             caption = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at metus id eros dapibus venenatis. Duis volutpat, lacus in fermentum dapibus, mauris sapien rhoncus sapien, nec feugiat nisl risus non risus. Nulla facilisi. Cras eget felis nec odio tincidunt elementum. Curabitur sit amet leo vel nunc posuere dapibus. Aliquam erat volutpat. Suspendisse tincidunt arcu at lorem efficitur, in cursus nisl maximus. Integer tristique tincidunt massa, eu sollicitudin nisi suscipit non. Pellentesque in eros eget justo eleifend hendrerit. Aenean scelerisque, magna non convallis rhoncus, lorem elit ullamcorper augue, sit amet tincidunt turpis nisl sed nulla. Nam a leo at justo venenatis sodales. Vivamus id dui nec nulla sagittis vestibulum. Integer tempus purus sed turpis pharetra varius.",
-            image = R.drawable.memespongebob,
+            image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV6D4fmxljYS1uPgI3qwcKNIRm0DWQchKisQ&s",
             isLiked = false,
             isSaved = false,
             author = otherUserDummy3,

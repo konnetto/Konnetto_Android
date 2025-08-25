@@ -87,12 +87,12 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = viewModel(
         factory = ProfileViewModelFactory(
             Injection.provideRepositoy(),
-            Injection.provideCurretnlyWatchingRepository(),
+            Injection.provideLibraryRepository(),
         )
     )
 ) {
     val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
-    val currentlyWatchingState by viewModel.uiStateCurrentlyWatching.collectAsState(initial = UiState.Loading)
+    val watchingState by viewModel.uiStateWatching.collectAsState(initial = UiState.Loading)
 
     val username = "charaznable08"
 
@@ -131,6 +131,7 @@ fun ProfileScreen(
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
     //liked by section
     var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = {
@@ -181,10 +182,11 @@ fun ProfileScreen(
                         0 -> {
                             Row(
                                 modifier = Modifier
-                                    .horizontalScroll(rememberScrollState())
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.Start,
                             ) {
                                 when {
-                                    currentlyWatchingState is UiState.Loading -> {
+                                    watchingState is UiState.Loading -> {
                                         Box(
                                             modifier = modifier.fillMaxSize(),
                                             contentAlignment = Alignment.Center
@@ -193,9 +195,9 @@ fun ProfileScreen(
                                         }
                                     }
 
-                                    currentlyWatchingState is UiState.Success -> {
-                                        val currentlyWatchingList = (currentlyWatchingState as UiState.Success).data
-                                        if (currentlyWatchingList.isNullOrEmpty()) {
+                                    watchingState is UiState.Success -> {
+                                        val watchingList = (watchingState as UiState.Success).data
+                                        if (watchingList.isNullOrEmpty()) {
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxSize()
@@ -210,61 +212,144 @@ fun ProfileScreen(
                                                 )
                                             }
                                         } else {
-                                            currentlyWatchingList.forEach { data ->
-                                                WatchCardItem(
-                                                    title = data.title,
-                                                    posterImage = data.poster,
-                                                )
+                                            if (watchingState is UiState.Success) {
+                                                val myLibrary = (watchingState as UiState.Success).data
+                                                val watchingList = myLibrary.filter { item ->
+                                                    item.currentEpisode > 0 && item.currentEpisode < item.totalEpisode
+                                                }
+                                                watchingList.forEach { data ->
+                                                    WatchCardItem(
+                                                        title = data.title,
+                                                        posterImage = data.image,
+                                                        currentEpisode = data.currentEpisode,
+                                                        totalEpisode = data.totalEpisode,
+                                                    )
+                                                }
                                             }
                                         }
                                     }
 
-                                    postState is UiState.Error || currentlyWatchingState is UiState.Error -> {
+                                    postState is UiState.Error || watchingState is UiState.Error -> {
                                         // Tampilkan error state
                                     }
                                 }
-
                             }
                         }
                         1 -> {
                             Row(
                                 modifier = Modifier
-                                    .fillMaxSize(),
-                                horizontalArrangement = Arrangement.Center
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.Start,
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(vertical = 61.dp),
-                                    contentAlignment = Alignment.TopCenter
-                                ) {
-                                    Text(
-                                        fontSize = 18.sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        text = "You're not completed anything yet",
-                                        modifier = Modifier.padding(16.dp)
-                                    )
+                                when {
+                                    watchingState is UiState.Loading -> {
+                                        Box(
+                                            modifier = modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
+
+                                    watchingState is UiState.Success -> {
+                                        val watchingList = (watchingState as UiState.Success).data
+                                        if (watchingList.isNullOrEmpty()) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .padding(vertical = 61.dp),
+                                                contentAlignment = Alignment.TopCenter
+                                            ) {
+                                                Text(
+                                                    fontSize = 18.sp,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                    text = "You're not completed anything yet",
+                                                    modifier = Modifier.padding(16.dp)
+                                                )
+                                            }
+                                        } else {
+                                            if (watchingState is UiState.Success) {
+                                                val myLibrary = (watchingState as UiState.Success).data
+                                                val completedList = myLibrary.filter { item ->
+                                                    item.currentEpisode == item.totalEpisode && item.totalEpisode > 0
+                                                }
+                                                completedList.forEach { data ->
+                                                    WatchCardItem(
+                                                        title = data.title,
+                                                        posterImage = data.image,
+                                                        currentEpisode = data.currentEpisode,
+                                                        totalEpisode = data.totalEpisode,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    postState is UiState.Error || watchingState is UiState.Error -> {
+                                        // Tampilkan error state
+                                    }
                                 }
                             }
                         }
                         2 -> {
-                            Column(
+                            Row(
                                 modifier = Modifier
-                                    .fillMaxSize(),
-                                verticalArrangement = Arrangement.Top,
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.Start,
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(vertical = 61.dp),
-                                    contentAlignment = Alignment.TopCenter
-                                ) {
-                                    Text(
-                                        fontSize = 18.sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        text = "There is no plan yet",
-                                        modifier = Modifier.padding(16.dp)
-                                    )
+                                when {
+                                    watchingState is UiState.Loading -> {
+                                        Box(
+                                            modifier = modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
+
+                                    watchingState is UiState.Success -> {
+                                        val watchingList = (watchingState as UiState.Success).data
+                                        if (watchingList.isNullOrEmpty()) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxSize(),
+                                                verticalArrangement = Arrangement.Top,
+                                            ) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .padding(vertical = 61.dp),
+                                                    contentAlignment = Alignment.TopCenter
+                                                ) {
+                                                    Text(
+                                                        fontSize = 18.sp,
+                                                        color = MaterialTheme.colorScheme.onSurface,
+                                                        text = "There is no plan yet",
+                                                        modifier = Modifier.padding(16.dp)
+                                                    )
+                                                }
+                                            }
+                                        } else {
+                                            if (watchingState is UiState.Success) {
+                                                val myLibrary = (watchingState as UiState.Success).data
+                                                val PlanToWatchList = myLibrary.filter { item ->
+                                                    item.currentEpisode == 0
+                                                }
+                                                PlanToWatchList.forEach { data ->
+                                                    WatchCardItem(
+                                                        title = data.title,
+                                                        posterImage = data.image,
+                                                        currentEpisode = data.currentEpisode,
+                                                        totalEpisode = data.totalEpisode,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    postState is UiState.Error || watchingState is UiState.Error -> {
+                                        // Tampilkan error state
+                                    }
                                 }
                             }
                         }
@@ -319,7 +404,7 @@ fun ProfileScreen(
                                     )
                                 }
 
-                                postState is UiState.Error || currentlyWatchingState is UiState.Error -> {
+                                postState is UiState.Error || watchingState is UiState.Error -> {
                                     // Tampilkan error state
                                 }
                             }

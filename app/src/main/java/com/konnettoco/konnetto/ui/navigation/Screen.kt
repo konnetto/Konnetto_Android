@@ -20,4 +20,9 @@ sealed class Screen(val route: String) {
     data object FriendRequestPage: Screen("friendRequestPage")
     data object LibraryPage: Screen("libraryPage")
     data object SettingsPage: Screen("settingsPage")
+
+    //Detail
+    data object LibraryDetailPage: Screen("libraryDetailPage/{libraryItemId}") {
+        fun createRoute(libraryItemId: Long) = "libraryDetailPage/$libraryItemId"
+    }
 }

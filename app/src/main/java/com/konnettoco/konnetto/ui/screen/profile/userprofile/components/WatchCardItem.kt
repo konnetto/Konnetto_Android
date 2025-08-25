@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,22 +21,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.konnettoco.konnetto.R
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 
 @Composable
 fun WatchCardItem(
     modifier: Modifier = Modifier,
-    posterImage: Int,
-    title: String
+    posterImage: String,
+    title: String,
+    currentEpisode: Int,
+    totalEpisode: Int
 ) {
+    val posterPainter = rememberAsyncImagePainter(model = posterImage)
+    val posterPainterState = posterPainter.state
+
     Column(
         modifier = modifier
             .clickable {  }
@@ -45,25 +52,54 @@ fun WatchCardItem(
                 .padding(horizontal = 8.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
-            Image(
-                painter = painterResource(posterImage),
-                contentDescription = "poster image",
+            Box(
                 modifier = Modifier
-                    .size(width = 120.dp, height = 150.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+                    .padding(horizontal = 8.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = posterPainter,
+                    contentDescription = "poster image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .background(
+                            color = Color.LightGray
+                        )
+                        .size(width = 120.dp, height = 150.dp)
+                )
+                if (posterPainterState is AsyncImagePainter.State.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.Gray
+                    )
+                }
+            }
+//            Image(
+//                painter = painterResource(posterImage),
+//                contentDescription = "poster image",
+//                modifier = Modifier
+//                    .size(width = 120.dp, height = 150.dp)
+//                    .clip(RoundedCornerShape(8.dp)),
+//                contentScale = ContentScale.Crop
+//            )
             Text(
-                modifier = Modifier.padding(bottom = 4.dp),
+                modifier = Modifier.padding(bottom = 4.dp).width(120.dp),
                 text = title,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis,
                 color = Color.White,
             )
         }
         RoundedLinearProgressIndicator(
-            progress = 0.7f,
+            progress = if (totalEpisode > 0) {
+                currentEpisode.toFloat() / totalEpisode.toFloat()
+            } else {
+                0f
+            },
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 10.dp)
                 .align(Alignment.CenterHorizontally)
@@ -92,10 +128,10 @@ fun RoundedLinearProgressIndicator(
         LinearProgressIndicator(
             progress = progress,
             color = color,
-            trackColor = Color.Transparent, // agar latar belakang tidak menimpa rounded track
+            trackColor = Color.Transparent,
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(cornerRadius)) // penting agar foreground juga rounded
+                .clip(RoundedCornerShape(cornerRadius))
         )
     }
 }
@@ -105,8 +141,10 @@ fun RoundedLinearProgressIndicator(
 private fun WatchCardItemPreview() {
     KonnettoTheme {
         WatchCardItem(
-            posterImage = R.drawable.memespongebob,
-            title = "Spongbob"
+            posterImage = "",
+            title = "Spongbob",
+            currentEpisode = 12,
+            totalEpisode = 24
         )
     }
 }

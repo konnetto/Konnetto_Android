@@ -407,7 +407,7 @@ fun SugoiPicksContent(
                     title = data.title,
                     rating = data.rating,
                     releaseDate = data.createdAt.toString(),
-                    Genres = data.genres
+                    genres = data.genres
                 )
             }
         }

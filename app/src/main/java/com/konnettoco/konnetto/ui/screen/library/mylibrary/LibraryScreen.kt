@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,7 +36,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -71,6 +71,7 @@ fun LibraryPageScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onMoreVertClick: () -> Unit,
+    onLibraryItemClick: (Long) ->Unit,
     viewModel: LibraryViewModel = viewModel(
         factory = LibraryViewModelVictory(
             Injection.provideLibraryRepository()
@@ -159,7 +160,8 @@ fun LibraryPageScreen(
                                     }
                                     WatchingContent(
                                         modifier = modifier,
-                                        myLibrary = watchingList
+                                        myLibrary = watchingList,
+                                        onLibraryItemClick = onLibraryItemClick
                                     )
                                 }
                             }
@@ -218,7 +220,8 @@ fun LibraryPageScreen(
                                     }
                                     CompletedContent(
                                         modifier = modifier,
-                                        myLibrary = completedList
+                                        myLibrary = completedList,
+                                        onLibraryItemClick = onLibraryItemClick
                                     )
                                 }
                             }
@@ -277,7 +280,8 @@ fun LibraryPageScreen(
                                     }
                                     PlantToWatchContent(
                                         modifier = modifier,
-                                        myLibrary = planToWatchList
+                                        myLibrary = planToWatchList,
+                                        onLibraryItemClick = onLibraryItemClick
                                     )
                                 }
                             }
@@ -327,6 +331,7 @@ fun LibraryPageScreen(
 fun WatchingContent(
     modifier: Modifier = Modifier,
     myLibrary: List<MyLibraryItem>,
+    onLibraryItemClick: (Long) -> Unit,
 ) {
     if (myLibrary.isNullOrEmpty()) {
         Column(
@@ -372,7 +377,9 @@ fun WatchingContent(
                     studio = data.studio,
                     currentEpisode = data.currentEpisode,
                     totalEpisode = data.totalEpisode,
-                    onItemClick = {}
+                    onItemClick = {
+                        data.id.let { onLibraryItemClick(it.toLong()) }
+                    }
                 )
             }
         }
@@ -383,6 +390,7 @@ fun WatchingContent(
 fun CompletedContent(
     modifier: Modifier = Modifier,
     myLibrary: List<MyLibraryItem>,
+    onLibraryItemClick: (Long) -> Unit,
 ) {
     if (myLibrary.isNullOrEmpty()) {
         Column(
@@ -428,7 +436,9 @@ fun CompletedContent(
                     studio = data.studio,
                     currentEpisode = data.currentEpisode,
                     totalEpisode = data.totalEpisode,
-                    onItemClick = {}
+                    onItemClick = {
+                        data.id?.let { onLibraryItemClick(it.toLong()) }
+                    }
                 )
             }
         }
@@ -439,6 +449,7 @@ fun CompletedContent(
 fun PlantToWatchContent(
     modifier: Modifier = Modifier,
     myLibrary: List<MyLibraryItem>,
+    onLibraryItemClick: (Long) -> Unit
 ) {
     if (myLibrary.isNullOrEmpty()) {
         Column(
@@ -484,7 +495,9 @@ fun PlantToWatchContent(
                     studio = data.studio,
                     currentEpisode = data.currentEpisode,
                     totalEpisode = data.totalEpisode,
-                    onItemClick = {}
+                    onItemClick = {
+                        data.id?.let { onLibraryItemClick(it.toLong()) }
+                    }
                 )
             }
         }
@@ -549,7 +562,7 @@ fun LibraryPageTopBar(
     onBackClick: () -> Unit,
     onMoreVertClick: () -> Unit
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent
@@ -600,7 +613,8 @@ private fun LibraryPageScreenPreview() {
     KonnettoTheme {
         LibraryPageScreen(
             onBackClick = {},
-            onMoreVertClick = {}
+            onMoreVertClick = {},
+            onLibraryItemClick = {},
         )
     }
 }
@@ -611,7 +625,8 @@ private fun LibraryPageScreenDarkPreview() {
     KonnettoTheme {
         LibraryPageScreen(
             onBackClick = {},
-            onMoreVertClick = {}
+            onMoreVertClick = {},
+            onLibraryItemClick = {}
         )
     }
 }

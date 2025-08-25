@@ -1,6 +1,7 @@
 package com.konnettoco.konnetto.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +43,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
@@ -52,7 +56,7 @@ fun PostCardItem(
     username: String,
     timestamp: String,
     profilePict: Int,
-    image: Int? = null,
+    image: String? = null,
     caption: String,
     totalLike: Int,
     totalComment: Int,
@@ -68,6 +72,9 @@ fun PostCardItem(
     var likeCount by remember { mutableIntStateOf(totalLike) }
     var commentCount by remember { mutableIntStateOf(totalComment) }
     var shareCount by remember { mutableIntStateOf(totalShare) }
+
+    val painter = rememberAsyncImagePainter(model = image)
+    val painterState = painter.state
 
     Column(
         modifier = modifier
@@ -158,15 +165,31 @@ fun PostCardItem(
         }
         Spacer(Modifier.height(8.dp))
         if (image != null) {
-            Image(
-                painter = painterResource(image),
-                contentDescription = "image",
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .size(height = 450.dp, width = 388.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.FillBounds
-            )
+                    .padding(horizontal = 8.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = "image post",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(height = 450.dp, width = 388.dp)
+                        .background(
+                            color = Color.LightGray
+                        )
+                        .clip(RoundedCornerShape(16.dp)),
+                )
+                if (painterState is AsyncImagePainter.State.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(70.dp),
+                        color = Color.Gray
+                    )
+                }
+            }
         }
         Spacer(Modifier.height( 8.dp))
         Row(
@@ -290,7 +313,7 @@ private fun PostCardItemPreview() {
             username = "charaznable123",
             timestamp = "16 h",
             profilePict = R.drawable.logo,
-            image = R.drawable.memespongebob,
+            image = "",
             caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
             onCommentsClick = {},
             totalLike = 0,

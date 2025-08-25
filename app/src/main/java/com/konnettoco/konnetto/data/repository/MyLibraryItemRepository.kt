@@ -20,6 +20,12 @@ class MyLibraryItemRepository {
         return flowOf(myLibraryItem)
     }
 
+    fun getLibraryItemById(libraryItemId: Long): MyLibraryItem {
+        return myLibraryItem.first {
+            it.id.toLong() == libraryItemId
+        }
+    }
+
     companion object {
         @Volatile
         private var instance: MyLibraryItemRepository? = null
