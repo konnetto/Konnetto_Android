@@ -155,8 +155,10 @@ fun LibraryPageScreen(
                             libraryState is UiState.Success -> {
                                 if (libraryState is UiState.Success) {
                                     val myLibrary = (libraryState as UiState.Success).data
-                                    val watchingList = myLibrary.filter { item ->
-                                        item.currentEpisode > 0 && item.currentEpisode < item.totalEpisode
+                                    val watchingList = remember(libraryState) {
+                                        if (libraryState is UiState.Success) {
+                                            (libraryState as UiState.Success).data.filter { it.currentEpisode > 0 && it.currentEpisode < it.totalEpisode }
+                                        } else emptyList()
                                     }
                                     WatchingContent(
                                         modifier = modifier,
@@ -215,8 +217,10 @@ fun LibraryPageScreen(
                             libraryState is UiState.Success -> {
                                 if (libraryState is UiState.Success) {
                                     val myLibrary = (libraryState as UiState.Success).data
-                                    val completedList = myLibrary.filter { item ->
-                                        item.currentEpisode == item.totalEpisode && item.totalEpisode > 0
+                                    val completedList = remember(libraryState) {
+                                        if (libraryState is UiState.Success) {
+                                            (libraryState as UiState.Success).data.filter { it.currentEpisode == it.totalEpisode && it.totalEpisode > 0 }
+                                        } else emptyList()
                                     }
                                     CompletedContent(
                                         modifier = modifier,
@@ -274,9 +278,10 @@ fun LibraryPageScreen(
 
                             libraryState is UiState.Success -> {
                                 if (libraryState is UiState.Success) {
-                                    val myLibrary = (libraryState as UiState.Success).data
-                                    val planToWatchList = myLibrary.filter { item ->
-                                        item.currentEpisode == 0
+                                    val planToWatchList = remember(libraryState) {
+                                        if (libraryState is UiState.Success) {
+                                            (libraryState as UiState.Success).data.filter { it.currentEpisode ==  0}
+                                        } else emptyList()
                                     }
                                     PlantToWatchContent(
                                         modifier = modifier,

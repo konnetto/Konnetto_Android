@@ -39,7 +39,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -72,19 +71,17 @@ import com.konnettoco.konnetto.utils.getGenreColor
 fun LibraryDetailScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onEditButtonClick: (Long) -> Unit,
     libraryItemId: Long,
     libraryDetailViewModel: MyLibraryDetailViewModel = viewModel(
         factory = LibraryItemDetailViewModelFactory(
-            Injection.provideLibraryRepository()
+            Injection.provideLibraryRepository(),
+            libraryItemId = libraryItemId
         )
     ),
 ) {
     val uiState by libraryDetailViewModel.uiState.collectAsState()
-    LaunchedEffect(libraryItemId) {
-        if (libraryDetailViewModel.uiState.value !is UiState.Success) {
-            libraryDetailViewModel.getLibraryItembyId(libraryItemId)
-        }
-    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -126,6 +123,7 @@ fun LibraryDetailScreen(
                     val libraryItem = (uiState as UiState.Success<MyLibraryItem>).data
                     LibraryDetailContent(
                         modifier = modifier,
+                        id = libraryItem.id.toLong(),
                         posterImage = libraryItem.image,
                         title = libraryItem.title,
                         rating = libraryItem.rating,
@@ -136,7 +134,8 @@ fun LibraryDetailScreen(
                         synopsis = libraryItem.synopsis,
                         currentEpisode = libraryItem.currentEpisode,
                         totalEpisode = libraryItem.totalEpisode,
-                        duration = libraryItem.duration
+                        duration = libraryItem.duration,
+                        onEditButtonClick = onEditButtonClick,
                     )
                 }
 
@@ -152,6 +151,8 @@ fun LibraryDetailScreen(
 @Composable
 fun LibraryDetailContent(
     modifier: Modifier = Modifier,
+    onEditButtonClick: (Long) -> Unit,
+    id: Long,
     posterImage: String,
     title: String,
     rating: Double,
@@ -336,7 +337,7 @@ fun LibraryDetailContent(
                         trackColor = Color.LightGray,
                     )
                     IconButton(
-                        onClick = {},
+                        onClick = { onEditButtonClick(id) },
                         modifier = Modifier.padding(horizontal = 4.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .border(
@@ -617,7 +618,9 @@ private fun LibraryDetailPrev() {
             synopsis = "For over a century, humanity has lived behind three massive walls—Maria, Rose, and Sheena—to protect themselves from mysterious man-eating giants known as Titans. Their fragile peace shatters when a colossal Titan breaches the outer wall, unleashing chaos and destruction.",
             currentEpisode = 8,
             totalEpisode = 25,
-            duration = 24
+            duration = 24,
+            onEditButtonClick = {},
+            id = 1
         )
     }
 }

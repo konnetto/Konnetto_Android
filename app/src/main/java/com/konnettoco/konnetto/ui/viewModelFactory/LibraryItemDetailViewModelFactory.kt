@@ -6,12 +6,16 @@ import com.konnettoco.konnetto.data.repository.MyLibraryItemRepository
 import com.konnettoco.konnetto.ui.screen.library.mylibrarydetail.MyLibraryDetailViewModel
 
 class LibraryItemDetailViewModelFactory (
-    private val myLibraryItemRepository: MyLibraryItemRepository
+    private val myLibraryItemRepository: MyLibraryItemRepository,
+    private val libraryItemId: Long
 ): ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyLibraryDetailViewModel::class.java)) {
-            return MyLibraryDetailViewModel(myLibraryItemRepository) as T
+            return MyLibraryDetailViewModel(
+                myLibraryItemRepository,
+                libraryItemId = libraryItemId
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }
