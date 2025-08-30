@@ -25,4 +25,7 @@ sealed class Screen(val route: String) {
     data object LibraryDetailPage: Screen("libraryDetailPage/{libraryItemId}") {
         fun createRoute(libraryItemId: Long) = "libraryDetailPage/$libraryItemId"
     }
+    data object EditProgressPage: Screen("editProgressPage/{libraryItemId}") {
+        fun createRoute(libraryItemId: Long) = "editProgressPage/$libraryItemId"
+    }
 }

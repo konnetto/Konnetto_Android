@@ -10,19 +10,25 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MyLibraryDetailViewModel(
-    private val libraryItemRepository: MyLibraryItemRepository
+    private val libraryItemRepository: MyLibraryItemRepository,
+    private val libraryItemId: Long
 ): ViewModel() {
-    private val _uiState: MutableStateFlow<UiState<MyLibraryItem>> =
-        MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState<MyLibraryItem>>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<UiState<MyLibraryItem>>(UiState.Loading)
+    val uiState: StateFlow<UiState<MyLibraryItem>> = _uiState
 
-    fun getLibraryItembyId(libraryItemId: Long) {
+    init {
+        getLibraryItemById(libraryItemId)
+    }
+
+    fun getLibraryItemById(id: Long) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            _uiState.value = UiState.Success(libraryItemRepository
-                .getLibraryItemById(libraryItemId)
-            )
+            try {
+                val item = libraryItemRepository.getLibraryItemById(id)
+                _uiState.value = UiState.Success(item)
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.message ?: "Error")
+            }
         }
     }
 }

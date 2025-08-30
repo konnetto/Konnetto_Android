@@ -14,6 +14,7 @@ import com.konnettoco.konnetto.ui.navigation.Screen
 import com.konnettoco.konnetto.ui.screen.addnewpost.CreateNewPostScreen
 import com.konnettoco.konnetto.ui.screen.friendrequest.FriendRequestScreen
 import com.konnettoco.konnetto.ui.screen.home.HomeScreen
+import com.konnettoco.konnetto.ui.screen.library.editprogress.EditProgressScreen
 import com.konnettoco.konnetto.ui.screen.library.mylibrary.LibraryPageScreen
 import com.konnettoco.konnetto.ui.screen.library.mylibrarydetail.LibraryDetailScreen
 import com.konnettoco.konnetto.ui.screen.notification.NotificationScreen
@@ -132,6 +133,20 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             val libraryItemId = backStackEntry.arguments?.getInt("libraryItemId") ?: 0
             LibraryDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                libraryItemId = libraryItemId.toLong(),
+                onEditButtonClick =  { libraryItemId ->
+                    navController.navigate(Screen.EditProgressPage.createRoute(libraryItemId))
+                },
+            )
+        }
+
+        composable(
+            route = Screen.EditProgressPage.route,
+            arguments = listOf(navArgument("libraryItemId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val libraryItemId = backStackEntry.arguments?.getInt("libraryItemId") ?: 0
+            EditProgressScreen(
                 onBackClick = { navController.popBackStack() },
                 libraryItemId = libraryItemId.toLong(),
             )
