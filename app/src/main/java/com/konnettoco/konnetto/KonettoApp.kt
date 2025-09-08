@@ -50,7 +50,9 @@ fun KonnettoApp(
     val currentRoute = navBackStackEntry?.destination?.route
     val shouldShowBottomBar = listOf(
         Screen.HomePage.route,
-        Screen.NotificationPage.route
+        Screen.NotificationPage.route,
+        Screen.ProfilePage.route,
+        Screen.DiscoveryPage.route
     )
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

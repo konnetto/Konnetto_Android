@@ -227,7 +227,7 @@ fun HomeScreen(
                                     }
                                 )
                             }
-                            postState is UiState.Error -> {
+                            sugoiPicksState is UiState.Error -> {
                                 //                    val errorMsg = (uiState as UiState.Error).errorMessage
                                 Box(
                                     modifier = modifier.fillMaxSize(),
@@ -381,14 +381,14 @@ fun SugoiPicksContent(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                bottom = 150.dp, // atau kira-kira setinggi BottomBar
+                bottom = 150.dp,
                 top = 8.dp
             ),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(
                 items = sugoiPicks,
-                key = { sugoiPicks -> sugoiPicks.id } // <- gunakan ID unik dari post
+                key = { sugoiPicks -> sugoiPicks.id }
             ) { data ->
                 SugoiPicksCardItem(
                     displayname = data.author.displayname,

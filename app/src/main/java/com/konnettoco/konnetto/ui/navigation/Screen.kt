@@ -15,6 +15,7 @@ sealed class Screen(val route: String) {
     data object CommunityPage : Screen("communityPage")
     data object CreateNewPostPage : Screen("createNewPostPage")
     data object EventPage : Screen("eventPage")
+    data object DiscoveryPage : Screen("discoveryPage")
     data object NotificationPage: Screen("notificationPage")
     data object SavedPage: Screen("savedPage")
     data object FriendRequestPage: Screen("friendRequestPage")
