@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.konnettoco.konnetto.ui.navigation.Screen
 import com.konnettoco.konnetto.ui.screen.addnewpost.CreateNewPostScreen
+import com.konnettoco.konnetto.ui.screen.discovery.DiscoveryScreen
 import com.konnettoco.konnetto.ui.screen.friendrequest.FriendRequestScreen
 import com.konnettoco.konnetto.ui.screen.home.HomeScreen
 import com.konnettoco.konnetto.ui.screen.library.editprogress.EditProgressScreen
@@ -77,6 +78,10 @@ fun NavGraphBuilder.mainNavGraph(
                 onSlideToDelete = {},
                 onMoreVertClick = {}
             )
+        }
+
+        composable(Screen.DiscoveryPage.route) {
+            DiscoveryScreen()
         }
 
         composable(Screen.SavedPage.route) {

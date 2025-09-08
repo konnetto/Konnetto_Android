@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,7 @@ fun BottomBar(
 ) {
     NavigationBar(
         modifier = modifier
+            .height(70.dp)
 //            .padding(top = 40.dp)
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
             .windowInsetsBottomHeight(
@@ -51,6 +53,11 @@ fun BottomBar(
                 screen = Screen.HomePage
             ),
             NavigationItem(
+                title = "Discovery",
+                icon = painterResource(R.drawable.baseline_discover_24),
+                screen = Screen.DiscoveryPage
+            ),
+            NavigationItem(
                 title = "Add New Post",
                 icon = painterResource(R.drawable.add_square_icon),
                 screen = Screen.CreateNewPostPage
@@ -59,6 +66,11 @@ fun BottomBar(
                 title = "Notification",
                 icon = painterResource(R.drawable.icons_notification),
                 screen = Screen.NotificationPage
+            ),
+            NavigationItem(
+                title = "Profile",
+                icon = painterResource(R.drawable.baseline_person_24),
+                screen = Screen.ProfilePage
             ),
         )
         navigationItems.map { item ->
@@ -74,6 +86,12 @@ fun BottomBar(
                         )
                     }
                 },
+//                label = { Text(
+//                    text = item.title,
+//                    fontSize = 12.sp,
+//                    fontWeight = FontWeight.Thin,
+//                    color = MaterialTheme.colorScheme.primary
+//                ) },
                 selected = currentRoute == item.screen.route,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
