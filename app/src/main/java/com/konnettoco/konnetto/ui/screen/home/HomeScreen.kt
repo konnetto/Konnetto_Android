@@ -75,7 +75,8 @@ fun HomeScreen(
         )
     ),
     onMenuClick: () -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onDisplaynameClick: (Long) -> Unit,
 ) {
     val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
     val sugoiPicksState by viewModel.sugoiPicksState.collectAsState(initial = UiState.Loading)
@@ -144,8 +145,9 @@ fun HomeScreen(
 
                                 ForYouContent(
                                     posts = posts,
-                                    navigateToComments = { showCommentSectionSheet = true},
-                                    navigateToLikedBy = { showLikedBySectionSheet = true }
+                                    navigateToComments = { showCommentSectionSheet = true },
+                                    navigateToLikedBy = { showLikedBySectionSheet = true },
+                                    onDisplaynameClick = onDisplaynameClick
                                 )
                                 OverlayManager(
                                     showCommentSectionSheet = showCommentSectionSheet,
@@ -274,6 +276,7 @@ fun ForYouContent(
     posts: List<Post>,
     navigateToComments: () -> Unit,
     navigateToLikedBy: () -> Unit,
+    onDisplaynameClick: (Long) -> Unit,
 ) {
     if (posts.isNullOrEmpty()) {
         Column(
@@ -321,6 +324,10 @@ fun ForYouContent(
                     isLiked = data.isLiked,
                     isSaved = data.isSaved,
                     onLikedCountClick = navigateToLikedBy,
+                    onDisplaynameClick = {
+                        data.author.id.let { onDisplaynameClick(it.toLong()) }
+                    },
+                    onPostClick = {},
                 )
             }
         }
@@ -407,7 +414,9 @@ fun SugoiPicksContent(
                     title = data.title,
                     rating = data.rating,
                     releaseDate = data.createdAt.toString(),
-                    genres = data.genres
+                    genres = data.genres,
+                    onDisplaynameClick = {},
+                    onSugoiPicksClick = {}
                 )
             }
         }
@@ -495,100 +504,3 @@ fun HomeTopAppBar(
         }
     )
 }
-
-
-
-//@OptIn(ExperimentalFoundationApi::class)
-//@Preview(showBackground = true)
-//@Composable
-//private fun HomeScreenPreview() {
-//    KonnettoTheme {
-//        HomeContent(
-//            posts = listOf(
-//                Post(
-//                    id = 0,
-//                    author = currentUserDummy,
-//                    image = R.drawable.memespongebob,
-//                    caption = "test",
-//                    isLiked = true,
-//                    isSaved = false,
-//                    totalLike = 1,
-//                    totalComments = 2,
-//                    createdAt = 2,
-//                    updatedAt = "2025-07-05T14:30:00Z"
-//                ),
-//                Post(
-//                    id = 1,
-//                    author = otherUserDummy1,
-//                    image = null,
-//                    caption = "Bjir wkwkwkwkwkwkwk",
-//                    isLiked = false,
-//                    isSaved = false,
-//                    totalLike = 200,
-//                    totalComments = 200,
-//                    totalShare = 0,
-//                    createdAt = 2,
-//                    updatedAt = "2025-07-04T13:00:00Z"
-//                ),
-//                Post(
-//                    id = 2,
-//                    caption = "America ya, Halo, Halo, Halo, Halo, Halo",
-//                    image = null,
-//                    isLiked = true,
-//                    isSaved = false,
-//                    author = otherUserDummy2,
-//                    totalLike = 1,
-//                    totalComments = 0,
-//                    totalShare = 1,
-//                    createdAt = 5,
-//                ),
-//                Post(
-//                    id = 3,
-//                    caption = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at metus id eros dapibus venenatis. Duis volutpat, lacus in fermentum dapibus, mauris sapien rhoncus sapien, nec feugiat nisl risus non risus. Nulla facilisi. Cras eget felis nec odio tincidunt elementum. Curabitur sit amet leo vel nunc posuere dapibus. Aliquam erat volutpat. Suspendisse tincidunt arcu at lorem efficitur, in cursus nisl maximus. Integer tristique tincidunt massa, eu sollicitudin nisi suscipit non. Pellentesque in eros eget justo eleifend hendrerit. Aenean scelerisque, magna non convallis rhoncus, lorem elit ullamcorper augue, sit amet tincidunt turpis nisl sed nulla. Nam a leo at justo venenatis sodales. Vivamus id dui nec nulla sagittis vestibulum. Integer tempus purus sed turpis pharetra varius.",
-//                    image = R.drawable.memespongebob,
-//                    isLiked = false,
-//                    isSaved = false,
-//                    author = otherUserDummy3,
-//                    totalLike = 0,
-//                    totalComments = 0,
-//                    totalShare = 0,
-//                    createdAt = 10,
-//                ),
-//                Post(
-//                    id = 4,
-//                    caption = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at metus id eros dapibus venenatis. Duis volutpat, lacus in fermentum dapibus, mauris sapien rhoncus sapien, nec feugiat nisl risus non risus. Nulla facilisi. Cras eget felis nec odio tincidunt elementum. Curabitur sit amet leo vel nunc posuere dapibus. Aliquam erat volutpat. Suspendisse tincidunt arcu at lorem efficitur, in cursus nisl maximus. Integer tristique tincidunt massa, eu sollicitudin nisi suscipit non. Pellentesque in eros eget justo eleifend hendrerit. Aenean scelerisque, magna non convallis rhoncus, lorem elit ullamcorper augue, sit amet tincidunt turpis nisl sed nulla. Nam a leo at justo venenatis sodales. Vivamus id dui nec nulla sagittis vestibulum. Integer tempus purus sed turpis pharetra varius.",
-//                    image = null,
-//                    isLiked = true,
-//                    isSaved = false,
-//                    author = otherUserDummy3,
-//                    totalLike = 10,
-//                    totalComments = 5,
-//                    totalShare = 3,
-//                    createdAt = 11,
-//                ),
-//            ),
-//            navigateToComments = {},
-//            navigateToLikedBy = {},
-//            sugoiPicks = listOf(
-//                SugoiPicks(
-//                    id = 0,
-//                    author = currentUserDummy,
-//                    image = R.drawable.memespongebob,
-//                    title = "Mobile Suit Gundam GQuuuuuuux",
-//                    posterImage = R.drawable.header,
-//                    rating = 8.9,
-//                    genres = listOf("Military", "Mecha", "Romance", "Drama", "Crossover"),
-//                    caption = "Gokil awokawok",
-//                    isLiked = true,
-//                    isSaved = true,
-//                    totalLike = 200,
-//                    totalComments = 30,
-//                    totalShare = 23,
-//                    createdAt = 12,
-//                    updatedAt = ""
-//                ),
-//            ),
-//            pagerState = rememberPagerState{},
-//        )
-//    }
-//}

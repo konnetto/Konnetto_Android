@@ -4,6 +4,8 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -21,11 +23,14 @@ import com.konnettoco.konnetto.ui.screen.library.mylibrarydetail.LibraryDetailSc
 import com.konnettoco.konnetto.ui.screen.notification.NotificationScreen
 import com.konnettoco.konnetto.ui.screen.profile.editprofilescreen.EditProfileScreen
 import com.konnettoco.konnetto.ui.screen.profile.friendlist.FriendListScreen
+import com.konnettoco.konnetto.ui.screen.profile.otheruserprofile.OtherUserProfileScreen
 import com.konnettoco.konnetto.ui.screen.profile.shareprofile.ShareProfileScreen
 import com.konnettoco.konnetto.ui.screen.profile.userprofile.ProfileScreen
 import com.konnettoco.konnetto.ui.screen.saved.SavedPageScreen
 import com.konnettoco.konnetto.ui.screen.search.SearchPageScreen
 import com.konnettoco.konnetto.ui.screen.settings.SettingsPageScreen
+import com.konnettoco.konnetto.ui.screen.settings.SettingsViewModel
+import com.konnettoco.konnetto.ui.viewModelFactory.SettingsViewModelFactory
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.mainNavGraph(
@@ -53,7 +58,10 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onSearchClick = {
                     navController.navigate(Screen.SearchPage.route)
-                }
+                },
+                onDisplaynameClick = { userId ->
+                    navController.navigate(Screen.OtherUserProfilePage.createRout(userId))
+                } ,
             )
         }
 
@@ -84,6 +92,20 @@ fun NavGraphBuilder.mainNavGraph(
             DiscoveryScreen()
         }
 
+        composable(
+            route = Screen.OtherUserProfilePage.route,
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            OtherUserProfileScreen(
+                onBackClick = { navController.popBackStack() },
+                onShareBtnClick = {},
+                onAddFrndBtnClick = {},
+                onFriendCountClick = {},
+                userId = userId.toLong(),
+            )
+        }
+
         composable(Screen.SavedPage.route) {
             SavedPageScreen(onBackClick = { navController.popBackStack() }, onMoreVertClick = {})
         }
@@ -108,12 +130,17 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
         composable(Screen.SettingsPage.route) {
-            SettingsPageScreen(onBackClick = { navController.popBackStack() })
+            val viewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModelFactory(LocalContext.current)
+            )
+            SettingsPageScreen(
+                onBackClick = { navController.popBackStack() },
+                viewModel = viewModel,
+            )
         }
 
         composable(Screen.ProfilePage.route) {
             ProfileScreen(
-                onBackClick = { navController.popBackStack() },
                 onShareBtnClick = { navController.navigate(Screen.ShareProfilePage.route) },
                 onEdtBtnClick = { navController.navigate(Screen.EditProflePage.route) },
                 onFriendCountClick = { navController.navigate(Screen.FriendListPage.route) }

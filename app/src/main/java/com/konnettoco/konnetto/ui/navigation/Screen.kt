@@ -22,6 +22,11 @@ sealed class Screen(val route: String) {
     data object LibraryPage: Screen("libraryPage")
     data object SettingsPage: Screen("settingsPage")
 
+    //other user profile
+    data object OtherUserProfilePage: Screen("otherUserProfilePage/{userId}") {
+        fun createRout(userId: Long) = "otherUserProfilePage/$userId"
+    }
+
     //Detail
     data object LibraryDetailPage: Screen("libraryDetailPage/{libraryItemId}") {
         fun createRoute(libraryItemId: Long) = "libraryDetailPage/$libraryItemId"
@@ -29,4 +34,5 @@ sealed class Screen(val route: String) {
     data object EditProgressPage: Screen("editProgressPage/{libraryItemId}") {
         fun createRoute(libraryItemId: Long) = "editProgressPage/$libraryItemId"
     }
+
 }

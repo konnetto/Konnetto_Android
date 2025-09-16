@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,13 +39,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
 
 @Composable
@@ -55,7 +52,7 @@ fun PostCardItem(
     displayname: String,
     username: String,
     timestamp: String,
-    profilePict: Int,
+    profilePict: String? = null,
     image: String? = null,
     caption: String,
     totalLike: Int,
@@ -63,6 +60,8 @@ fun PostCardItem(
     totalShare: Int,
     isLiked: Boolean,
     isSaved: Boolean,
+    onDisplaynameClick: () -> Unit,
+    onPostClick: () -> Unit,
     onLikedCountClick: () -> Unit,
     onCommentsClick: () -> Unit,
 ) {
@@ -73,18 +72,21 @@ fun PostCardItem(
     var commentCount by remember { mutableIntStateOf(totalComment) }
     var shareCount by remember { mutableIntStateOf(totalShare) }
 
+    val avatarPainter = rememberAsyncImagePainter(model = profilePict)
     val painter = rememberAsyncImagePainter(model = image)
     val painterState = painter.state
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
 //        elevation = CardDefaults.cardElevation(4.dp),
 //        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
+                .clickable {
+                    onPostClick()
+                }
                 .padding(4.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -92,14 +94,17 @@ fun PostCardItem(
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .fillMaxSize()
             ) {
                 Image(
-                    painter = painterResource(profilePict),
+                    painter = avatarPainter,
                     contentDescription = "profile picture",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(40.dp))
+                        .background(
+                            color = Color.LightGray
+                        )
                 )
             }
             Spacer(Modifier.widthIn(min = 8.dp))
@@ -108,7 +113,9 @@ fun PostCardItem(
                     text = displayname,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {  }
+                    modifier = Modifier.clickable {
+                        onDisplaynameClick()
+                    }
                 )
                 Row {
                     Text(
@@ -304,24 +311,26 @@ fun PostCardItem(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-private fun PostCardItemPreview() {
-    KonnettoTheme {
-        PostCardItem(
-            displayname = "Char",
-            username = "charaznable123",
-            timestamp = "16 h",
-            profilePict = R.drawable.logo,
-            image = "",
-            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
-            onCommentsClick = {},
-            totalLike = 0,
-            totalComment = 0,
-            totalShare = 0,
-            isLiked = false,
-            isSaved = true,
-            onLikedCountClick = {},
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun PostCardItemPreview() {
+//    KonnettoTheme {
+//        PostCardItem(
+//            displayname = "Char",
+//            username = "charaznable123",
+//            timestamp = "16 h",
+//            profilePict = R.drawable.logo,
+//            image = "",
+//            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
+//            onCommentsClick = {},
+//            totalLike = 0,
+//            totalComment = 0,
+//            totalShare = 0,
+//            isLiked = false,
+//            isSaved = true,
+//            onLikedCountClick = {},
+//            onDisplaynameClick = {},
+//            onPostClick = {},
+//        )
+//    }
+//}
