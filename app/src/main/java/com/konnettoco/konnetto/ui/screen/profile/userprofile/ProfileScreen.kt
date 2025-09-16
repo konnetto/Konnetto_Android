@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -33,8 +34,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -79,7 +78,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    onBackClick: () -> Unit,
     onShareBtnClick: () -> Unit,
     onEdtBtnClick: () -> Unit,
     onFriendCountClick: () -> Unit,
@@ -137,7 +135,6 @@ fun ProfileScreen(
         topBar = {
             ProfileTopAppBar(
                 username = username,
-                onBackClick = onBackClick
             )
         },
         modifier = modifier
@@ -230,7 +227,7 @@ fun ProfileScreen(
                                     }
 
                                     postState is UiState.Error || watchingState is UiState.Error -> {
-                                        // Tampilkan error state
+
                                     }
                                 }
                             }
@@ -370,7 +367,7 @@ fun ProfileScreen(
                     state = pagerState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 600.dp)
+                        .wrapContentHeight()
                 ) { index ->
                     when (index) {
                         0 -> {
@@ -448,8 +445,7 @@ fun PostList(
     onLikeCountClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Top
     ) {
         if (posts.isNullOrEmpty()) {
@@ -480,6 +476,8 @@ fun PostList(
                     isLiked = data.isLiked,
                     isSaved = data.isSaved,
                     onLikedCountClick = onLikeCountClick,
+                    onDisplaynameClick = {},
+                    onPostClick = {},
                 )
             }
         }
@@ -780,24 +778,12 @@ fun UserContentTabRow(
 @OptIn(ExperimentalMaterial3Api::class)
 fun ProfileTopAppBar(
     username: String,
-    onBackClick: () -> Unit,
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent
         ),
-        navigationIcon = {
-            IconButton(onClick = {
-                onBackClick()
-            }) {
-                Icon(
-                    painter = painterResource(R.drawable.baseline_arrow_back),
-                    modifier = Modifier.aspectRatio(0.8f),
-                    contentDescription = "back button"
-                )
-            }
-        },
         title = {
             Text(
                 text = username,

@@ -30,42 +30,44 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.screen.settings.components.SeparatorTitle
 import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCard
 import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCardMultipleContent
-import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 
 @Composable
 fun SettingsPageScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    viewModel: SettingsViewModel
 ) {
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
+
     SettingsPageContent(
         modifier = modifier,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        darkThemeChecked = isDarkTheme,
+        onDarkThemeToggle = { viewModel.toggleTheme(it) }
     )
 }
 
 @Composable
 fun SettingsPageContent(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    darkThemeChecked: Boolean,
+    onDarkThemeToggle: (Boolean) -> Unit
 ) {
-    var darkThemeChecked by remember { mutableStateOf(true) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -125,9 +127,7 @@ fun SettingsPageContent(
                     Spacer(modifier = modifier.width(60.dp))
                     Switch(
                         checked = darkThemeChecked,
-                        onCheckedChange = {
-                            darkThemeChecked = it
-                        },
+                        onCheckedChange = { onDarkThemeToggle(it) },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colorScheme.primary,
                             checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
@@ -286,12 +286,14 @@ fun SettingsPageTopAppBar(
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun EventPageScreenPreview() {
-    KonnettoTheme {
-        SettingsPageContent(
-            onBackClick = {  }
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun EventPageScreenPreview() {
+//    KonnettoTheme {
+//        SettingsPageContent(
+//            onBackClick = { },
+//            darkThemeChecked = {},
+//            onDarkThemeToggle = {}
+//        )
+//    }
+//}

@@ -20,6 +20,10 @@ class PostRepository {
         return flowOf(posts)
     }
 
+    fun getPostsByUserId(userId: Long): Flow<List<Post>> {
+        return flowOf(posts.filter { it.author.id == userId })
+    }
+
     companion object {
         @Volatile
         private var instance: PostRepository? = null

@@ -25,7 +25,7 @@ object Injection {
         return FriendListRepository.getInstance()
     }
 
-    fun provideCurrentUserRepository(): UserRepository {
+    fun provideUserRepository(): UserRepository {
         return UserRepository.getInstance()
     }
 

@@ -50,13 +50,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
 import com.konnettoco.konnetto.utils.getGenreColor
 
@@ -72,13 +70,15 @@ fun SugoiPicksCardItem(
     displayname: String,
     username: String,
     timestamp: String,
-    profilePict: Int,
+    profilePict: String? = null,
     image: String? = null,
     caption: String,
     totalLike: Int,
     totalComment: Int,
     totalShare: Int,
     isLiked: Boolean,
+    onDisplaynameClick: () ->Unit,
+    onSugoiPicksClick: () -> Unit,
     onLikedCountClick: () -> Unit,
     onCommentsClick: () -> Unit,
 ) {
@@ -89,6 +89,7 @@ fun SugoiPicksCardItem(
     var commentCount by remember { mutableIntStateOf(totalComment) }
     var shareCount by remember { mutableIntStateOf(totalShare) }
 
+    val avatarPainter = rememberAsyncImagePainter(model = profilePict)
     val painter = rememberAsyncImagePainter(model = image)
     val posterPainter = rememberAsyncImagePainter(model = posterImage)
     val painterState = painter.state
@@ -98,10 +99,11 @@ fun SugoiPicksCardItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
-
     ) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
             elevation = CardDefaults.cardElevation(2.dp),
         ) {
             Box(
@@ -158,7 +160,9 @@ fun SugoiPicksCardItem(
                                 verticalAlignment = Alignment.Top,
                             ) {
                                 Text(
-                                    modifier = Modifier.width(160.dp).clickable {  },
+                                    modifier = Modifier
+                                        .width(160.dp)
+                                        .clickable { },
                                     text = title,
                                     fontSize = 16.sp,
                                     maxLines = 2,
@@ -262,7 +266,10 @@ fun SugoiPicksCardItem(
         Row(
             modifier = Modifier
                 .padding(4.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable {
+                    onSugoiPicksClick()
+                },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
@@ -271,11 +278,15 @@ fun SugoiPicksCardItem(
                     .fillMaxSize()
             ) {
                 Image(
-                    painter = painterResource(profilePict),
+                    painter = avatarPainter,
                     contentDescription = "profile picture",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(40.dp))
+                        .background(
+                            color = Color.LightGray
+                        )
                 )
             }
             Spacer(Modifier.widthIn(min = 8.dp))
@@ -284,7 +295,9 @@ fun SugoiPicksCardItem(
                     text = displayname,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {  }
+                    modifier = Modifier.clickable {
+                        onDisplaynameClick()
+                    }
                 )
                 Row {
                     Text(
@@ -481,34 +494,36 @@ fun SugoiPicksCardItem(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-private fun SugoiPicksCardItemPreview() {
-    KonnettoTheme {
-        SugoiPicksCardItem(
-            posterImage = "",
-            title = "Mobile Suit Gundam GQuuuuuuux",
-            rating = 8.9,
-            releaseDate = "summer 2025",
-            genres = listOf(
-                "Mecha",
-                "Military",
-                "Action",
-                "romance",
-                "drama"
-            ),
-            displayname = "Char",
-            username = "charaznable123",
-            timestamp = "16 h",
-            profilePict = R.drawable.logo,
-            image = "",
-            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
-            onCommentsClick = {},
-            totalLike = 0,
-            totalComment = 0,
-            totalShare = 0,
-            isLiked = false,
-            onLikedCountClick = {},
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun SugoiPicksCardItemPreview() {
+//    KonnettoTheme {
+//        SugoiPicksCardItem(
+//            posterImage = "",
+//            title = "Mobile Suit Gundam GQuuuuuuux",
+//            rating = 8.9,
+//            releaseDate = "summer 2025",
+//            genres = listOf(
+//                "Mecha",
+//                "Military",
+//                "Action",
+//                "romance",
+//                "drama"
+//            ),
+//            displayname = "Char",
+//            username = "charaznable123",
+//            timestamp = "16 h",
+//            profilePict = R.drawable.logo,
+//            image = "",
+//            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
+//            onCommentsClick = {},
+//            totalLike = 0,
+//            totalComment = 0,
+//            totalShare = 0,
+//            isLiked = false,
+//            onLikedCountClick = {},
+//            onDisplaynameClick = {},
+//            onSugoiPicksClick = {},
+//        )
+//    }
+//}
