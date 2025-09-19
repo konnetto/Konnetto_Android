@@ -522,9 +522,12 @@ fun OtherUserPostList(
                     totalShare = data.totalShare,
                     isLiked = data.isLiked,
                     isSaved = data.isSaved,
+                    isFriend = data.author.isFriend,
                     onLikedCountClick = onLikeCountClick,
                     onDisplaynameClick = {},
                     onPostClick = {},
+                    showAddFriendButton = false,
+                    onAddFriendClick = {},
                 )
             }
         }
