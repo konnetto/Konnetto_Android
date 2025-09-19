@@ -328,19 +328,20 @@ fun PostImageSlider(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HorizontalPager(
-            state = pagerState,
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-        ) { page ->
-            val painter = rememberAsyncImagePainter(model = limitedImages[page])
-            Box(
+                .padding(horizontal = 8.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clip(RoundedCornerShape(20.dp)),
-                contentAlignment = Alignment.Center
-            ) {
+                    .fillMaxWidth()
+                    .height(400.dp)
+            ) { page ->
+                val painter = rememberAsyncImagePainter(model = limitedImages[page])
                 Image(
                     painter = painter,
                     contentDescription = "image post",
@@ -350,8 +351,7 @@ fun PostImageSlider(
                         .size(height = 450.dp, width = 388.dp)
                         .background(
                             color = Color.LightGray
-                        )
-                        .clip(RoundedCornerShape(16.dp)),
+                        ),
                 )
                 if (painter.state is AsyncImagePainter.State.Loading) {
                     CircularProgressIndicator(
@@ -359,26 +359,25 @@ fun PostImageSlider(
                         color = Color.Gray
                     )
                 }
-                // Nomor urut di pojok kanan atas
-                if (limitedImages.size > 1) {
-                    Text(
-                        text = "${page + 1}/${limitedImages.size}",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(12.dp)
-                            .background(
-                                color = Color.Black.copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
+            }
+            // Nomor urut di pojok kanan atas
+            if (limitedImages.size > 1) {
+                Text(
+                    text = "${pagerState.currentPage + 1}/${limitedImages.size}",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(12.dp)
+                        .background(
+                            color = Color.Black.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                )
             }
         }
-
 
         if (limitedImages.size > 1) {
             Row(
