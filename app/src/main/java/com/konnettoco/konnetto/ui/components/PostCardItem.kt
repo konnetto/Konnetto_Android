@@ -342,22 +342,26 @@ fun PostImageSlider(
                     .height(400.dp)
             ) { page ->
                 val painter = rememberAsyncImagePainter(model = limitedImages[page])
-                Image(
-                    painter = painter,
-                    contentDescription = "image post",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(height = 450.dp, width = 388.dp)
-                        .background(
-                            color = Color.LightGray
-                        ),
-                )
-                if (painter.state is AsyncImagePainter.State.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(70.dp),
-                        color = Color.Gray
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painter,
+                        contentDescription = "image post",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .size(height = 450.dp, width = 388.dp)
+                            .background(
+                                color = Color.LightGray
+                            ),
                     )
+                    if (painter.state is AsyncImagePainter.State.Loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(70.dp),
+                            color = Color.Gray
+                        )
+                    }
                 }
             }
             // Nomor urut di pojok kanan atas
