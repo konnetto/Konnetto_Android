@@ -19,7 +19,7 @@ import androidx.compose.runtime.Immutable
 data class Post(
     val id: Long,
     val author: User,
-    val image: String? = null,
+    val image: List<String>? = null,
     val caption: String = "",
     val isLiked: Boolean = false,
     val isSaved: Boolean = false,

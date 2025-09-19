@@ -323,11 +323,14 @@ fun ForYouContent(
                     totalShare = data.totalShare,
                     isLiked = data.isLiked,
                     isSaved = data.isSaved,
+                    isFriend = data.author.isFriend,
                     onLikedCountClick = navigateToLikedBy,
                     onDisplaynameClick = {
                         data.author.id.let { onDisplaynameClick(it.toLong()) }
                     },
                     onPostClick = {},
+                    onAddFriendClick = {},
+                    showAddFriendButton = true
                 )
             }
         }

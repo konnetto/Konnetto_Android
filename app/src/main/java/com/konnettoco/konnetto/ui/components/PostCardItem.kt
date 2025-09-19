@@ -1,5 +1,6 @@
 package com.konnettoco.konnetto.ui.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,12 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,11 +45,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
+import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
 
 @Composable
@@ -53,17 +61,20 @@ fun PostCardItem(
     username: String,
     timestamp: String,
     profilePict: String? = null,
-    image: String? = null,
+    image: List<String>? = null,
+    isFriend: Boolean,
     caption: String,
     totalLike: Int,
     totalComment: Int,
     totalShare: Int,
     isLiked: Boolean,
     isSaved: Boolean,
+    showAddFriendButton: Boolean,
     onDisplaynameClick: () -> Unit,
     onPostClick: () -> Unit,
     onLikedCountClick: () -> Unit,
     onCommentsClick: () -> Unit,
+    onAddFriendClick: () -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var isLiked by remember { mutableStateOf(isLiked) }
@@ -133,6 +144,22 @@ fun PostCardItem(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
+            if (showAddFriendButton && !isFriend) {
+                Button(
+                    onClick = onAddFriendClick,
+                    colors = ButtonDefaults.buttonColors(
+                        MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "Add Friend",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                    )
+                }
+            }
             IconButton(
                 onClick = {}
             ) {
@@ -172,31 +199,9 @@ fun PostCardItem(
         }
         Spacer(Modifier.height(8.dp))
         if (image != null) {
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clip(RoundedCornerShape(20.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = "image post",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(height = 450.dp, width = 388.dp)
-                        .background(
-                            color = Color.LightGray
-                        )
-                        .clip(RoundedCornerShape(16.dp)),
-                )
-                if (painterState is AsyncImagePainter.State.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(70.dp),
-                        color = Color.Gray
-                    )
-                }
-            }
+            PostImageSlider(
+                images = image,
+            )
         }
         Spacer(Modifier.height( 8.dp))
         Row(
@@ -310,27 +315,119 @@ fun PostCardItem(
     Divider(color = Color.LightGray, thickness = 1.dp)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PostImageSlider(
+    images: List<String>,
+    modifier: Modifier = Modifier
+) {
+    val limitedImages = remember(images) { images.take(10) } //maksimal 10 gambar
+    val pagerState = rememberPagerState(pageCount = { limitedImages.size })
 
-//@Preview(showBackground = true)
-//@Composable
-//private fun PostCardItemPreview() {
-//    KonnettoTheme {
-//        PostCardItem(
-//            displayname = "Char",
-//            username = "charaznable123",
-//            timestamp = "16 h",
-//            profilePict = R.drawable.logo,
-//            image = "",
-//            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
-//            onCommentsClick = {},
-//            totalLike = 0,
-//            totalComment = 0,
-//            totalShare = 0,
-//            isLiked = false,
-//            isSaved = true,
-//            onLikedCountClick = {},
-//            onDisplaynameClick = {},
-//            onPostClick = {},
-//        )
-//    }
-//}
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp)
+        ) { page ->
+            val painter = rememberAsyncImagePainter(model = limitedImages[page])
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = "image post",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(height = 450.dp, width = 388.dp)
+                        .background(
+                            color = Color.LightGray
+                        )
+                        .clip(RoundedCornerShape(16.dp)),
+                )
+                if (painter.state is AsyncImagePainter.State.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(70.dp),
+                        color = Color.Gray
+                    )
+                }
+                // Nomor urut di pojok kanan atas
+                if (limitedImages.size > 1) {
+                    Text(
+                        text = "${page + 1}/${limitedImages.size}",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(12.dp)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
+            }
+        }
+
+
+        if (limitedImages.size > 1) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 8.dp)
+            ) {
+                repeat(limitedImages.size) { index ->
+                    val isSelected = pagerState.currentPage == index
+                    Box(
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .size(if (isSelected) 8.dp else 6.dp)
+                            .clip(CircleShape)
+                            .background(if (isSelected) MaterialTheme.colorScheme.onSurface else Color.LightGray)
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun PostCardItemPreview() {
+    KonnettoTheme {
+        PostCardItem(
+            displayname = "Char",
+            username = "charaznable123",
+            timestamp = "16 h",
+            profilePict = "R.drawable.logo",
+            image = listOf(
+
+            ),
+            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
+            onCommentsClick = {},
+            totalLike = 0,
+            totalComment = 0,
+            totalShare = 0,
+            isLiked = false,
+            isSaved = true,
+            onLikedCountClick = {},
+            onDisplaynameClick = {},
+            onPostClick = {},
+            onAddFriendClick = {},
+            isFriend = false,
+            showAddFriendButton = true,
+        )
+    }
+}

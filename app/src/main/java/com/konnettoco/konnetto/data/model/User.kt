@@ -10,6 +10,7 @@ data class User(
     val email: String,
     val isCurrentUser: Boolean = false,
     val isCreator: Boolean = false,
+    val isFriend: Boolean = false,
     val photo: String? = null,
     val bio: String? = null,
     val totalFriends: Int = 0,
