@@ -13,7 +13,7 @@ android {
         minSdk = 28
         targetSdk = 35
         versionCode = 1
-        versionName = "0.0.54"
+        versionName = "0.0.55"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://9dbd439f-060d-457d-953b-012710b92955.mock.pstmn.io/v1/\"")
@@ -66,6 +66,8 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.32.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
     implementation ("com.google.accompanist:accompanist-flowlayout:0.34.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
     // Preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     testImplementation(libs.junit)

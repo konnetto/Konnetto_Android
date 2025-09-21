@@ -8,7 +8,9 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(
     primary = Green80,
@@ -54,6 +56,15 @@ fun KonnettoTheme(
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = !darkTheme
+    SideEffect {
+        systemUiController.setStatusBarColor(
+            color = colorScheme.background,
+            darkIcons = useDarkIcons
+        )
     }
 
     MaterialTheme(
