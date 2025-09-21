@@ -21,8 +21,8 @@ object FakeSugoiPicksDataSource {
             totalLike = 200,
             totalComments = 30,
             totalShare = 23,
-            createdAt = 12,
-            updatedAt = ""
+            createdAt = "2025-09-19T22:10:00Z",
+            updatedAt = "2025-09-19T22:10:00Z"
         ),
         SugoiPicks(
             id = 1,
@@ -38,8 +38,8 @@ object FakeSugoiPicksDataSource {
             totalLike = 200,
             totalComments = 30,
             totalShare = 23,
-            createdAt = 12,
-            updatedAt = ""
+            createdAt = "2025-09-18T22:10:00Z",
+            updatedAt = "2025-09-18T22:10:00Z"
         ),
         SugoiPicks(
             id = 2,
@@ -55,8 +55,8 @@ object FakeSugoiPicksDataSource {
             totalLike = 200,
             totalComments = 30,
             totalShare = 23,
-            createdAt = 12,
-            updatedAt = ""
+            createdAt = "2025-08-19T22:10:00Z",
+            updatedAt = "2025-08-19T22:10:00Z"
         ),
         SugoiPicks(
             id = 3,
@@ -72,8 +72,8 @@ object FakeSugoiPicksDataSource {
             totalLike = 200,
             totalComments = 30,
             totalShare = 23,
-            createdAt = 12,
-            updatedAt = ""
+            createdAt = "2023-08-19T22:10:00Z",
+            updatedAt = "2023-08-19T22:10:00Z"
         )
     )
 }

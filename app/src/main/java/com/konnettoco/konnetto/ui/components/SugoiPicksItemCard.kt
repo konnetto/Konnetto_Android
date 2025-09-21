@@ -56,6 +56,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.utils.formatCount
+import com.konnettoco.konnetto.utils.formatDateTime
 import com.konnettoco.konnetto.utils.getGenreColor
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -69,7 +70,7 @@ fun SugoiPicksCardItem(
     genres: List<String>,
     displayname: String,
     username: String,
-    timestamp: String,
+    createdAt: String,
     profilePict: String? = null,
     image: String? = null,
     caption: String,
@@ -308,7 +309,7 @@ fun SugoiPicksCardItem(
                     )
                     Spacer(modifier = Modifier.widthIn(12.dp))
                     Text(
-                        text = timestamp,
+                        text = formatDateTime(createdAt),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium
                     )

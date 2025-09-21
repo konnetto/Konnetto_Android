@@ -19,7 +19,7 @@ object FakePostDataSource {
             isSaved = false,
             totalLike = 1,
             totalComments = 2,
-            createdAt = 2,
+            createdAt = "2025-07-05T14:30:00Z",
             updatedAt = "2025-07-05T14:30:00Z"
         ),
         Post(
@@ -32,8 +32,8 @@ object FakePostDataSource {
             totalLike = 200,
             totalComments = 200,
             totalShare = 0,
-            createdAt = 2,
-            updatedAt = "2025-07-04T13:00:00Z"
+            createdAt = "2025-08-24T07:15:32Z",
+            updatedAt = "2025-08-24T07:15:32Z"
         ),
         Post(
             id = 2,
@@ -45,7 +45,8 @@ object FakePostDataSource {
             totalLike = 1,
             totalComments = 0,
             totalShare = 1,
-            createdAt = 5,
+            createdAt = "2025-09-24T07:15:32Z",
+            updatedAt = "2025-09-24T07:15:32Z"
         ),
         Post(
             id = 3,
@@ -60,7 +61,8 @@ object FakePostDataSource {
             totalLike = 0,
             totalComments = 0,
             totalShare = 0,
-            createdAt = 10,
+            createdAt = "2025-10-24T07:15:32Z",
+            updatedAt = "2025-10-24T07:15:32Z"
         ),
         Post(
             id = 4,
@@ -72,7 +74,8 @@ object FakePostDataSource {
             totalLike = 10,
             totalComments = 5,
             totalShare = 3,
-            createdAt = 11,
+            createdAt = "2025-11-24T07:15:32Z",
+            updatedAt = "2025-11-24T07:15:32Z"
         ),
         Post(
             id = 5,
@@ -95,7 +98,8 @@ object FakePostDataSource {
             totalLike = 10,
             totalComments = 5,
             totalShare = 3,
-            createdAt = 11,
+            createdAt = "2025-12-24T07:15:32Z",
+            updatedAt = "2025-12-24T07:15:32Z"
         ),
     )
 }

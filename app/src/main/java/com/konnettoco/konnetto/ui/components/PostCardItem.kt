@@ -24,8 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,13 +51,14 @@ import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
+import com.konnettoco.konnetto.utils.formatDateTime
 
 @Composable
 fun PostCardItem(
     modifier: Modifier = Modifier,
     displayname: String,
     username: String,
-    timestamp: String,
+    createdAt: String,
     profilePict: String? = null,
     image: List<String>? = null,
     isFriend: Boolean,
@@ -84,8 +83,6 @@ fun PostCardItem(
     var shareCount by remember { mutableIntStateOf(totalShare) }
 
     val avatarPainter = rememberAsyncImagePainter(model = profilePict)
-    val painter = rememberAsyncImagePainter(model = image)
-    val painterState = painter.state
 
     Column(
         modifier = modifier
@@ -137,29 +134,13 @@ fun PostCardItem(
                     )
                     Spacer(modifier = Modifier.widthIn(12.dp))
                     Text(
-                        text = timestamp,
+                        text = formatDateTime(createdAt),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            if (showAddFriendButton && !isFriend) {
-                Button(
-                    onClick = onAddFriendClick,
-                    colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colorScheme.primary
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = "Add Friend",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White,
-                    )
-                }
-            }
             IconButton(
                 onClick = {}
             ) {
@@ -413,7 +394,7 @@ private fun PostCardItemPreview() {
         PostCardItem(
             displayname = "Char",
             username = "charaznable123",
-            timestamp = "16 h",
+            createdAt = "2025-08-24T07:15:32Z",
             profilePict = "R.drawable.logo",
             image = listOf(
 

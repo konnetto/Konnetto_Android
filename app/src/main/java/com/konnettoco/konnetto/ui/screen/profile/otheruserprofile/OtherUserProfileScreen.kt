@@ -512,7 +512,7 @@ fun OtherUserPostList(
                     modifier = modifier.fillMaxWidth(),
                     displayname = data.author.displayname,
                     username = data.author.username,
-                    timestamp = data.createdAt.toString(),
+                    createdAt = data.createdAt,
                     profilePict = data.author.photo,
                     image = data.image,
                     caption = data.caption,

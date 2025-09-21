@@ -14,6 +14,6 @@ data class SugoiPicks(
     val totalLike: Int,
     val totalComments: Int,
     val totalShare: Int,
-    val createdAt: Int,
+    val createdAt: String,
     val updatedAt: String,
 )
