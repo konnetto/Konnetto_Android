@@ -13,9 +13,6 @@ data class PostResponse(
 
 data class MediaItem(
 
-	@field:SerializedName("duration")
-	val duration: Int? = null,
-
 	@field:SerializedName("id")
 	val id: String? = null,
 
@@ -24,9 +21,6 @@ data class MediaItem(
 
 	@field:SerializedName("url")
 	val url: String? = null,
-
-	@field:SerializedName("thumbnailUrl")
-	val thumbnailUrl: String? = null,
 
 	@field:SerializedName("order")
 	val order: Int? = null
@@ -73,8 +67,14 @@ data class DataItem(
 	@field:SerializedName("createdAt")
 	val createdAt: String? = null,
 
+	@field:SerializedName("displayname")
+	val displayname: String? = null,
+
 	@field:SerializedName("id")
 	val id: String? = null,
+
+	@field:SerializedName("username")
+	val username: String? = null,
 
 	@field:SerializedName("updatedAt")
 	val updatedAt: String? = null

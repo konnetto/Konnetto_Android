@@ -52,8 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.model.Post
 import com.konnettoco.konnetto.data.model.SugoiPicks
+import com.konnettoco.konnetto.data.remote.response.DataItem
 import com.konnettoco.konnetto.di.Injection
 import com.konnettoco.konnetto.ui.common.OverlayManager
 import com.konnettoco.konnetto.ui.common.UiState
@@ -70,7 +70,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(
         factory = ViewModelFactory(
-            Injection.provideRepositoy(),
+//            Injection.provideRepositoy(),
             Injection.provideSugoiPicksRepository()
         )
     ),
@@ -78,6 +78,7 @@ fun HomeScreen(
     onSearchClick: () -> Unit,
     onDisplaynameClick: (Long) -> Unit,
 ) {
+//    val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
     val postState by viewModel.uiState.collectAsState(initial = UiState.Loading)
     val sugoiPicksState by viewModel.sugoiPicksState.collectAsState(initial = UiState.Loading)
 
@@ -273,7 +274,7 @@ fun HomeScreen(
 
 @Composable
 fun ForYouContent(
-    posts: List<Post>,
+    posts: List<DataItem>,
     navigateToComments: () -> Unit,
     navigateToLikedBy: () -> Unit,
     onDisplaynameClick: (Long) -> Unit,
@@ -308,25 +309,25 @@ fun ForYouContent(
         ) {
             items(
                 items = posts,
-                key = { post -> post.id }
+                key = { post -> post.id ?: ""}
             ) { data ->
                 PostCardItem(
-                    displayname = data.author.displayname,
-                    username = data.author.username,
-                    createdAt = data.createdAt,
-                    profilePict = data.author.photo,
-                    image = data.image,
-                    caption = data.caption,
+                    displayname = data.displayname ?: "",
+                    username = data.username ?: "",
+                    createdAt = data.createdAt ?: "",
+                    profilePict = data.avatarUrl ?: "",
+                    image = data.media?.filterNotNull()?.mapNotNull { it.url } ?: emptyList(),  // ambil hanya url yang non-null
+                    caption = data.caption ?: "",
                     onCommentsClick = navigateToComments,
-                    totalLike = data.totalLike,
-                    totalComment = data.totalComments,
-                    totalShare = data.totalShare,
-                    isLiked = data.isLiked,
-                    isSaved = data.isSaved,
-                    isFriend = data.author.isFriend,
+                    totalLike = data.likeCount ?: 0,
+                    totalComment = data.commentCount ?: 0,
+                    totalShare = data.shareCount ?: 0,
+                    isLiked = false,
+                    isSaved = false,
+                    isFriend = false,
                     onLikedCountClick = navigateToLikedBy,
                     onDisplaynameClick = {
-                        data.author.id.let { onDisplaynameClick(it.toLong()) }
+//                        data.author.id.let { onDisplaynameClick(it.toLong()) }
                     },
                     onPostClick = {},
                     onAddFriendClick = {},

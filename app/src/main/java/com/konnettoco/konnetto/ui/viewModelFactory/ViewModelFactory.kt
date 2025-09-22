@@ -2,12 +2,11 @@ package com.konnettoco.konnetto.ui.viewModelFactory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.konnettoco.konnetto.data.repository.PostRepository
 import com.konnettoco.konnetto.data.repository.SugoiPicksRepository
 import com.konnettoco.konnetto.ui.screen.home.HomeViewModel
 
 class ViewModelFactory(
-    private val repository: PostRepository,
+//    private val repository: PostRepository,
     private val sugoiPicksRepository: SugoiPicksRepository,
 ): ViewModelProvider.NewInstanceFactory() {
 
@@ -15,7 +14,7 @@ class ViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
-                repository,
+//                repository,
                 sugoiPicksRepository
             ) as T
         }

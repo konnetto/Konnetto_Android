@@ -127,7 +127,7 @@ fun PostCardItem(
                 )
                 Row {
                     Text(
-                        text = "@$username",
+                        text = username,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.clickable { }
