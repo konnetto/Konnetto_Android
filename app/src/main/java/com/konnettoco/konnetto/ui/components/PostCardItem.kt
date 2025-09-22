@@ -179,7 +179,7 @@ fun PostCardItem(
             }
         }
         Spacer(Modifier.height(8.dp))
-        if (image != null) {
+        if (image != null && image.isNotEmpty()) {
             PostImageSlider(
                 images = image,
             )
