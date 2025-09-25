@@ -11,9 +11,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.konnettoco.konnetto.ui.screen.settings.SettingsViewModel
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.ui.viewModelFactory.SettingsViewModelFactory
+
 
 class MainActivity : ComponentActivity() {
     private val viewModel: SettingsViewModel by viewModels {
@@ -21,6 +23,12 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            !viewModel.isThemeLoaded.value
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +76,7 @@ fun PostCardItem(
     onCommentsClick: () -> Unit,
     onAddFriendClick: () -> Unit
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
     var isLiked by remember { mutableStateOf(isLiked) }
     var isSaved by remember { mutableStateOf(isSaved) }
     var likeCount by remember { mutableIntStateOf(totalLike) }
