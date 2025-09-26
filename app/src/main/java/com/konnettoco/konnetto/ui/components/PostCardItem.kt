@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -316,12 +317,11 @@ fun PostImageSlider(
                 .clip(RoundedCornerShape(20.dp)),
             contentAlignment = Alignment.Center
         ) {
-
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
+                    .heightIn(max = 400.dp)
             ) { page ->
                 val painter = rememberAsyncImagePainter(model = limitedImages[page])
                 Box(
@@ -330,10 +330,10 @@ fun PostImageSlider(
                     Image(
                         painter = painter,
                         contentDescription = "image post",
-                        contentScale = ContentScale.FillBounds,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .size(height = 450.dp, width = 388.dp)
+                            .aspectRatio(1f)
                             .background(
                                 color = Color.LightGray
                             ),
@@ -345,6 +345,22 @@ fun PostImageSlider(
                         )
                     }
                 }
+//                SubcomposeAsyncImage(
+//                    model = limitedImages[page],
+//                    contentDescription = "image post",
+//                    contentScale = ContentScale.FillWidth,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .wrapContentHeight()
+//                        .clip(RoundedCornerShape(20.dp))
+//                        .background(Color.LightGray),
+//                    loading = {
+//                        CircularProgressIndicator(
+//                            modifier = Modifier.size(70.dp),
+//                            color = Color.Gray
+//                        )
+//                    }
+//                )
             }
             // Nomor urut di pojok kanan atas
             if (limitedImages.size > 1) {
@@ -364,6 +380,55 @@ fun PostImageSlider(
                 )
             }
         }
+//        HorizontalPager(
+//            state = pagerState,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .heightIn(min = 300.dp, max = 400.dp)
+//        ) { page ->
+//            Box(
+//                modifier = Modifier
+//                    .padding(8.dp)
+//                    .fillMaxWidth()
+//                    .wrapContentHeight()
+//                    .clip(RoundedCornerShape(20.dp))
+//                    .background(Color.LightGray)
+//            ) {
+//                SubcomposeAsyncImage(
+//                    model = limitedImages[page],
+//                    contentDescription = "image post",
+//                    contentScale = ContentScale.FillWidth,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .wrapContentHeight(),
+//                    loading = {
+//                        CircularProgressIndicator(
+//                            modifier = Modifier.size(20.dp),
+//                            color = Color.Gray
+//                        )
+//                    }
+//                )
+//
+//                // Nomor urut di pojok kanan atas (per gambar)
+//                if (limitedImages.size > 1) {
+//                    Text(
+//                        text = "${page + 1}/${limitedImages.size}",
+//                        fontSize = 12.sp,
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color.White,
+//                        modifier = Modifier
+//                            .align(Alignment.TopEnd)
+//                            .padding(12.dp)
+//                            .background(
+//                                color = Color.Black.copy(alpha = 0.5f),
+//                                shape = RoundedCornerShape(8.dp)
+//                            )
+//                            .padding(horizontal = 6.dp, vertical = 2.dp)
+//                    )
+//                }
+//            }
+//        }
+
 
         if (limitedImages.size > 1) {
             Row(

@@ -3,7 +3,7 @@ package com.konnettoco.konnetto.data.model
 data class SugoiPicks(
     val id: Long,
     val author: User,
-    val image: String?,
+    val image: List<String>? = null,
     val title: String,
     val posterImage: String,
     val rating: Double,

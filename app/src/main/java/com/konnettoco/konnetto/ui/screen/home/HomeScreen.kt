@@ -52,12 +52,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.model.SugoiPicks
 import com.konnettoco.konnetto.data.remote.response.DataItem
-import com.konnettoco.konnetto.di.Injection
+import com.konnettoco.konnetto.data.remote.response.SugoiPicksDataItem
 import com.konnettoco.konnetto.ui.common.OverlayManager
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.components.PostCardItem
+import com.konnettoco.konnetto.ui.components.PostShimmerLoading
 import com.konnettoco.konnetto.ui.components.SugoiPicksCardItem
 import com.konnettoco.konnetto.ui.navigation.TabItem
 import com.konnettoco.konnetto.ui.viewModelFactory.ViewModelFactory
@@ -71,7 +71,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(
         factory = ViewModelFactory(
 //            Injection.provideRepositoy(),
-            Injection.provideSugoiPicksRepository()
+//            Injection.provideSugoiPicksRepository()
         )
     ),
     onMenuClick: () -> Unit,
@@ -133,11 +133,18 @@ fun HomeScreen(
                     0 -> {
                         when {
                             postState is UiState.Loading -> {
+                                val count = 5
                                 Box(
                                     modifier = modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    CircularProgressIndicator()
+                                    LazyColumn(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        items(count) {
+                                            PostShimmerLoading()
+                                        }
+                                    }
                                 }
                             }
 
@@ -216,8 +223,9 @@ fun HomeScreen(
 
                                 SugoiPicksContent(
                                     sugoiPicks = sugoiPicks,
-                                    navigateToComments = { showCommentSectionSheet = true},
-                                    navigateToLikedBy = { showLikedBySectionSheet = true }
+                                    navigateToComments = { showCommentSectionSheet = true },
+                                    navigateToLikedBy = { showLikedBySectionSheet = true },
+                                    onDisplaynameClick = onDisplaynameClick
                                 )
                                 OverlayManager(
                                     showCommentSectionSheet = showCommentSectionSheet,
@@ -365,9 +373,10 @@ fun FriendPostsContent(
 
 @Composable
 fun SugoiPicksContent(
-    sugoiPicks: List<SugoiPicks>,
+    sugoiPicks: List<SugoiPicksDataItem>,
     navigateToComments: () -> Unit,
     navigateToLikedBy: () -> Unit,
+    onDisplaynameClick: (Long) -> Unit
 ) {
     if (sugoiPicks.isNullOrEmpty()) {
         Column(
@@ -399,27 +408,29 @@ fun SugoiPicksContent(
         ) {
             items(
                 items = sugoiPicks,
-                key = { sugoiPicks -> sugoiPicks.id }
+                key = { sugoiPicks -> sugoiPicks.id ?: "" }
             ) { data ->
                 SugoiPicksCardItem(
-                    displayname = data.author.displayname,
-                    username = data.author.username,
-                    createdAt = data.createdAt,
-                    profilePict = data.author.photo,
-                    image = data.image,
-                    caption = data.caption,
-                    totalLike = data.totalLike,
-                    totalComment = data.totalComments,
-                    totalShare = data.totalShare,
-                    isLiked = data.isLiked,
+                    displayname = data.displayname ?: "",
+                    username = data.username ?: "",
+                    createdAt = data.createdAt ?: "",
+                    profilePict = data.avatarUrl ?: "",
+                    image = data.media?.filterNotNull()?.mapNotNull { it.url } ?: emptyList(),  // ambil hanya url yang non-null,
+                    caption = data.caption ?: "",
+                    totalLike = data.likeCount ?: 0,
+                    totalComment = data.commentCount ?: 0,
+                    totalShare = data.shareCount ?: 0,
+                    isLiked = false,
                     onLikedCountClick = navigateToLikedBy,
                     onCommentsClick = navigateToComments,
-                    posterImage = data.posterImage,
-                    title = data.title,
-                    rating = data.rating,
+                    posterImage = data.review?.posterUrl ?: "",
+                    title = data.review?.animeName ?: "",
+                    rating = data.review?.rating ?: 0.0,
                     releaseDate = data.createdAt.toString(),
-                    genres = data.genres,
-                    onDisplaynameClick = {},
+                    genres = data.review?.genres ?: emptyList(),
+                    onDisplaynameClick = {
+//                        data.author.id.let { onDisplaynameClick(it.toLong()) }
+                    },
                     onSugoiPicksClick = {}
                 )
             }

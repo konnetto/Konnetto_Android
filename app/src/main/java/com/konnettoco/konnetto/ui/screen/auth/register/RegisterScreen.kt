@@ -90,7 +90,7 @@ fun RegisterContent(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.konnetto_logo),
+                    painter = painterResource(R.drawable.newlogo_konnetto),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(horizontal = 8.dp)

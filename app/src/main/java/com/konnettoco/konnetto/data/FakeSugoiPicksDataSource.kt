@@ -10,7 +10,18 @@ object FakeSugoiPicksDataSource {
         SugoiPicks(
             id = 0,
             author = currentUserDummy,
-            image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV6D4fmxljYS1uPgI3qwcKNIRm0DWQchKisQ&s",
+            image = listOf(
+                "https://i.pinimg.com/736x/a9/b7/f0/a9b7f088e0a7cab35863ff7e36664267.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTivHivMZqvE5He6x23DqwldBO--ZLjnGzp_w&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSmTFoXHt0EOGrsYmdRedMTKMi-aA-iL2tvQ&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY6RHS5A0amYsDLo_1f7WSsAic1OPwyEoANA&s",
+                "https://media.tenor.com/BVbJq5a-eloAAAAM/spongebob-goodbye.gif",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKpwvp08my61QbM5e37uFJ0w2Jl-aD2mN-Fg&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRl7ZrQwHSlXKo8en0zYxarllb59PaptS-AYw&s",
+                "https://i.pinimg.com/564x/a7/92/66/a7926616eee32d33ce60c04ca21465f3.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV6D4fmxljYS1uPgI3qwcKNIRm0DWQchKisQ&s",
+                "https://static.wikia.nocookie.net/gundam/images/f/fa/Gundam_Aerial_Front.png/revision/latest?cb=20220630033122"
+            ),
             title = "Mobile Suit Gundam GQuuuuuuux",
             posterImage = "https://m.media-amazon.com/images/M/MV5BNWZkMzEzMzQtNzQwOS00OThjLWFmYWQtMGNmMzllNTUwMDQ5XkEyXkFqcGc@._V1_.jpg",
             rating = 8.9,
@@ -44,7 +55,10 @@ object FakeSugoiPicksDataSource {
         SugoiPicks(
             id = 2,
             author = otherUserDummy2,
-            image = "https://i.pinimg.com/564x/67/b9/4a/67b94abda90218b077da5762a0df0d2c.jpg",
+            image = listOf(
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV6D4fmxljYS1uPgI3qwcKNIRm0DWQchKisQ&s",
+                "https://static.wikia.nocookie.net/gundam/images/f/fa/Gundam_Aerial_Front.png/revision/latest?cb=20220630033122"
+            ),
             title = "Mobile Suit Gundam Stardust Memory",
             posterImage = "https://m.media-amazon.com/images/M/MV5BYjAyMjMzYTQtZGNmOC00YjMzLTgzYjMtM2U0MTUzNzNjODljXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
             rating = 8.9,

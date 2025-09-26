@@ -1,5 +1,6 @@
 package com.konnettoco.konnetto.ui.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,13 +13,15 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
@@ -50,11 +53,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
+import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import com.konnettoco.konnetto.utils.formatCount
 import com.konnettoco.konnetto.utils.formatDateTime
 import com.konnettoco.konnetto.utils.getGenreColor
@@ -67,12 +72,12 @@ fun SugoiPicksCardItem(
     title: String,
     rating: Double,
     releaseDate: String,
-    genres: List<String>,
+    genres: List<String?>,
     displayname: String,
     username: String,
     createdAt: String,
     profilePict: String? = null,
-    image: String? = null,
+    image: List<String>? = null,
     caption: String,
     totalLike: Int,
     totalComment: Int,
@@ -193,7 +198,7 @@ fun SugoiPicksCardItem(
                             }
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
-                                text = "Release date: ${releaseDate}",
+                                text = "Release date: ${formatDateTime(releaseDate)}",
                                 fontSize = 14.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -207,7 +212,7 @@ fun SugoiPicksCardItem(
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 genres.forEach { genre ->
-                                    val (bgColor, textColor) = getGenreColor(genre)
+                                    val (bgColor, textColor) = getGenreColor(genre.toString())
                                     Box(
                                         modifier = Modifier
                                             .border(
@@ -223,7 +228,7 @@ fun SugoiPicksCardItem(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = genre,
+                                            text = genre.toString(),
                                             fontSize = 12.sp,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
@@ -276,7 +281,6 @@ fun SugoiPicksCardItem(
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .fillMaxSize()
             ) {
                 Image(
                     painter = avatarPainter,
@@ -354,32 +358,10 @@ fun SugoiPicksCardItem(
             }
         }
         Spacer(Modifier.height(8.dp))
-        if (image != null) {
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clip(RoundedCornerShape(20.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = "image post",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(height = 450.dp, width = 388.dp)
-                        .background(
-                            color = Color.LightGray
-                        )
-                        .clip(RoundedCornerShape(16.dp)),
-                )
-                if (painterState is AsyncImagePainter.State.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(70.dp),
-                        color = Color.Gray
-                    )
-                }
-            }
+        if (image != null && image.isNotEmpty()) {
+            SugoiPickImageSlider(
+                images = image,
+            )
         }
         Spacer(Modifier.height( 8.dp))
         Row(
@@ -494,37 +476,131 @@ fun SugoiPicksCardItem(
     Divider(color = Color.LightGray, thickness = 1.dp)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SugoiPickImageSlider(
+    images: List<String>,
+    modifier: Modifier = Modifier
+) {
+    val limitedImages = remember(images) { images.take(10) } //maksimal 10 gambar
+    val pagerState = rememberPagerState(pageCount = { limitedImages.size })
 
-//@Preview(showBackground = true)
-//@Composable
-//private fun SugoiPicksCardItemPreview() {
-//    KonnettoTheme {
-//        SugoiPicksCardItem(
-//            posterImage = "",
-//            title = "Mobile Suit Gundam GQuuuuuuux",
-//            rating = 8.9,
-//            releaseDate = "summer 2025",
-//            genres = listOf(
-//                "Mecha",
-//                "Military",
-//                "Action",
-//                "romance",
-//                "drama"
-//            ),
-//            displayname = "Char",
-//            username = "charaznable123",
-//            timestamp = "16 h",
-//            profilePict = R.drawable.logo,
-//            image = "",
-//            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
-//            onCommentsClick = {},
-//            totalLike = 0,
-//            totalComment = 0,
-//            totalShare = 0,
-//            isLiked = false,
-//            onLikedCountClick = {},
-//            onDisplaynameClick = {},
-//            onSugoiPicksClick = {},
-//        )
-//    }
-//}
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp)
+            ) { page ->
+                val painter = rememberAsyncImagePainter(model = limitedImages[page])
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painter,
+                        contentDescription = "image post",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .size(height = 450.dp, width = 388.dp)
+                            .background(
+                                color = Color.LightGray
+                            ),
+                    )
+                    if (painter.state is AsyncImagePainter.State.Loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(70.dp),
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
+            // Nomor urut di pojok kanan atas
+            if (limitedImages.size > 1) {
+                Text(
+                    text = "${pagerState.currentPage + 1}/${limitedImages.size}",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(12.dp)
+                        .background(
+                            color = Color.Black.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+            }
+        }
+
+        if (limitedImages.size > 1) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 8.dp)
+            ) {
+                repeat(limitedImages.size) { index ->
+                    val isSelected = pagerState.currentPage == index
+                    Box(
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .size(if (isSelected) 8.dp else 6.dp)
+                            .clip(CircleShape)
+                            .background(if (isSelected) MaterialTheme.colorScheme.onSurface else Color.LightGray)
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun SugoiPicksCardItemPreview() {
+    KonnettoTheme {
+        SugoiPicksCardItem(
+            posterImage = "",
+            title = "Mobile Suit Gundam GQuuuuuuux",
+            rating = 8.9,
+            releaseDate = "summer 2025",
+            genres = listOf(
+                "Mecha",
+                "Military",
+                "Action",
+                "romance",
+                "drama"
+            ),
+            displayname = "Char",
+            username = "charaznable123",
+            profilePict = "",
+            image = listOf(
+                "",
+                "",
+                "",
+            ),
+            caption = "awok awok awoka aoak asdasd dfsdfa asda asdasd asdasda asdasda asdasdasd dfsdfsd sdfsdfsf sdfsdfs asku dain daska",
+            onCommentsClick = {},
+            totalLike = 0,
+            totalComment = 0,
+            totalShare = 0,
+            isLiked = false,
+            onLikedCountClick = {},
+            onDisplaynameClick = {},
+            onSugoiPicksClick = {},
+            createdAt = "2025-12-24T07:15:32Z",
+        )
+    }
+}
