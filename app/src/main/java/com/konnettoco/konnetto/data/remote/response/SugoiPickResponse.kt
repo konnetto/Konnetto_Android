@@ -2,28 +2,13 @@ package com.konnettoco.konnetto.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class SugoiPicksResponse(
+data class SugoiPickResponse(
 
 	@field:SerializedName("data")
-	val data: List<SugoiPicksDataItem?>? = null,
+	val data: List<SugoiPickDataItem?>? = null,
 
 	@field:SerializedName("page_info")
-	val pageInfo: SugoiPicksPageInfo? = null
-)
-
-data class SugoiPicksMediaItem(
-
-	@field:SerializedName("id")
-	val id: String? = null,
-
-	@field:SerializedName("type")
-	val type: String? = null,
-
-	@field:SerializedName("url")
-	val url: String? = null,
-
-	@field:SerializedName("order")
-	val order: Int? = null
+	val pageInfo: SugoiPickPageInfo? = null
 )
 
 data class Review(
@@ -50,7 +35,7 @@ data class Review(
 	val animeId: String? = null
 )
 
-data class SugoiPicksPageInfo(
+data class SugoiPickPageInfo(
 
 	@field:SerializedName("size")
 	val size: Int? = null,
@@ -71,7 +56,22 @@ data class SugoiPicksPageInfo(
 	val totalPages: Int? = null
 )
 
-data class SugoiPicksDataItem(
+data class SugoiPickMediaItem(
+
+	@field:SerializedName("id")
+	val id: String? = null,
+
+	@field:SerializedName("type")
+	val type: String? = null,
+
+	@field:SerializedName("url")
+	val url: String? = null,
+
+	@field:SerializedName("order")
+	val order: Int? = null
+)
+
+data class SugoiPickDataItem(
 
 	@field:SerializedName("comment_count")
 	val commentCount: Int? = null,
@@ -92,7 +92,7 @@ data class SugoiPicksDataItem(
 	val createdAt: String? = null,
 
 	@field:SerializedName("media")
-	val media: List<SugoiPicksMediaItem?>? = null,
+	val media: List<SugoiPickMediaItem?>? = null,
 
 	@field:SerializedName("display_name")
 	val displayName: String? = null,
@@ -108,9 +108,6 @@ data class SugoiPicksDataItem(
 
 	@field:SerializedName("shared_from_post_id")
 	val sharedFromPostId: Any? = null,
-
-	@field:SerializedName("updated_at")
-	val updatedAt: String? = null,
 
 	@field:SerializedName("user_id")
 	val userId: String? = null,

@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException
 import com.konnettoco.konnetto.data.remote.connection.ApiConfig
 import com.konnettoco.konnetto.data.remote.connection.ApiService
 import com.konnettoco.konnetto.data.remote.response.DataItem
-import com.konnettoco.konnetto.data.remote.response.SugoiPicksDataItem
+import com.konnettoco.konnetto.data.remote.response.SugoiPickDataItem
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +24,7 @@ class HomeViewModel(
     private val _uiState = MutableStateFlow<UiState<List<DataItem>>>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _sugoiPicksState = MutableStateFlow<UiState<List<SugoiPicksDataItem>>>(UiState.Loading)
+    private val _sugoiPicksState = MutableStateFlow<UiState<List<SugoiPickDataItem>>>(UiState.Loading)
     val sugoiPicksState = _sugoiPicksState.asStateFlow()
 //    private val _uiState = MutableStateFlow<UiState<List<Post>>>(UiState.Loading)
 //    val uiState = _uiState.asStateFlow()

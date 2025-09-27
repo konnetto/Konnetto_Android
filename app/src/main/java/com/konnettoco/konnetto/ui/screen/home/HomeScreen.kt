@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.data.remote.response.DataItem
-import com.konnettoco.konnetto.data.remote.response.SugoiPicksDataItem
+import com.konnettoco.konnetto.data.remote.response.SugoiPickDataItem
 import com.konnettoco.konnetto.ui.common.OverlayManager
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.components.ErrorScreen
@@ -331,7 +331,7 @@ fun FriendPostsContent(
 
 @Composable
 fun SugoiPicksContent(
-    sugoiPicks: List<SugoiPicksDataItem>,
+    sugoiPicks: List<SugoiPickDataItem>,
     navigateToComments: () -> Unit,
     navigateToLikedBy: () -> Unit,
     onDisplaynameClick: (Long) -> Unit
