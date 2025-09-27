@@ -106,6 +106,7 @@ fun SugoiPicksCardItem(
             .fillMaxWidth()
             .padding(8.dp),
     ) {
+        //Anime card
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -269,6 +270,7 @@ fun SugoiPicksCardItem(
                 }
             }
         }
+        //User header
         Row(
             modifier = Modifier
                 .padding(4.dp)

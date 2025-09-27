@@ -3,6 +3,7 @@ package com.konnettoco.konnetto.ui.screen.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.JsonSyntaxException
 import com.konnettoco.konnetto.data.remote.connection.ApiConfig
 import com.konnettoco.konnetto.data.remote.connection.ApiService
 import com.konnettoco.konnetto.data.remote.response.DataItem
@@ -11,6 +12,8 @@ import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.UnknownHostException
 
 class HomeViewModel(
 //    private val repository: PostRepository,
@@ -61,7 +64,14 @@ class HomeViewModel(
                 _uiState.value = UiState.Success(data)
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error in getAllPostings", e)
-                _uiState.value = UiState.Error("Failed to load data")
+                _uiState.value = UiState.Error(
+                    when (e) {
+                        is HttpException -> "Server error: ${e.code()}"
+                        is UnknownHostException -> "No internet connection, please check your connection then try again"
+                        is JsonSyntaxException -> "Invalid JSON format"
+                        else -> "Failed to load data"
+                    }
+                )
             }
         }
     }
@@ -77,7 +87,14 @@ class HomeViewModel(
                 _sugoiPicksState.value = UiState.Success(sugoiPicksData)
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error in getAllSugoiPicks", e)
-                _sugoiPicksState.value = UiState.Error("Failed to load data")
+                _sugoiPicksState.value = UiState.Error(
+                    when (e) {
+                        is HttpException -> "Server error: ${e.code()}"
+                        is UnknownHostException -> "No internet connection, please check your connection then try again"
+                        is JsonSyntaxException -> "Invalid JSON format"
+                        else -> "Failed to load data"
+                    }
+                )
             }
         }
     }

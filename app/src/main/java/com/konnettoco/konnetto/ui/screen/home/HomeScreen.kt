@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,9 +19,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,9 +52,11 @@ import com.konnettoco.konnetto.data.remote.response.DataItem
 import com.konnettoco.konnetto.data.remote.response.SugoiPicksDataItem
 import com.konnettoco.konnetto.ui.common.OverlayManager
 import com.konnettoco.konnetto.ui.common.UiState
+import com.konnettoco.konnetto.ui.components.ErrorScreen
 import com.konnettoco.konnetto.ui.components.PostCardItem
 import com.konnettoco.konnetto.ui.components.PostShimmerLoading
 import com.konnettoco.konnetto.ui.components.SugoiPicksCardItem
+import com.konnettoco.konnetto.ui.components.SugoiPicksShimmerLoading
 import com.konnettoco.konnetto.ui.navigation.TabItem
 import com.konnettoco.konnetto.ui.viewModelFactory.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -169,37 +167,17 @@ fun HomeScreen(
                                 )
                             }
                             postState is UiState.Error -> {
-                //                    val errorMsg = (uiState as UiState.Error).errorMessage
+                                val errorMsg = (postState as UiState.Error).errorMessage
                                 Box(
                                     modifier = modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.padding(12.dp),
-                                            text = "No Internet, check your internet connection and then try again..",
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Spacer(modifier = Modifier.height(16.dp))
-                                        Button(
-                                            onClick = {  },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.primary
-                                            ),
-                                            shape = RoundedCornerShape(8.dp)
-                                        ) {
-                                            Text(
-                                                text = "Try again",
-                                                color = Color.White,
-                                                style = MaterialTheme.typography.labelLarge
-                                            )
+                                    ErrorScreen(
+                                        message = errorMsg,
+                                        onRetry = {
+                                            viewModel.getAllPostings()
                                         }
-                                    }
+                                    )
                                 }
                             }
                         }
@@ -214,7 +192,7 @@ fun HomeScreen(
                                     modifier = modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    CircularProgressIndicator()
+                                    SugoiPicksShimmerLoading()
                                 }
                             }
 
@@ -239,37 +217,17 @@ fun HomeScreen(
                                 )
                             }
                             sugoiPicksState is UiState.Error -> {
-                                //                    val errorMsg = (uiState as UiState.Error).errorMessage
+                                val sugoiPicksErrorMsg = (sugoiPicksState as UiState.Error).errorMessage
                                 Box(
                                     modifier = modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.padding(12.dp),
-                                            text = "No Internet, check your internet connection and then try again..",
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Spacer(modifier = Modifier.height(16.dp))
-                                        Button(
-                                            onClick = {  },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.primary
-                                            ),
-                                            shape = RoundedCornerShape(8.dp)
-                                        ) {
-                                            Text(
-                                                text = "Try again",
-                                                color = Color.White,
-                                                style = MaterialTheme.typography.labelLarge
-                                            )
+                                    ErrorScreen(
+                                        message = sugoiPicksErrorMsg,
+                                        onRetry = {
+                                            viewModel.getAllSugoiPicks()
                                         }
-                                    }
+                                    )
                                 }
                             }
                         }
@@ -320,7 +278,7 @@ fun ForYouContent(
                 key = { post -> post.id ?: ""}
             ) { data ->
                 PostCardItem(
-                    displayname = data.displayname ?: "",
+                    displayname = data.displayName ?: "",
                     username = data.username ?: "",
                     createdAt = data.createdAt ?: "",
                     profilePict = data.avatarUrl ?: "",
@@ -330,7 +288,7 @@ fun ForYouContent(
                     totalLike = data.likeCount ?: 0,
                     totalComment = data.commentCount ?: 0,
                     totalShare = data.shareCount ?: 0,
-                    isLiked = false,
+                    isLiked = data.isLikedByMe ?: false,
                     isSaved = false,
                     isFriend = false,
                     onLikedCountClick = navigateToLikedBy,
@@ -411,7 +369,7 @@ fun SugoiPicksContent(
                 key = { sugoiPicks -> sugoiPicks.id ?: "" }
             ) { data ->
                 SugoiPicksCardItem(
-                    displayname = data.displayname ?: "",
+                    displayname = data.displayName ?: "",
                     username = data.username ?: "",
                     createdAt = data.createdAt ?: "",
                     profilePict = data.avatarUrl ?: "",
