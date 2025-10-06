@@ -82,6 +82,7 @@ fun HomeScreen(
 
     //commentSection
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
+    var selectedPostId by rememberSaveable { mutableStateOf<String?>(null) }
     //liked by section
     var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
 
@@ -151,11 +152,15 @@ fun HomeScreen(
 
                                 ForYouContent(
                                     posts = posts,
-                                    navigateToComments = { showCommentSectionSheet = true },
+                                    navigateToComments = { postId ->
+                                        selectedPostId = postId
+                                        showCommentSectionSheet = true
+                                    },
                                     navigateToLikedBy = { showLikedBySectionSheet = true },
                                     onDisplaynameClick = onDisplaynameClick
                                 )
                                 OverlayManager(
+                                    selectedPostId = selectedPostId,
                                     showCommentSectionSheet = showCommentSectionSheet,
                                     onDismissCommentSheet = {
                                         showCommentSectionSheet = false
@@ -163,7 +168,7 @@ fun HomeScreen(
                                     showLikedBySectionSHeet = showLikedBySectionSheet,
                                     onDismissLikedBySheet = {
                                         showLikedBySectionSheet = false
-                                    }
+                                    },
                                 )
                             }
                             postState is UiState.Error -> {
@@ -206,6 +211,7 @@ fun HomeScreen(
                                     onDisplaynameClick = onDisplaynameClick
                                 )
                                 OverlayManager(
+                                    selectedPostId = selectedPostId,
                                     showCommentSectionSheet = showCommentSectionSheet,
                                     onDismissCommentSheet = {
                                         showCommentSectionSheet = false
@@ -213,7 +219,7 @@ fun HomeScreen(
                                     showLikedBySectionSHeet = showLikedBySectionSheet,
                                     onDismissLikedBySheet = {
                                         showLikedBySectionSheet = false
-                                    }
+                                    },
                                 )
                             }
                             sugoiPicksState is UiState.Error -> {
@@ -241,7 +247,7 @@ fun HomeScreen(
 @Composable
 fun ForYouContent(
     posts: List<DataItem>,
-    navigateToComments: () -> Unit,
+    navigateToComments: (String) -> Unit,
     navigateToLikedBy: () -> Unit,
     onDisplaynameClick: (Long) -> Unit,
 ) {
@@ -284,7 +290,7 @@ fun ForYouContent(
                     profilePict = data.avatarUrl ?: "",
                     image = data.media?.filterNotNull()?.mapNotNull { it.url } ?: emptyList(),  // ambil hanya url yang non-null
                     caption = data.caption ?: "",
-                    onCommentsClick = navigateToComments,
+                    onCommentsClick = { data.id?.let { navigateToComments(it) } },
                     totalLike = data.likeCount ?: 0,
                     totalComment = data.commentCount ?: 0,
                     totalShare = data.shareCount ?: 0,

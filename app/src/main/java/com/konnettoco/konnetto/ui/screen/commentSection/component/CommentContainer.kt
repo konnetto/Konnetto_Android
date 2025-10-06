@@ -1,9 +1,9 @@
 package com.konnettoco.konnetto.ui.screen.commentSection.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,27 +30,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.konnettoco.konnetto.R
+import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.utils.commentLikeFormatCount
+import com.konnettoco.konnetto.utils.formatDateTime
 
 @Composable
 fun CommentContainer(
     modifier: Modifier = Modifier,
+    avatar: String,
     displayname: String,
-    timeStamp: Int,
+    timeStamp: String,
     comment: String,
     isLiked: Boolean = false,
     likeCount: Int = 0,
     replyCount: Int,
+    onViewRepliesClick: () -> Unit
 ) {
     var isLiked by remember { mutableStateOf(isLiked) }
     var likeCount by remember { mutableIntStateOf(likeCount) }
+    val avatarPainter = rememberAsyncImagePainter(model = avatar)
 
     Column(
         modifier = modifier
@@ -61,11 +65,15 @@ fun CommentContainer(
             horizontalArrangement = Arrangement.Start
         ) {
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter = avatarPainter,
                 contentDescription = "profile picture",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
+                    .background(
+                        color = Color.LightGray
+                    )
             )
             Column(
                 modifier = Modifier.padding(start = 12.dp, end = 12.dp, )
@@ -91,7 +99,7 @@ fun CommentContainer(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "${timeStamp} h",
+                text = formatDateTime(timeStamp),
                 fontSize = 12.sp,
                 color = Color.Gray
             )
@@ -103,33 +111,62 @@ fun CommentContainer(
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray
             )
-            Spacer(modifier = Modifier.width(200.dp))
-            if (likeCount > 0) {
-                Box(
-                    modifier = Modifier
-                        .widthIn(min = 20.dp)
-                        .clickable {  }
+//            Spacer(modifier = Modifier.width(140.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 12.dp), // kasih jarak dari tepi kanan
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = likeCount.commentLikeFormatCount(),
-                        fontSize = 12.sp,
-                        color = if (likeCount > 0) Color.Gray
-                        else Color.Transparent
-                    )
+                    if (likeCount > 0) {
+                        Text(
+                            text = likeCount.commentLikeFormatCount(),
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(end = 4.dp) // jarak angka ke icon
+                        )
+                    }
+                    IconButton(
+                        modifier = Modifier.size(18.dp),
+                        onClick = {
+                            isLiked = !isLiked
+                            likeCount = if (isLiked) likeCount + 1 else maxOf(likeCount - 1, 0)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = null,
+                            tint = if (isLiked) Color.Red else Color.Gray
+                        )
+                    }
                 }
             }
-            IconButton(
-                modifier = Modifier
-                    .size(18.dp),
-                onClick = {
-                    isLiked = !isLiked
-                    likeCount = if (isLiked) likeCount + 1 else maxOf(likeCount - 1, 0)
-                }
+        }
+        if (replyCount > 0) {
+            Row(
+                modifier = Modifier.padding(start = 60.dp, end = 12.dp, top = 6.dp, bottom = 6.dp)
+                    .clickable { 
+                        onViewRepliesClick()
+                    },
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = null,
-                    tint = if (isLiked) Color.Red else Color.Gray
+                HorizontalDivider(
+                    modifier = Modifier.width(100.dp),
+                    thickness = 2.dp
+                )
+                Text(
+                    text = "View $replyCount replies",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+                HorizontalDivider(
+                    modifier = Modifier.width(100.dp),
+                    thickness = 2.dp
                 )
             }
         }
@@ -141,10 +178,12 @@ fun CommentContainer(
 private fun CommentContainerPreview() {
     CommentContainer(
         displayname = "Bambank",
-        timeStamp = 4,
+        timeStamp = "2025-08-24T10:32:45Z",
         comment = "Halo selamat pagi dunia!! asdasd asdasdasda asdasd ergt hty tjj yjyjyu yjujyujy ujyujyu jyujyujy jyujyujyujyujy ujyuky ukyukyukyukyukyukyukyk ykyuky yukyukmofmowe cwef wef wefwefqwdjqjqs cnd ",
         isLiked = false,
-        likeCount = 2000,
+        likeCount = 20000,
         replyCount = 130,
+        avatar = "",
+        onViewRepliesClick = {}
     )
 }

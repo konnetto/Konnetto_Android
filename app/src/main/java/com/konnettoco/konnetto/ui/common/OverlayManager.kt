@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OverlayManager(
     showCommentSectionSheet: Boolean,
-//    selectedPostId: Int?,
+    selectedPostId: String?,
     showLikedBySectionSHeet: Boolean,
     onDismissCommentSheet: () -> Unit,
     onDismissLikedBySheet: () -> Unit,
@@ -21,20 +21,9 @@ fun OverlayManager(
     val likedBySectionState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     val coroutineScope = rememberCoroutineScope()
 
-//    if (showCommentSheet && selectedPostId != null) {
-//        CommentSection(
-//            postId = selectedPostId,
-//            commentSheetState = commentSectionState,
-//            onDismissCommentSheet = {
-//                coroutineScope.launch {
-//                    commentSectionState.hide()
-//                    onDismissCommentSheet()
-//                }
-//            }
-//        )
-//    }
-    if (showCommentSectionSheet) {
+    if (showCommentSectionSheet && selectedPostId != null) {
         CommentSection(
+            postId = selectedPostId,
             commentSheetState = commentSectionState,
             onDismissCommentSheet = {
                 coroutineScope.launch {
@@ -44,6 +33,17 @@ fun OverlayManager(
             }
         )
     }
+//    if (showCommentSectionSheet) {
+//        CommentSection(
+//            commentSheetState = commentSectionState,
+//            onDismissCommentSheet = {
+//                coroutineScope.launch {
+//                    commentSectionState.hide()
+//                    onDismissCommentSheet()
+//                }
+//            }
+//        )
+//    }
 
     if (showLikedBySectionSHeet) {
         LikedBySection(

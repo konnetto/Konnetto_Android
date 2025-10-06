@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -83,16 +84,31 @@ fun WatchCardItem(
 //                    .clip(RoundedCornerShape(8.dp)),
 //                contentScale = ContentScale.Crop
 //            )
-            Text(
-                modifier = Modifier.padding(bottom = 4.dp).width(120.dp),
-                text = title,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                textAlign = TextAlign.Center,
-                overflow = TextOverflow.Ellipsis,
-                color = Color.White,
-            )
+            Box(
+                modifier = Modifier
+                    .height(50.dp)
+                    .clip(RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Text(
+                    modifier = Modifier.padding(bottom = 4.dp).width(120.dp),
+                    text = title,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White,
+                )
+            }
         }
         RoundedLinearProgressIndicator(
             progress = if (totalEpisode > 0) {

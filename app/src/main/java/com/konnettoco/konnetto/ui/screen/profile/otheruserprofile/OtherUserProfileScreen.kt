@@ -143,6 +143,7 @@ fun OtherUserProfileScreen(
     }
     //commentSection
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
+    var selectedPostId by rememberSaveable { mutableStateOf<String?>(null) }
     //liked by section
     var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
 
@@ -437,7 +438,8 @@ fun OtherUserProfileScreen(
                                                 showLikedBySectionSHeet = showLikedBySectionSheet,
                                                 onDismissLikedBySheet = {
                                                     showLikedBySectionSheet = false
-                                                }
+                                                },
+                                                selectedPostId = selectedPostId
                                             )
                                         }
 
