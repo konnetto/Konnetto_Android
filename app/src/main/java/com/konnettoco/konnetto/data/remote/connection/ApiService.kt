@@ -1,6 +1,7 @@
 package com.konnettoco.konnetto.data.remote.connection
 
 import com.konnettoco.konnetto.data.remote.response.CommentByIdResponse
+import com.konnettoco.konnetto.data.remote.response.CommentRepliesResponse
 import com.konnettoco.konnetto.data.remote.response.PostResponse
 import com.konnettoco.konnetto.data.remote.response.SugoiPickResponse
 import retrofit2.http.GET
@@ -26,5 +27,13 @@ interface ApiService {
         @Query("page") page: Int = 1,
         @Query("size") size: Int = 5
     ): CommentByIdResponse
+
+    @GET("posts/{post_id}/comments/{parent_comment_id}")
+    suspend fun getCommentRepliesByCommentId(
+        @Path("post_id") postId: String,
+        @Path("parent_comment_id") parentCommentId: String,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 5
+    ): CommentRepliesResponse
 
 }

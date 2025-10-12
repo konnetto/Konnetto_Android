@@ -83,6 +83,7 @@ fun HomeScreen(
     //commentSection
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
     var selectedPostId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedCommentId by rememberSaveable { mutableStateOf<String?>(null) }
     //liked by section
     var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
 
@@ -169,6 +170,7 @@ fun HomeScreen(
                                     onDismissLikedBySheet = {
                                         showLikedBySectionSheet = false
                                     },
+                                    selectedCommentId = selectedCommentId,
                                 )
                             }
                             postState is UiState.Error -> {
@@ -220,6 +222,7 @@ fun HomeScreen(
                                     onDismissLikedBySheet = {
                                         showLikedBySectionSheet = false
                                     },
+                                    selectedCommentId = selectedCommentId,
                                 )
                             }
                             sugoiPicksState is UiState.Error -> {

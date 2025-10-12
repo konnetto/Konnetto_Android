@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 class CommentSectionViewModelFactory(
-    private val postId: String
+    private val postId: String,
+    private val parentCommentId: String
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CommentSectionViewModel::class.java)) {

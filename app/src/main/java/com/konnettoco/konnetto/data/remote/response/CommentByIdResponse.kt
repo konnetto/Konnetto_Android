@@ -76,6 +76,9 @@ data class CommentsDataItem(
 	@field:SerializedName("parent_comment_id")
 	val parentCommentId: Any? = null,
 
+	@field:SerializedName("has_child_comment")
+	val hasChildComment: Boolean? = null,
+
 	@field:SerializedName("username")
 	val username: String? = null
 )

@@ -1,6 +1,7 @@
 package com.konnettoco.konnetto.ui.screen.commentSection
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -33,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,19 +54,23 @@ import com.konnettoco.konnetto.data.remote.response.CommentsDataItem
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.components.ErrorScreen
 import com.konnettoco.konnetto.ui.screen.commentSection.component.CommentContainer
+import com.konnettoco.konnetto.ui.screen.commentSection.component.SubCommentContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentSection(
     modifier: Modifier = Modifier,
     postId: String,
+    parentCommentId: String,
     commentSheetState: SheetState,
     viewModel: CommentSectionViewModel = viewModel(
-        factory = CommentSectionViewModelFactory (postId)
+        factory = CommentSectionViewModelFactory (postId, parentCommentId)
     ),
     onDismissCommentSheet: () -> Unit
 ) {
-    val commentState by viewModel.uiState.collectAsState(initial = UiState.Loading)
+    val parentCommentState by viewModel.parentCommentUiState.collectAsState(initial = UiState.Loading)
+//    val childCommentState by viewModel.childCommentUiState.collectAsState(initial = UiState.Loading)
+    val childCommentsMap by viewModel.childCommentsMap.collectAsState()
     var commentText by remember { mutableStateOf("") }
 
     ModalBottomSheet(
@@ -83,7 +91,7 @@ fun CommentSection(
                 fontWeight = FontWeight.Bold
             )
             when {
-                commentState is UiState.Loading -> {
+                parentCommentState is UiState.Loading -> {
                     Box(
                         modifier = modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -92,8 +100,8 @@ fun CommentSection(
                     }
                 }
 
-                commentState is UiState.Error -> {
-                    val errorMsg = (commentState as UiState.Error).errorMessage
+                parentCommentState is UiState.Error -> {
+                    val errorMsg = (parentCommentState as UiState.Error).errorMessage
                     Box(
                         modifier = modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -101,14 +109,14 @@ fun CommentSection(
                         ErrorScreen(
                             message = errorMsg,
                             onRetry = {
-//                                viewModel.getCommentsByPostId(postId = )
+                                viewModel.getCommentsByPostId()
                             }
                         )
                     }
                 }
 
-                commentState is UiState.Success -> {
-                    val comments = (commentState as UiState.Success<List<CommentsDataItem>>).data
+                parentCommentState is UiState.Success -> {
+                    val comments = (parentCommentState as UiState.Success<List<CommentsDataItem>>).data
 
                     if (comments.isEmpty()) {
                         Column(
@@ -134,6 +142,9 @@ fun CommentSection(
                             verticalArrangement = Arrangement.Top
                         ) {
                             itemsIndexed(comments) { index, comment ->
+                                var showReplies by rememberSaveable { mutableStateOf(false) }
+                                val replyState = childCommentsMap[comment.id]
+
                                 CommentContainer(
                                     avatar = comment.avatarUrl ?: "",
                                     displayname = comment.displayName ?: "",
@@ -141,9 +152,98 @@ fun CommentSection(
                                     comment = comment.content ?: "",
                                     isLiked = false,
                                     likeCount = comment.likeCount ?: 0,
-                                    replyCount = comment.replyCount ?: 0,
-                                    onViewRepliesClick = {},
                                 )
+
+                                if (comment.replyCount!! > 0 && showReplies == false) {
+                                    Row(
+                                        modifier = Modifier.padding(start = 60.dp, end = 12.dp, top = 6.dp, bottom = 6.dp)
+                                            .clickable {
+                                                showReplies = !showReplies
+                                                viewModel.getCommentRepliesByCommentId(
+                                                    comment.id!!
+                                                )
+                                            },
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.width(100.dp),
+                                            thickness = 2.dp
+                                        )
+                                        Text(
+                                            text = "View ${comment.replyCount} replies",
+                                            fontSize = 12.sp,
+                                            color = Color.Gray
+                                        )
+                                        HorizontalDivider(
+                                            modifier = Modifier.width(100.dp),
+                                            thickness = 2.dp
+                                        )
+                                    }
+                                }
+
+                                if (showReplies) {
+                                    when (replyState) {
+                                        is UiState.Loading -> {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(start = 80.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Text(
+                                                    text = "Loading...",
+                                                    fontSize = 12.sp,
+                                                    color = Color.Gray
+                                                )
+                                            }
+                                        }
+
+                                        is UiState.Error -> {
+                                            ErrorScreen(
+                                                message = replyState.errorMessage,
+                                                onRetry = {
+                                                    viewModel.getCommentRepliesByCommentId(comment.id!!)
+                                                }
+                                            )
+                                        }
+
+                                        is UiState.Success -> {
+                                            val replies = replyState.data
+                                            Column(modifier = Modifier.padding(start = 48.dp)) {
+                                                replies.forEach { reply ->
+                                                    SubCommentContainer(
+                                                        avatar = reply.avatar ?: "",
+                                                        displayname = reply.displayName ?: "",
+                                                        createdAt = reply.createdAt ?: "",
+                                                        comment = reply.content ?: "",
+                                                        isLiked = false,
+                                                        likeCount = reply.likeCount ?: 0
+                                                    )
+                                                }
+                                                Row(
+                                                    modifier = Modifier.padding(start = 60.dp, end = 12.dp, top = 6.dp, bottom = 6.dp)
+                                                        .clickable {
+                                                            showReplies = !showReplies
+                                                        },
+                                                    horizontalArrangement = Arrangement.Center,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(
+                                                        text = "Hide replies",
+                                                        fontSize = 12.sp,
+                                                        color = Color.Gray
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        else -> {
+
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -224,7 +324,6 @@ fun CommentSection(
                 )
                 IconButton(
                     onClick = {
-                        // Aksi ketika menekan kirim (simulasi)
 //                        if (commentText.isNotBlank()) {
 //                            println("Comment sent: $commentText")
 //                            commentText = ""
@@ -241,13 +340,3 @@ fun CommentSection(
         }
     }
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Preview(showBackground = true, device = Devices.DEFAULT)
-//@Composable
-//private fun CommentSectionPreview() {
-////    CommentSection(
-////        onCommentClick = {},
-////        commentSheetState = TODO()
-////    )
-//}

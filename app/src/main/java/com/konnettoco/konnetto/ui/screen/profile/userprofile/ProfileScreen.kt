@@ -128,6 +128,7 @@ fun ProfileScreen(
     //commentSection
     var showCommentSectionSheet by rememberSaveable { mutableStateOf(false) }
     var selectedPostId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedCommentId by rememberSaveable { mutableStateOf<String?>(null) }
     //liked by section
     var showLikedBySectionSheet by rememberSaveable { mutableStateOf(false) }
 
@@ -399,7 +400,8 @@ fun ProfileScreen(
                                         onDismissLikedBySheet = {
                                             showLikedBySectionSheet = false
                                         },
-                                        selectedPostId = selectedPostId
+                                        selectedPostId = selectedPostId,
+                                        selectedCommentId = selectedCommentId
                                     )
                                 }
 

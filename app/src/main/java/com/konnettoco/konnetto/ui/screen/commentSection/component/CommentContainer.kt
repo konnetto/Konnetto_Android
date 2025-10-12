@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -49,8 +48,6 @@ fun CommentContainer(
     comment: String,
     isLiked: Boolean = false,
     likeCount: Int = 0,
-    replyCount: Int,
-    onViewRepliesClick: () -> Unit
 ) {
     var isLiked by remember { mutableStateOf(isLiked) }
     var likeCount by remember { mutableIntStateOf(likeCount) }
@@ -59,7 +56,7 @@ fun CommentContainer(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(start = 12.dp, end = 12.dp),
     ) {
         Row(
             horizontalArrangement = Arrangement.Start
@@ -146,30 +143,6 @@ fun CommentContainer(
                 }
             }
         }
-        if (replyCount > 0) {
-            Row(
-                modifier = Modifier.padding(start = 60.dp, end = 12.dp, top = 6.dp, bottom = 6.dp)
-                    .clickable { 
-                        onViewRepliesClick()
-                    },
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider(
-                    modifier = Modifier.width(100.dp),
-                    thickness = 2.dp
-                )
-                Text(
-                    text = "View $replyCount replies",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
-                HorizontalDivider(
-                    modifier = Modifier.width(100.dp),
-                    thickness = 2.dp
-                )
-            }
-        }
     }
 }
 
@@ -182,8 +155,6 @@ private fun CommentContainerPreview() {
         comment = "Halo selamat pagi dunia!! asdasd asdasdasda asdasd ergt hty tjj yjyjyu yjujyujy ujyujyu jyujyujy jyujyujyujyujy ujyuky ukyukyukyukyukyukyukyk ykyuky yukyukmofmowe cwef wef wefwefqwdjqjqs cnd ",
         isLiked = false,
         likeCount = 20000,
-        replyCount = 130,
         avatar = "",
-        onViewRepliesClick = {}
     )
 }

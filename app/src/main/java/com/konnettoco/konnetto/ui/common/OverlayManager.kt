@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 fun OverlayManager(
     showCommentSectionSheet: Boolean,
     selectedPostId: String?,
+    selectedCommentId: String?,
     showLikedBySectionSHeet: Boolean,
     onDismissCommentSheet: () -> Unit,
     onDismissLikedBySheet: () -> Unit,
@@ -30,7 +31,8 @@ fun OverlayManager(
                     commentSectionState.hide()
                     onDismissCommentSheet()
                 }
-            }
+            },
+            parentCommentId = selectedCommentId ?: "",
         )
     }
 //    if (showCommentSectionSheet) {
