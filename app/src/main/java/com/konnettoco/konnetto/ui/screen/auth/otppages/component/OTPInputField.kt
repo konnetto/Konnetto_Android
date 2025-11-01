@@ -90,7 +90,7 @@ fun OTPInputField(
                 innerBox()
                 if (!isFocused && number == null) {
                     Text(
-                        text = "-",
+                        text = "",
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 36.sp,
