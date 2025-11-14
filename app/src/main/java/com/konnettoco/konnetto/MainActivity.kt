@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
             val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
 
             splashScreen.setKeepOnScreenCondition {
-                !viewModel.isDarkTheme.value
+                viewModel.isLoading.value
             }
 
             KonnettoTheme(darkTheme = isDarkTheme)  {
