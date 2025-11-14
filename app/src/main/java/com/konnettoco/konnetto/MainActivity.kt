@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,28 +12,32 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.konnettoco.konnetto.ui.KonnettoApp
 import com.konnettoco.konnetto.ui.screen.settings.SettingsViewModel
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
-import com.konnettoco.konnetto.ui.viewModelFactory.SettingsViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: SettingsViewModel by viewModels {
-        SettingsViewModelFactory(applicationContext)
-    }
+//    private val viewModel: SettingsViewModel by viewModels {
+//        SettingsViewModelFactory(applicationContext)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition {
-            !viewModel.isThemeLoaded.value
-        }
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModel: SettingsViewModel = hiltViewModel()
             val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
+
+            splashScreen.setKeepOnScreenCondition {
+                !viewModel.isDarkTheme.value
+            }
 
             KonnettoTheme(darkTheme = isDarkTheme)  {
                 // A surface container using the background color from theme

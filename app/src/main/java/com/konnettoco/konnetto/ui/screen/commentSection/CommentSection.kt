@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.remote.response.CommentsDataItem
+import com.konnettoco.konnetto.data.remote.dto.CommentsDataItem
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.components.ErrorScreen
 import com.konnettoco.konnetto.ui.screen.commentSection.component.CommentContainer

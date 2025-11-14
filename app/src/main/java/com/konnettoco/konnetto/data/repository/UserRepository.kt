@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data.repository
 
 import com.konnettoco.konnetto.data.FakeUserDataSource
-import com.konnettoco.konnetto.data.model.User
+import com.konnettoco.konnetto.data.local.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

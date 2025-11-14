@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto.data.remote.response
+package com.konnettoco.konnetto.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 

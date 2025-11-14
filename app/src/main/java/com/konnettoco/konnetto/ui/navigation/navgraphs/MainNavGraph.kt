@@ -4,8 +4,7 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -30,7 +29,6 @@ import com.konnettoco.konnetto.ui.screen.saved.SavedPageScreen
 import com.konnettoco.konnetto.ui.screen.search.SearchPageScreen
 import com.konnettoco.konnetto.ui.screen.settings.SettingsPageScreen
 import com.konnettoco.konnetto.ui.screen.settings.SettingsViewModel
-import com.konnettoco.konnetto.ui.viewModelFactory.SettingsViewModelFactory
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.mainNavGraph(
@@ -130,9 +128,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
         composable(Screen.SettingsPage.route) {
-            val viewModel: SettingsViewModel = viewModel(
-                factory = SettingsViewModelFactory(LocalContext.current)
-            )
+            val viewModel: SettingsViewModel = hiltViewModel()
             SettingsPageScreen(
                 onBackClick = { navController.popBackStack() },
                 viewModel = viewModel,

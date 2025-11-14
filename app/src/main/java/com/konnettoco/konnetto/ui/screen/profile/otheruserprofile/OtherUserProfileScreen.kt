@@ -67,8 +67,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.model.Post
-import com.konnettoco.konnetto.data.model.User
+import com.konnettoco.konnetto.data.local.model.Post
+import com.konnettoco.konnetto.data.local.model.User
 import com.konnettoco.konnetto.di.Injection
 import com.konnettoco.konnetto.ui.common.OverlayManager
 import com.konnettoco.konnetto.ui.common.UiState

@@ -1,6 +1,6 @@
 package com.konnettoco.konnetto.data
 
-import com.konnettoco.konnetto.data.model.MyLibraryItem
+import com.konnettoco.konnetto.data.local.model.MyLibraryItem
 
 object FakeMyLibraryItemDataSource {
     val dummyMyLibraryItem = listOf(

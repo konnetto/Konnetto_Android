@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.model.FriendList
+import com.konnettoco.konnetto.data.local.model.FriendList
 import com.konnettoco.konnetto.di.Injection
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.screen.profile.friendlist.component.FriendTile

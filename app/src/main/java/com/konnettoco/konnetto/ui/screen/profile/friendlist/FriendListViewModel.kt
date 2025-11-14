@@ -2,7 +2,7 @@ package com.konnettoco.konnetto.ui.screen.profile.friendlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konnettoco.konnetto.data.model.FriendList
+import com.konnettoco.konnetto.data.local.model.FriendList
 import com.konnettoco.konnetto.data.repository.FriendListRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow

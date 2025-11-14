@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto
+package com.konnettoco.konnetto.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.components.BottomBar
 import com.konnettoco.konnetto.ui.navigation.Screen
 import com.konnettoco.konnetto.ui.navigation.navgraphs.RootNavGraph

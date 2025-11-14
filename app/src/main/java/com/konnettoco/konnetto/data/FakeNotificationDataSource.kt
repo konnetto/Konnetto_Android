@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data
 
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.model.NotificationsTile
+import com.konnettoco.konnetto.data.local.model.NotificationsTile
 
 object FakeNotificationDataSource {
     val dummyNotification = listOf(

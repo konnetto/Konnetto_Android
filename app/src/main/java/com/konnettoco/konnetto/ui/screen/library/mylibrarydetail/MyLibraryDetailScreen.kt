@@ -59,7 +59,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.model.MyLibraryItem
+import com.konnettoco.konnetto.data.local.model.MyLibraryItem
 import com.konnettoco.konnetto.di.Injection
 import com.konnettoco.konnetto.ui.common.UiState
 import com.konnettoco.konnetto.ui.screen.profile.userprofile.components.RoundedLinearProgressIndicator

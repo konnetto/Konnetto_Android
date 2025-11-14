@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data.repository
 
 import com.konnettoco.konnetto.data.FakeSugoiPicksDataSource
-import com.konnettoco.konnetto.data.model.SugoiPicks
+import com.konnettoco.konnetto.data.local.model.SugoiPicks
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

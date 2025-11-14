@@ -2,8 +2,8 @@ package com.konnettoco.konnetto.ui.screen.discovery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konnettoco.konnetto.data.model.MyLibraryItem
-import com.konnettoco.konnetto.data.model.SugoiPicks
+import com.konnettoco.konnetto.data.local.model.MyLibraryItem
+import com.konnettoco.konnetto.data.local.model.SugoiPicks
 import com.konnettoco.konnetto.data.repository.MyLibraryItemRepository
 import com.konnettoco.konnetto.data.repository.SugoiPicksRepository
 import com.konnettoco.konnetto.ui.common.UiState

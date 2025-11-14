@@ -2,7 +2,7 @@ package com.konnettoco.konnetto.ui.screen.library.mylibrary
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konnettoco.konnetto.data.model.MyLibraryItem
+import com.konnettoco.konnetto.data.local.model.MyLibraryItem
 import com.konnettoco.konnetto.data.repository.MyLibraryItemRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow

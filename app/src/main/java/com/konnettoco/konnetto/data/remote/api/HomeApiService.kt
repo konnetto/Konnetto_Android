@@ -1,14 +1,14 @@
-package com.konnettoco.konnetto.data.remote.connection
+package com.konnettoco.konnetto.data.remote.api
 
-import com.konnettoco.konnetto.data.remote.response.CommentByIdResponse
-import com.konnettoco.konnetto.data.remote.response.CommentRepliesResponse
-import com.konnettoco.konnetto.data.remote.response.PostResponse
-import com.konnettoco.konnetto.data.remote.response.SugoiPickResponse
+import com.konnettoco.konnetto.data.remote.dto.CommentByIdResponse
+import com.konnettoco.konnetto.data.remote.dto.CommentRepliesResponse
+import com.konnettoco.konnetto.data.remote.dto.PostResponse
+import com.konnettoco.konnetto.data.remote.dto.SugoiPickResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiService {
+interface HomeApiService {
     @GET("posts")
     suspend fun getAllPosts(
         @Query("page") page: Int = 1,

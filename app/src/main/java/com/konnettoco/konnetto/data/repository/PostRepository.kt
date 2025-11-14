@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data.repository
 
 import com.konnettoco.konnetto.data.FakePostDataSource
-import com.konnettoco.konnetto.data.model.Post
+import com.konnettoco.konnetto.data.local.model.Post
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

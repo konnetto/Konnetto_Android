@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data
 
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.data.model.FriendList
+import com.konnettoco.konnetto.data.local.model.FriendList
 
 object FakeFriendListData {
     val dummyFriendListData = listOf(

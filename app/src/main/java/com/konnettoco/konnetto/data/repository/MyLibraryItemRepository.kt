@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data.repository
 
 import com.konnettoco.konnetto.data.FakeMyLibraryItemDataSource
-import com.konnettoco.konnetto.data.model.MyLibraryItem
+import com.konnettoco.konnetto.data.local.model.MyLibraryItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

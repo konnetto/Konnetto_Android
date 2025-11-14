@@ -4,7 +4,7 @@ import com.konnettoco.konnetto.data.FakeUserDataSource.currentUserDummy
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy1
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy2
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy3
-import com.konnettoco.konnetto.data.model.Post
+import com.konnettoco.konnetto.data.local.model.Post
 
 object FakePostDataSource {
     val otherDummyPost = listOf(

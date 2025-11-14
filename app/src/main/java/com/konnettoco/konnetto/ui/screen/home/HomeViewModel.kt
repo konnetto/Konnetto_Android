@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonSyntaxException
-import com.konnettoco.konnetto.data.remote.connection.ApiConfig
-import com.konnettoco.konnetto.data.remote.connection.ApiService
-import com.konnettoco.konnetto.data.remote.response.DataItem
-import com.konnettoco.konnetto.data.remote.response.SugoiPickDataItem
+import com.konnettoco.konnetto.data.remote.ApiConfig
+import com.konnettoco.konnetto.data.remote.api.HomeApiService
+import com.konnettoco.konnetto.data.remote.dto.DataItem
+import com.konnettoco.konnetto.data.remote.dto.SugoiPickDataItem
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +19,7 @@ class HomeViewModel(
 //    private val repository: PostRepository,
 //    private val sugoiPicksRepository: SugoiPicksRepository,
 ): ViewModel() {
-    private val apiService: ApiService = ApiConfig.getApiService()
+    private val apiService: HomeApiService = ApiConfig.getApiService()
 
     private val _uiState = MutableStateFlow<UiState<List<DataItem>>>(UiState.Loading)
     val uiState = _uiState.asStateFlow()

@@ -2,8 +2,8 @@ package com.konnettoco.konnetto.ui.screen.profile.otheruserprofile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konnettoco.konnetto.data.model.Post
-import com.konnettoco.konnetto.data.model.User
+import com.konnettoco.konnetto.data.local.model.Post
+import com.konnettoco.konnetto.data.local.model.User
 import com.konnettoco.konnetto.data.repository.PostRepository
 import com.konnettoco.konnetto.data.repository.UserRepository
 import com.konnettoco.konnetto.ui.common.UiState

@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data.repository
 
 import com.konnettoco.konnetto.data.FakeNotificationDataSource
-import com.konnettoco.konnetto.data.model.NotificationsTile
+import com.konnettoco.konnetto.data.local.model.NotificationsTile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

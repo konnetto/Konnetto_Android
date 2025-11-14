@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.data.repository
 
 import com.konnettoco.konnetto.data.FakeFriendListData
-import com.konnettoco.konnetto.data.model.FriendList
+import com.konnettoco.konnetto.data.local.model.FriendList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

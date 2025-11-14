@@ -2,7 +2,7 @@ package com.konnettoco.konnetto.ui.screen.notification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konnettoco.konnetto.data.model.NotificationsTile
+import com.konnettoco.konnetto.data.local.model.NotificationsTile
 import com.konnettoco.konnetto.data.repository.NotificationRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow

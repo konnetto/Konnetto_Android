@@ -3,7 +3,7 @@ package com.konnettoco.konnetto.data
 import com.konnettoco.konnetto.data.FakeUserDataSource.currentUserDummy
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy1
 import com.konnettoco.konnetto.data.FakeUserDataSource.otherUserDummy2
-import com.konnettoco.konnetto.data.model.SugoiPicks
+import com.konnettoco.konnetto.data.local.model.SugoiPicks
 
 object FakeSugoiPicksDataSource {
     val dummySugoiPicks = listOf(

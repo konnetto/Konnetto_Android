@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto.data.model
+package com.konnettoco.konnetto.data.local.model
 
 data class UserProfile(
     val id: Long,

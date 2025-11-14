@@ -1,6 +1,6 @@
 package com.konnettoco.konnetto.data
 
-import com.konnettoco.konnetto.data.model.User
+import com.konnettoco.konnetto.data.local.model.User
 
 object FakeUserDataSource {
     val currentUserDummy = User(

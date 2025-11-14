@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto.data.model
+package com.konnettoco.konnetto.data.local.model
 
 data class SugoiPicks(
     val id: Long,

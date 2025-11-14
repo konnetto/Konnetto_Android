@@ -1,6 +1,6 @@
 package com.konnettoco.konnetto.ui.screen.home
 
-import com.konnettoco.konnetto.data.model.Post
+import com.konnettoco.konnetto.data.local.model.Post
 import com.konnettoco.konnetto.ui.common.UiState
 
 data class HomeUiState(

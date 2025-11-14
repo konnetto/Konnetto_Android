@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.konnettoco.konnetto.R
 import com.konnettoco.konnetto.ui.screen.settings.components.SeparatorTitle
 import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCard
@@ -49,7 +50,7 @@ import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCardMultipl
 fun SettingsPageScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
 
