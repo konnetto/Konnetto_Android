@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto.domain.repository
+package com.konnettoco.konnetto.domain.repository.setting
 
 import com.konnettoco.konnetto.domain.model.AppSettings
 import kotlinx.coroutines.flow.Flow

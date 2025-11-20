@@ -36,8 +36,8 @@ fun NavGraphBuilder.authNavGraph(navController: androidx.navigation.NavHostContr
 
         composable(Screen.RegisterPage.route) {
             RegisterScreen(
-                onClickToRegister = {
-                    navController.navigate("${Screen.OtpPage.route}?source=login") {
+                onClickToRegister = { userId, otpExpiredAt ->
+                    navController.navigate(Screen.OtpPage.createRoute(userId, otpExpiredAt, "register")) {
                         popUpTo(Screen.RegisterPage.route) { inclusive = true }
                     }
                 },
@@ -49,17 +49,22 @@ fun NavGraphBuilder.authNavGraph(navController: androidx.navigation.NavHostContr
             )
         }
 
+        // OTP
         composable(
-            route = "${Screen.OtpPage.route}?source={source}",
+            route = Screen.OtpPage.route,
             arguments = listOf(
-                navArgument("source") {
-                    type = NavType.StringType
-                    defaultValue = "login"
-                }
+                navArgument("userId") { type = NavType.StringType },
+                navArgument("otpExpiredAt") { type = NavType.StringType },
+                navArgument("source") { type = NavType.StringType; defaultValue = "login" }
             )
         ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            val otpExpiredAt = backStackEntry.arguments?.getString("otpExpiredAt") ?: ""
             val source = backStackEntry.arguments?.getString("source") ?: "login"
+
             OtpScreen(
+                userId = userId,
+                otpExpiredAt = otpExpiredAt,
                 onConfirmClick = {
                     if (source == "forgot") {
                         navController.navigate(Screen.NewPasswordPage.route) {
@@ -67,9 +72,7 @@ fun NavGraphBuilder.authNavGraph(navController: androidx.navigation.NavHostContr
                         }
                     } else {
                         navController.navigate("main_graph") {
-                            popUpTo(Screen.OtpPage.route) {
-                                inclusive = true
-                            }
+                            popUpTo(Screen.OtpPage.route) { inclusive = true }
                         }
                     }
                 }

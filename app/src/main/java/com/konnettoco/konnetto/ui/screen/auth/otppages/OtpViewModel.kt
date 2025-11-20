@@ -1,8 +1,6 @@
 package com.konnettoco.konnetto.ui.screen.auth.otppages
 
 import androidx.lifecycle.ViewModel
-import com.konnettoco.konnetto.ui.common.OTPState
-import com.konnettoco.konnetto.ui.common.OtpAction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -10,7 +8,9 @@ import kotlinx.coroutines.flow.update
 //dummy otp
 private const val VALID_OTP_CODE = "956789"
 
-class OtpViewModel: ViewModel() {
+class OtpViewModel(
+
+): ViewModel() {
     private val _uiState = MutableStateFlow(OTPState())
     val uiState = _uiState.asStateFlow()
 

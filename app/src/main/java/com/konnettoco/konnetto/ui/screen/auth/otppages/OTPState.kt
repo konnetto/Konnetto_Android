@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto.ui.common
+package com.konnettoco.konnetto.ui.screen.auth.otppages
 
 data class OTPState(
     val code: List<Int?> = (1..6).map { null },

@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.domain.usecase.settingusecase
 
 import com.konnettoco.konnetto.domain.model.AppSettings
-import com.konnettoco.konnetto.domain.repository.SettingsRepository
+import com.konnettoco.konnetto.domain.repository.setting.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
