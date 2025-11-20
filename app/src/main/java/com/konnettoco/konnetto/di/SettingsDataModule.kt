@@ -2,8 +2,8 @@ package com.konnettoco.konnetto.di
 
 import android.content.Context
 import com.konnettoco.konnetto.data.local.datastrore.AppSettingsDataStore
-import com.konnettoco.konnetto.data.repository.SettingsRepositoryImpl
-import com.konnettoco.konnetto.domain.repository.SettingsRepository
+import com.konnettoco.konnetto.data.repository.setting.SettingsRepositoryImpl
+import com.konnettoco.konnetto.domain.repository.setting.SettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

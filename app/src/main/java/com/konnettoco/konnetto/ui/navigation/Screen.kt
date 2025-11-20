@@ -1,11 +1,17 @@
 package com.konnettoco.konnetto.ui.navigation
 
 sealed class Screen(val route: String) {
+    //Auth Route
     data object LoginPage : Screen("loginPage")
     data object RegisterPage : Screen("registerPage")
     data object ForgotPasswordPage : Screen("forgotPasswordPage")
     data object NewPasswordPage : Screen("newPasswordPage")
-    data object OtpPage : Screen("otpPage")
+    data object OtpPage : Screen("otpPage?userId={userId}&otpExpiredAt={otpExpiredAt}&source={source}") {
+        fun createRoute(userId: String, otpExpiredAt: String, source: String = "register") =
+            "otpPage?userId=$userId&otpExpiredAt=$otpExpiredAt&source=$source"
+    }
+
+    //Main Route
     data object HomePage : Screen("homePage")
     data object SearchPage : Screen("searchPage")
     data object ProfilePage : Screen("profilPage")

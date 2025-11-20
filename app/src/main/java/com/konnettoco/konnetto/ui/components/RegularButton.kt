@@ -1,12 +1,15 @@
 package com.konnettoco.konnetto.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,12 +26,13 @@ import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 fun RegularButton(
     text: String,
     enable: Boolean = true,
+    loading: Boolean = false,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
-        enabled = enable,
+        enabled = enable && !loading,
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
         modifier = modifier
             .fillMaxWidth()
@@ -36,13 +40,22 @@ fun RegularButton(
             .height(50.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
-        Text(
-            text = text,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
+        Box(contentAlignment = Alignment.Center) {
+            if (loading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = text,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
     }
 }
 

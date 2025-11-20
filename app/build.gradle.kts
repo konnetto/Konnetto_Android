@@ -19,6 +19,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://9dbd439f-060d-457d-953b-012710b92955.mock.pstmn.io/v1/\"")
+        buildConfigField("String", "BASE_URL_REAL", "\"https://api.konnetto.co/api/v1/\"")
     }
 
     buildTypes {

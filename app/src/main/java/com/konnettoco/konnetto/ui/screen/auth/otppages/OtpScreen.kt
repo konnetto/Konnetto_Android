@@ -38,8 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.ui.common.OTPState
-import com.konnettoco.konnetto.ui.common.OtpAction
 import com.konnettoco.konnetto.ui.components.RegularButton
 import com.konnettoco.konnetto.ui.screen.auth.otppages.component.OTPInputField
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
@@ -47,6 +45,8 @@ import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 @Composable
 fun OtpScreen(
     modifier: Modifier = Modifier,
+    userId: String,
+    otpExpiredAt: String,
     onConfirmClick: () -> Unit,
     otpViewModel: OtpViewModel = viewModel(),
 ) {

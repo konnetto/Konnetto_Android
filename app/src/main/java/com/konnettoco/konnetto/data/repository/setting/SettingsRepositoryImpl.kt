@@ -1,15 +1,15 @@
-package com.konnettoco.konnetto.data.repository
+package com.konnettoco.konnetto.data.repository.setting
 
 import com.konnettoco.konnetto.data.local.datastrore.AppSettingsDataStore
 import com.konnettoco.konnetto.domain.model.AppSettings
-import com.konnettoco.konnetto.domain.repository.SettingsRepository
+import com.konnettoco.konnetto.domain.repository.setting.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SettingsRepositoryImpl @Inject constructor(
     private val dataStore: AppSettingsDataStore
-) : SettingsRepository{
+) : SettingsRepository {
     override fun getSettings(): Flow<AppSettings> = dataStore.settingsFlow.map { dto ->
         AppSettings(
             isDarkMode = dto.darkMode
