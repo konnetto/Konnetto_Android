@@ -20,7 +20,7 @@ fun NavGraphBuilder.authNavGraph(navController: androidx.navigation.NavHostContr
         composable(Screen.LoginPage.route) {
             LoginScreen(
                 onClickToLogin = {
-                    navController.navigate(Screen.OtpPage.route) {
+                    navController.navigate(Screen.OtpPage.createRoute("", "", "login")) {
                         popUpTo(Screen.LoginPage.route) { inclusive = true }
                         launchSingleTop = true
                     }
