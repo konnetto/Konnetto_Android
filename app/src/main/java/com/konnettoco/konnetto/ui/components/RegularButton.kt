@@ -43,7 +43,7 @@ fun RegularButton(
         Box(contentAlignment = Alignment.Center) {
             if (loading) {
                 CircularProgressIndicator(
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp),
                     strokeWidth = 2.dp
                 )

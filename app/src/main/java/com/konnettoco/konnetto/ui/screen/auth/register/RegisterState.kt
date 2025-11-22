@@ -19,4 +19,7 @@ data class RegisterState(
     val errorEmail: String? = null,
     val errorPassword: String? = null,
     val errorConfirmPassword: String? = null,
+
+    val isUsernameAvailable: Boolean? = null,
+    val isEmailAvailable: Boolean? = null
 )
