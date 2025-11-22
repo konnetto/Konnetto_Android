@@ -57,4 +57,38 @@ class RegisterRepositoryImpl @Inject constructor(
             Result.failure(Exception("An error occurred, please try again."))
         }
     }
+
+    override suspend fun checkUsername(username: String): Result<Unit> {
+        return try {
+            val response = api.checkUsername(username)
+            if (response.data?.isAvailable == true) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Username already taken"))
+            }
+        } catch (e: UnknownHostException) {
+            Result.failure(Exception("No internet connection"))
+        } catch (e: SocketTimeoutException) {
+            Result.failure(Exception("Connection timed out, please try again"))
+        } catch (e: Exception) {
+            Result.failure(Exception("An error occurred, please try again."))
+        }
+    }
+
+    override suspend fun checkEmail(email: String): Result<Unit> {
+        return try {
+            val response = api.checkEmail(email)
+            if (response.data?.isAvailable == true) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("This email already taken"))
+            }
+        } catch (e: UnknownHostException) {
+            Result.failure(Exception("No internet connection"))
+        } catch (e: SocketTimeoutException) {
+            Result.failure(Exception("Connection timed out, please try again"))
+        } catch (e: Exception) {
+            Result.failure(Exception("An error occurred, please try again."))
+        }
+    }
 }

@@ -9,4 +9,8 @@ interface RegisterRepository {
         username: String,
         password: String
     ): Result<RegisterResult>
+
+    suspend fun checkUsername(username: String): Result<Unit>
+
+    suspend fun checkEmail(email: String): Result<Unit>
 }
