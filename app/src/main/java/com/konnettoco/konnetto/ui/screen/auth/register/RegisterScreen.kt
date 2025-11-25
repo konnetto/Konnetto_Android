@@ -17,6 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,7 +49,7 @@ import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    onClickToRegister: (userId: String, otpExpiredAt: String) -> Unit,
+    onClickToRegister: (userId: String) -> Unit,
     navigateToLogin: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
@@ -53,19 +57,16 @@ fun RegisterScreen(
 
     val context = LocalContext.current
 
-    // Toast success
     LaunchedEffect(registerUiSate.isSuccess) {
         val userId = registerUiSate.userId
-        val otpExpiredAt = registerUiSate.otpExpiredAt
 
-        if (registerUiSate.isSuccess && userId != null && otpExpiredAt != null) {
-            Toast.makeText(context, "Register Success", Toast.LENGTH_SHORT).show()
-            onClickToRegister(userId, otpExpiredAt)
+        if (registerUiSate.isSuccess && userId != null) {
+            Toast.makeText(context, "OTP code has been sent to your email", Toast.LENGTH_SHORT).show()
+            onClickToRegister(userId)
             viewModel.resetSuccess()
         }
     }
 
-    // Toast error
     LaunchedEffect(registerUiSate.error) {
         registerUiSate.error?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -106,13 +107,14 @@ fun RegisterContent(
     navigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Disable if all field are empty or error
     val isButtonEnabled = name.isNotBlank() &&
             username.isNotBlank() &&
             email.isNotBlank() &&
             password.isNotBlank() &&
             confirmPassword.isNotBlank() &&
-            !registerState.isLoading
+            !registerState.isLoading &&
+            registerState.isUsernameAvailable == true &&
+            registerState.isEmailAvailable == true
 
     Scaffold { innerPadding ->
         Column(
@@ -163,27 +165,78 @@ fun RegisterContent(
                 keyboardType = KeyboardType.Text
             )
             registerState.errorName?.let {
-                Text(text = it, color = Color.Red, fontSize = 12.sp)
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                }
             }
             Spacer(Modifier.heightIn(min = 10.dp))
             InputTextField(
                 input = username,
                 onValueChange = { onUsernameChange(it) },
                 labelText = "Username",
-                keyboardType = KeyboardType.Text
+                keyboardType = KeyboardType.Text,
+                isAvailable = registerState.isUsernameAvailable,
+                customTrailingIcon = {
+                    registerState.isUsernameAvailable?.let { isAvailable ->
+                        if (isAvailable) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = "Username available",
+                                tint = Color.Green
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Username taken",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
             )
             registerState.errorUsername?.let {
-                Text(text = it, color = Color.Red, fontSize = 12.sp)
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                }
             }
             Spacer(Modifier.heightIn(min = 10.dp))
             InputTextField(
                 input = email,
                 onValueChange = { onEmailChange(it) },
                 labelText = "Email",
-                keyboardType = KeyboardType.Email
+                keyboardType = KeyboardType.Email,
+                isAvailable = registerState.isEmailAvailable,
+                customTrailingIcon = {
+                    registerState.isEmailAvailable?.let { isAvailable ->
+                        if (isAvailable) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = "Email available",
+                                tint = Color.Green
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Email taken",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
             )
             registerState.errorEmail?.let {
-                Text(text = it, color = Color.Red, fontSize = 12.sp)
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                }
             }
             Spacer(Modifier.heightIn(min = 10.dp))
             InputTextField(
@@ -194,7 +247,12 @@ fun RegisterContent(
                 visualTransformation = PasswordVisualTransformation()
             )
             registerState.errorPassword?.let {
-                Text(text = it, color = Color.Red, fontSize = 12.sp)
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                }
             }
             Spacer(Modifier.heightIn(min = 10.dp))
             InputTextField(
@@ -205,7 +263,12 @@ fun RegisterContent(
                 visualTransformation = PasswordVisualTransformation()
             )
             registerState.errorConfirmPassword?.let {
-                Text(text = it, color = Color.Red, fontSize = 12.sp)
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                }
             }
             Spacer(Modifier.heightIn(min = 30.dp))
             RegularButton(
@@ -231,9 +294,7 @@ fun RegisterContent(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(start = 10.dp)
-                        .clickable {
-                            navigateToLogin()
-                        }
+                        .clickable { navigateToLogin() }
                 )
             }
             Spacer(Modifier.heightIn(min = 30.dp))
@@ -258,7 +319,7 @@ private fun RegisterScreenPreview() {
             onConfirmPasswordChange = {},
             onRegisterClick = {},
             navigateToLogin = {},
-            registerState = RegisterState(),
+            registerState = RegisterState(isUsernameAvailable = true),
         )
     }
 }
