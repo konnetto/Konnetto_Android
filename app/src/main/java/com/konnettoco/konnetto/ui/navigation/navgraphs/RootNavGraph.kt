@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 fun RootNavGraph(
     navController: NavHostController,
     drawerState: androidx.compose.material3.DrawerState,
-    isLoggedIn: Boolean = true // sementara true biar langsung ke Main
+    isLoggedIn: Boolean
 ) {
     NavHost(
         navController = navController,

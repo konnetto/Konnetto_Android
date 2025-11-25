@@ -128,10 +128,15 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
         composable(Screen.SettingsPage.route) {
-            val viewModel: SettingsViewModel = hiltViewModel()
             SettingsPageScreen(
                 onBackClick = { navController.popBackStack() },
-                viewModel = viewModel,
+                navigateToLogin = {
+                    navController.navigate("auth_graph") {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
 

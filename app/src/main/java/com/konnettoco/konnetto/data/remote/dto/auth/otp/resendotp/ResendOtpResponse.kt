@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 data class ResendOtpResponse(
 
 	@field:SerializedName("data")
-	val data: Data? = null,
+	val data: ResendOtpData? = null,
 
 	@field:SerializedName("timestamp")
 	val timestamp: String? = null
 )
 
-data class Data(
+data class ResendOtpData(
 
 	@field:SerializedName("user_id")
 	val userId: String? = null,

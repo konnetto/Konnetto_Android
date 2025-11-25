@@ -6,9 +6,12 @@ sealed class Screen(val route: String) {
     data object RegisterPage : Screen("registerPage")
     data object ForgotPasswordPage : Screen("forgotPasswordPage")
     data object NewPasswordPage : Screen("newPasswordPage")
-    data object OtpPage : Screen("otpPage?userId={userId}&otpExpiredAt={otpExpiredAt}&source={source}") {
-        fun createRoute(userId: String, otpExpiredAt: String, source: String = "register") =
-            "otpPage?userId=$userId&otpExpiredAt=$otpExpiredAt&source=$source"
+    data object OtpPage : Screen("otpPage?userId={userId}&verificationType={verificationType}&source={source}") {
+        fun createRoute(
+            userId: String,
+            verificationType: String,
+            source: String = "register"
+        ) = "otpPage?userId=$userId&verificationType=$verificationType&source=$source"
     }
 
     //Main Route

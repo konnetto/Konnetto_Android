@@ -30,6 +30,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.konnettoco.konnetto.R
+import com.konnettoco.konnetto.ui.navigation.NavigationItem
 import com.konnettoco.konnetto.ui.screen.settings.components.SeparatorTitle
 import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCard
 import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCardMultipleContent
@@ -50,15 +52,25 @@ import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCardMultipl
 fun SettingsPageScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    navigateToLogin: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
+    val logoutCompleted by viewModel.logoutCompleted.collectAsState()
+
+    LaunchedEffect(logoutCompleted) {
+        if (logoutCompleted) {
+            navigateToLogin()
+            viewModel.onLogoutCompleted() // Reset the state
+        }
+    }
 
     SettingsPageContent(
         modifier = modifier,
         onBackClick = onBackClick,
         darkThemeChecked = isDarkTheme,
-        onDarkThemeToggle = { viewModel.toggleTheme(it) }
+        onDarkThemeToggle = { viewModel.toggleTheme(it) },
+        onLogoutClick = { viewModel.logout() }
     )
 }
 
@@ -67,7 +79,8 @@ fun SettingsPageContent(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     darkThemeChecked: Boolean,
-    onDarkThemeToggle: (Boolean) -> Unit
+    onDarkThemeToggle: (Boolean) -> Unit,
+    onLogoutClick: () -> Unit
 ) {
     Scaffold(
         modifier = modifier,
@@ -203,7 +216,7 @@ fun SettingsPageContent(
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
-                        .clickable {  }
+                        .clickable { onLogoutClick() } 
                         .padding(horizontal = 20.dp, vertical = 18.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
