@@ -1,6 +1,8 @@
 package com.konnettoco.konnetto.data.remote.api
 
 import com.konnettoco.konnetto.data.remote.dto.ApiResponse
+import com.konnettoco.konnetto.data.remote.dto.auth.login.LoginRequest
+import com.konnettoco.konnetto.data.remote.dto.auth.login.LoginResponse
 import com.konnettoco.konnetto.data.remote.dto.auth.otp.resendotp.ResendOtpRequest
 import com.konnettoco.konnetto.data.remote.dto.auth.otp.resendotp.ResendOtpResponse
 import com.konnettoco.konnetto.data.remote.dto.auth.otp.verifyotp.VerifyOtpRequest
@@ -33,10 +35,20 @@ interface AuthApiService {
     @POST("auth/otp/verify")
     suspend fun verifyOtp(
         @Body request: VerifyOtpRequest
-    ): ApiResponse<VerifyOtpResponse>
+    ): VerifyOtpResponse
 
     @POST("auth/otp/resend")
     suspend fun resendOtp(
         @Body request: ResendOtpRequest
-    ): ApiResponse<ResendOtpResponse>
+    ): ResendOtpResponse
+
+    @POST("auth/login")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): ApiResponse<LoginResponse>
+
+//    @POST("auth/check-token")
+//    suspend fun checkToken(
+//        @Body request: CheckTokenRequest
+//    ): ApiResponse<CheckTokenResponse>
 }

@@ -45,6 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun KonnettoApp(
     modifier: Modifier = Modifier,
+    isLoggedIn: Boolean,
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -267,7 +268,7 @@ fun KonnettoApp(
                 RootNavGraph(
                     navController = navController,
                     drawerState = drawerState,
-                    isLoggedIn = false
+                    isLoggedIn = isLoggedIn
                 )
                 if (currentRoute in shouldShowBottomBar) {
                     BottomBar(

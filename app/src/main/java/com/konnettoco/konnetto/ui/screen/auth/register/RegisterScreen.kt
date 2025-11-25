@@ -49,7 +49,7 @@ import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    onClickToRegister: (userId: String, otpExpiredAt: String) -> Unit,
+    onClickToRegister: (userId: String) -> Unit,
     navigateToLogin: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
@@ -59,11 +59,10 @@ fun RegisterScreen(
 
     LaunchedEffect(registerUiSate.isSuccess) {
         val userId = registerUiSate.userId
-        val otpExpiredAt = registerUiSate.otpExpiredAt
 
-        if (registerUiSate.isSuccess && userId != null && otpExpiredAt != null) {
+        if (registerUiSate.isSuccess && userId != null) {
             Toast.makeText(context, "OTP code has been sent to your email", Toast.LENGTH_SHORT).show()
-            onClickToRegister(userId, otpExpiredAt)
+            onClickToRegister(userId)
             viewModel.resetSuccess()
         }
     }

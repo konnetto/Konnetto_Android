@@ -20,7 +20,7 @@ fun NavGraphBuilder.authNavGraph(navController: androidx.navigation.NavHostContr
         composable(Screen.LoginPage.route) {
             LoginScreen(
                 onClickToLogin = {
-                    navController.navigate(Screen.OtpPage.createRoute("", "", "login")) {
+                    navController.navigate(Screen.OtpPage.createRoute("", "LOGIN", "login")) {
                         popUpTo(Screen.LoginPage.route) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -36,8 +36,8 @@ fun NavGraphBuilder.authNavGraph(navController: androidx.navigation.NavHostContr
 
         composable(Screen.RegisterPage.route) {
             RegisterScreen(
-                onClickToRegister = { userId, otpExpiredAt ->
-                    navController.navigate(Screen.OtpPage.createRoute(userId, otpExpiredAt, "register")) {
+                onClickToRegister = { userId ->
+                    navController.navigate(Screen.OtpPage.createRoute(userId, "REGISTER", "register")) {
                         popUpTo(Screen.RegisterPage.route) { inclusive = true }
                     }
                 },
@@ -54,17 +54,18 @@ fun NavGraphBuilder.authNavGraph(navController: androidx.navigation.NavHostContr
             route = Screen.OtpPage.route,
             arguments = listOf(
                 navArgument("userId") { type = NavType.StringType },
-                navArgument("otpExpiredAt") { type = NavType.StringType },
+                navArgument("verificationType") { type = NavType.StringType },
                 navArgument("source") { type = NavType.StringType; defaultValue = "login" }
             )
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            val otpExpiredAt = backStackEntry.arguments?.getString("otpExpiredAt") ?: ""
+            val verificationType = backStackEntry.arguments?.getString("verificationType") ?: ""
             val source = backStackEntry.arguments?.getString("source") ?: "login"
 
             OtpScreen(
                 userId = userId,
-                otpExpiredAt = otpExpiredAt,
+//                otpExpiredAt = otpExpiredAt,
+                verificationType = verificationType,
                 onConfirmClick = {
                     if (source == "forgot") {
                         navController.navigate(Screen.NewPasswordPage.route) {

@@ -20,9 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-//    private val viewModel: SettingsViewModel by viewModels {
-//        SettingsViewModelFactory(applicationContext)
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -32,11 +29,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            //Settings
             val viewModel: SettingsViewModel = hiltViewModel()
             val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
 
+            // login check
+            val splashScreenViewModel: SplashScreenViewModel = hiltViewModel()
+            val isLoggedIn by splashScreenViewModel.isLoggedIn.collectAsState(initial = null)
+
             splashScreen.setKeepOnScreenCondition {
-                viewModel.isLoading.value
+                viewModel.isLoading.value || isLoggedIn == null
             }
 
             KonnettoTheme(darkTheme = isDarkTheme)  {
@@ -45,7 +47,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    KonnettoApp()
+                    if (isLoggedIn != null) {
+                        KonnettoApp(isLoggedIn = isLoggedIn!!)
+                    }
                 }
             }
         }
