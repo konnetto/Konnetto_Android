@@ -6,11 +6,13 @@ import com.konnettoco.konnetto.domain.model.VerifyOtpResult
 import com.konnettoco.konnetto.domain.usecase.authusecase.otpusecase.ResendOtpUseCase
 import com.konnettoco.konnetto.domain.usecase.authusecase.otpusecase.VerifyOtpUseCase
 import com.konnettoco.konnetto.domain.usecase.userusecase.SaveTokenUseCase
+import com.konnettoco.konnetto.domain.usecase.userusecase.SaveUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class OtpViewModel @Inject constructor(
     private val verifyOtpUseCase: VerifyOtpUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
+    private val saveUserIdUseCase: SaveUserIdUseCase,
     private val resendOtpUseCase: ResendOtpUseCase
 ) : ViewModel() {
 
@@ -124,10 +127,12 @@ class OtpViewModel @Inject constructor(
                 saveTokenUseCase(
                     accessToken = dto.accessToken,
                     refreshToken = dto.refreshToken,
-                    userId = userId,
                     userRole = dto.role
-                )
-                applySuccess(dto)
+                ).collect { 
+                    saveUserIdUseCase(userId).collect { 
+                        applySuccess(dto)
+                    }
+                }
             } else {
                 val e = result.exceptionOrNull()
                 _uiState.update {

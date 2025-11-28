@@ -6,7 +6,7 @@ import com.konnettoco.konnetto.data.repository.MyLibraryItemRepository
 import com.konnettoco.konnetto.data.repository.NotificationRepository
 import com.konnettoco.konnetto.data.repository.PostRepository
 import com.konnettoco.konnetto.data.repository.SugoiPicksRepository
-import com.konnettoco.konnetto.data.repository.UserRepository
+import com.konnettoco.konnetto.data.repository.UserDummyRepository
 
 object Injection {
     fun provideRepositoy(): PostRepository {
@@ -25,8 +25,8 @@ object Injection {
         return FriendListRepository.getInstance()
     }
 
-    fun provideUserRepository(): UserRepository {
-        return UserRepository.getInstance()
+    fun provideUserRepository(): UserDummyRepository {
+        return UserDummyRepository.getInstance()
     }
 
     fun provideSugoiPicksRepository(): SugoiPicksRepository {
