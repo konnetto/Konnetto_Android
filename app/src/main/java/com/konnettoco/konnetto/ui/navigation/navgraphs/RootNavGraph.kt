@@ -1,26 +1,28 @@
 package com.konnettoco.konnetto.ui.navigation.navgraphs
 
+import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 
 @Composable
 fun RootNavGraph(
     navController: NavHostController,
-    drawerState: androidx.compose.material3.DrawerState,
+    drawerState: DrawerState,
     isLoggedIn: Boolean
 ) {
+    val startDestination = if (isLoggedIn) "main_graph" else "auth_graph"
+
     NavHost(
         navController = navController,
-        startDestination = if (isLoggedIn) Graph.MAIN else Graph.AUTH
+        startDestination = startDestination,
+        modifier = Modifier
     ) {
-        authNavGraph(navController)
-        mainNavGraph(navController, drawerState)
+        authNavGraph(navController = navController)
+        mainNavGraph(
+            navController = navController,
+            drawerState = drawerState
+        )
     }
-}
-
-object Graph {
-    const val ROOT = "root_graph"
-    const val AUTH = "auth_graph"
-    const val MAIN = "main_graph"
 }

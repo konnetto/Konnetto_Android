@@ -42,9 +42,9 @@ class RegisterRepositoryImpl @Inject constructor(
         } catch (e: HttpException) {
             val code = e.code()
             val message = when(code) {
-                409 -> "Email or username already in use."
-                400 -> "Invalid data."
-                500 -> "An error occurred on the server."
+                409 -> "Email or username already taken, please choose another email or username."
+                400 -> "Some of the information you entered is not valid, please try again.."
+                500 -> "An error occurred on our server, please try again later..."
                 else -> "An error occurred. Code: $code"
             }
             Result.failure(Exception(message))

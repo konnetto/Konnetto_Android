@@ -8,7 +8,9 @@ interface UserRepository {
 
     fun getAccessToken(): Flow<String>
 
-    suspend fun saveToken(accessToken: String, refreshToken: String, userId: String, userRole: String)
+    suspend fun saveAuthToken(accessToken: String, refreshToken: String, userRole: String): Flow<Unit>
+
+    suspend fun saveUserId(userId: String): Flow<Unit>
 
     suspend fun clearUserData()
 }
