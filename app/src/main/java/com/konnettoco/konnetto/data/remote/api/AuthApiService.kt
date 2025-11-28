@@ -45,7 +45,7 @@ interface AuthApiService {
     @POST("auth/login")
     suspend fun login(
         @Body request: LoginRequest
-    ): ApiResponse<LoginResponse>
+    ): LoginResponse
 
 //    @POST("auth/check-token")
 //    suspend fun checkToken(

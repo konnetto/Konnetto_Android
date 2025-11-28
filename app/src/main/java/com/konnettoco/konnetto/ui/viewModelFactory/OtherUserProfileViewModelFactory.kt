@@ -3,11 +3,11 @@ package com.konnettoco.konnetto.ui.viewModelFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.konnettoco.konnetto.data.repository.PostRepository
-import com.konnettoco.konnetto.data.repository.UserRepository
+import com.konnettoco.konnetto.data.repository.UserDummyRepository
 import com.konnettoco.konnetto.ui.screen.profile.otheruserprofile.OtherUserProfileViewModel
 
 class OtherUserProfileViewModelFactory(
-    private val userRepository: UserRepository,
+    private val userRepository: UserDummyRepository,
     private val postRepository: PostRepository,
     private val userId: Long,
 ): ViewModelProvider.NewInstanceFactory() {

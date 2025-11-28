@@ -80,7 +80,7 @@ class RegisterViewModel @Inject constructor(
         checkEmailJob?.cancel()
         checkEmailJob = viewModelScope.launch {
             delay(500)
-            if (!cleanEmail.contains("@") || !cleanEmail.contains(".com") ) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(cleanEmail).matches() ) {
                 _registerState.value = _registerState.value.copy(
                     errorEmail = "Invalid email",
                     isEmailAvailable = false
@@ -106,10 +106,9 @@ class RegisterViewModel @Inject constructor(
 
     fun onPasswordChange(value: String) {
         val currentState = _registerState.value
-        val passwordMatches = value == currentState.confirmPassword
         _registerState.value = currentState.copy(
             password = value,
-            errorConfirmPassword = if (currentState.confirmPassword.isNotEmpty() && !passwordMatches) "Password does not match" else null
+            errorConfirmPassword = if (currentState.confirmPassword.isNotEmpty() && value.length < 8) "Password must be at least 8 characters" else null
         )
     }
 

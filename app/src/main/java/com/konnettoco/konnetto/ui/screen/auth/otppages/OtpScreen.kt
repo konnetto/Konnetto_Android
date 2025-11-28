@@ -57,11 +57,7 @@ fun OtpScreen(
 
     LaunchedEffect(state.isSuccess) {
         if (state.isSuccess) {
-            val msg = if (verificationType == "REGISTER") {
-                "Registration Successful, Welcome to Konnetto"
-            } else {
-                "Login Successful, Welcome Back"
-            }
+            val msg =  "Registration Successful, Welcome to Konnetto"
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             onConfirmClick()
         }

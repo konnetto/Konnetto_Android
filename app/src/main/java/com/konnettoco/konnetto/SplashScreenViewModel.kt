@@ -4,29 +4,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konnettoco.konnetto.domain.usecase.userusecase.CheckLoginStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val checkLoginStatusUseCase: CheckLoginStatusUseCase
-): ViewModel() {
+) : ViewModel() {
+
     private val _isLoggedIn = MutableStateFlow<Boolean?>(null)
-    val isLoggedIn = _isLoggedIn.asStateFlow()
+    val isLoggedIn: StateFlow<Boolean?> = _isLoggedIn.asStateFlow()
 
     init {
-        checkLogin()
+        checkLoginStatus()
     }
 
-    private fun checkLogin() {
+    private fun checkLoginStatus() {
         viewModelScope.launch {
-            delay(500)
-            checkLoginStatusUseCase().collect { loggedIn ->
-                _isLoggedIn.value = loggedIn
-            }
+            _isLoggedIn.value = checkLoginStatusUseCase().first()
         }
     }
 }

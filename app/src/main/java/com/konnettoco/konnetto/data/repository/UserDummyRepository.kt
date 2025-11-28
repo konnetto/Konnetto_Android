@@ -5,7 +5,7 @@ import com.konnettoco.konnetto.data.local.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class UserRepository {
+class UserDummyRepository {
     private val users = listOf(
         FakeUserDataSource.currentUserDummy,
         FakeUserDataSource.otherUserDummy1,
@@ -24,11 +24,11 @@ class UserRepository {
 
     companion object {
         @Volatile
-        private var instance: UserRepository? = null
+        private var instance: UserDummyRepository? = null
 
-        fun getInstance(): UserRepository =
+        fun getInstance(): UserDummyRepository =
             instance ?: synchronized(this) {
-                UserRepository().also { instance = it }
+                UserDummyRepository().also { instance = it }
             }
     }
 

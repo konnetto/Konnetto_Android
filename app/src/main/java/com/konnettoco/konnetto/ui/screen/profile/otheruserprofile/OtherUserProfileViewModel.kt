@@ -5,14 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.konnettoco.konnetto.data.local.model.Post
 import com.konnettoco.konnetto.data.local.model.User
 import com.konnettoco.konnetto.data.repository.PostRepository
-import com.konnettoco.konnetto.data.repository.UserRepository
+import com.konnettoco.konnetto.data.repository.UserDummyRepository
 import com.konnettoco.konnetto.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class OtherUserProfileViewModel(
-    private val userRepository: UserRepository,
+    private val userRepository: UserDummyRepository,
     private val postRepository: PostRepository,
     private val userId: Long,
 ): ViewModel() {
