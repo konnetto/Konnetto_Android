@@ -54,7 +54,6 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val registerUiSate by viewModel.registerState.collectAsState()
-
     val context = LocalContext.current
 
     LaunchedEffect(registerUiSate.isSuccess) {

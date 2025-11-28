@@ -1,5 +1,3 @@
-import java.lang.module.ModuleFinder.compose
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,7 +15,7 @@ android {
         minSdk = 28
         targetSdk = 35
         versionCode = 1
-        versionName = "0.6.90"
+        versionName = "0.7.91"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://9dbd439f-060d-457d-953b-012710b92955.mock.pstmn.io/v1/\"")

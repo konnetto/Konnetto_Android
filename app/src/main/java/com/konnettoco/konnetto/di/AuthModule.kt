@@ -1,8 +1,10 @@
 package com.konnettoco.konnetto.di
 
+import com.konnettoco.konnetto.data.repository.auth.LoginRepositoryImpl
 import com.konnettoco.konnetto.data.repository.auth.RegisterRepositoryImpl
 import com.konnettoco.konnetto.data.repository.auth.ResendOtpRepositoryImpl
 import com.konnettoco.konnetto.data.repository.auth.VerifyOtpRepositoryImpl
+import com.konnettoco.konnetto.domain.repository.auth.LoginRepository
 import com.konnettoco.konnetto.domain.repository.auth.RegisterRepository
 import com.konnettoco.konnetto.domain.repository.auth.ResendOtpRepository
 import com.konnettoco.konnetto.domain.repository.auth.VerifyOtpRepository
@@ -33,4 +35,10 @@ abstract class AuthModule {
     abstract fun bindResendOtprepository(
         impl: ResendOtpRepositoryImpl
     ): ResendOtpRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLoginRepository(
+        impl: LoginRepositoryImpl
+    ): LoginRepository
 }

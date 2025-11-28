@@ -1,7 +1,7 @@
 package com.konnettoco.konnetto.di
 
 import android.content.Context
-import com.konnettoco.konnetto.data.local.datastrore.UserDataStore
+import com.konnettoco.konnetto.data.local.datastore.UserDataStore
 import com.konnettoco.konnetto.data.repository.UserRepositoryImpl
 import com.konnettoco.konnetto.domain.repository.UserRepository
 import dagger.Binds
