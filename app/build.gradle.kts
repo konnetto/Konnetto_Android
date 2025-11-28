@@ -1,5 +1,3 @@
-import java.lang.module.ModuleFinder.compose
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
