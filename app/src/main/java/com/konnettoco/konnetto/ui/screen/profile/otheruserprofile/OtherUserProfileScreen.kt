@@ -460,7 +460,7 @@ fun OtherUserProfileScreen(
                                             modifier = Modifier
                                                 .size(100.dp)
                                                 .clip(CircleShape),
-                                            painter = painterResource(R.drawable.image_mascot),
+                                            painter = painterResource(R.drawable.image_mascot2),
                                             contentDescription = null
                                         )
                                         Text(

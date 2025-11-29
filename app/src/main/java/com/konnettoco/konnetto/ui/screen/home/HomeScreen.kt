@@ -263,7 +263,7 @@ fun ForYouContent(
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape),
-                painter = painterResource(R.drawable.image_mascot),
+                painter = painterResource(R.drawable.image_mascot2),
                 contentDescription = null
             )
             Text(
@@ -326,7 +326,7 @@ fun FriendPostsContent(
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape),
-            painter = painterResource(R.drawable.image_mascot),
+            painter = painterResource(R.drawable.image_mascot2),
             contentDescription = null
         )
         Text(
@@ -354,7 +354,7 @@ fun SugoiPicksContent(
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape),
-                painter = painterResource(R.drawable.image_mascot),
+                painter = painterResource(R.drawable.image_mascot2),
                 contentDescription = null
             )
             Text(

@@ -9,7 +9,7 @@ object FakeFriendRequestData {
             id = 0,
             displayname = "Fufufafa",
             username = "fufufafa",
-            profilePict = R.drawable.image_mascot,
+            profilePict = R.drawable.image_mascot2,
             timeStamp = 12
         ),
         FriendRequest(
@@ -23,14 +23,14 @@ object FakeFriendRequestData {
             id = 2,
             displayname = "Wok wok",
             username = "omonomon12",
-            profilePict = R.drawable.image_mascot,
+            profilePict = R.drawable.image_mascot2,
             timeStamp = 12
         ),
         FriendRequest(
             id = 3,
             displayname = "Tung tung tung sahur",
             username = "tungtung",
-            profilePict = R.drawable.image_mascot,
+            profilePict = R.drawable.image_mascot2,
             timeStamp = 12
         ),
         FriendRequest(
