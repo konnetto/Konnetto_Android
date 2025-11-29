@@ -155,7 +155,7 @@ private fun FriendRequestTilePreview() {
     FriendRequestTile(
         displayname = "Fufufafa",
         username = "fufufafa",
-        profilePict = R.drawable.image_mascot,
+        profilePict = R.drawable.image_mascot2,
         timeStamp = 12,
         onAccaptClick = {},
         onDeclineClick = {},
