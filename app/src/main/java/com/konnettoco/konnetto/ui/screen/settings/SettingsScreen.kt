@@ -33,6 +33,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.konnettoco.konnetto.R
-import com.konnettoco.konnetto.ui.navigation.NavigationItem
+import com.konnettoco.konnetto.ui.screen.settings.components.LogoutDialog
 import com.konnettoco.konnetto.ui.screen.settings.components.SeparatorTitle
 import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCard
 import com.konnettoco.konnetto.ui.screen.settings.components.SettingsCardMultipleContent
@@ -82,6 +85,42 @@ fun SettingsPageContent(
     onDarkThemeToggle: (Boolean) -> Unit,
     onLogoutClick: () -> Unit
 ) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+    if (showLogoutDialog) {
+//        AlertDialog(
+//            onDismissRequest = { showLogoutDialog = false },
+//            title = { Text("Confirm Logout") },
+//            text = { Text("Are you sure you want to log out?") },
+//            confirmButton = {
+//                TextButton(
+//                    onClick = {
+//                        onLogoutClick()
+//                        showLogoutDialog = false
+//                    }
+//                ) {
+//                    Text("Confirm")
+//                }
+//            },
+//            dismissButton = {
+//                TextButton(
+//                    onClick = { showLogoutDialog = false }
+//                ) {
+//                    Text("Cancel")
+//                }
+//            }
+//        )
+        LogoutDialog(
+            onDismissRequest = { showLogoutDialog = false},
+            onConfirmation = {
+                onLogoutClick()
+                showLogoutDialog = false
+            },
+            painter = painterResource(R.drawable.image_mascot2),
+            imageDescription = "Logout"
+        )
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -216,7 +255,7 @@ fun SettingsPageContent(
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
-                        .clickable { onLogoutClick() } 
+                        .clickable { showLogoutDialog = true }
                         .padding(horizontal = 20.dp, vertical = 18.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
