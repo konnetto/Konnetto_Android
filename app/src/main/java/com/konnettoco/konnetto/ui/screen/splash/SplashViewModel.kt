@@ -1,4 +1,4 @@
-package com.konnettoco.konnetto
+package com.konnettoco.konnetto.ui.screen.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashScreenViewModel @Inject constructor(
+class SplashViewModel @Inject constructor(
     private val checkLoginStatusUseCase: CheckLoginStatusUseCase
 ) : ViewModel() {
 

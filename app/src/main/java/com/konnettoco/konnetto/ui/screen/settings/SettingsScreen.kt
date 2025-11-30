@@ -88,28 +88,6 @@ fun SettingsPageContent(
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     if (showLogoutDialog) {
-//        AlertDialog(
-//            onDismissRequest = { showLogoutDialog = false },
-//            title = { Text("Confirm Logout") },
-//            text = { Text("Are you sure you want to log out?") },
-//            confirmButton = {
-//                TextButton(
-//                    onClick = {
-//                        onLogoutClick()
-//                        showLogoutDialog = false
-//                    }
-//                ) {
-//                    Text("Confirm")
-//                }
-//            },
-//            dismissButton = {
-//                TextButton(
-//                    onClick = { showLogoutDialog = false }
-//                ) {
-//                    Text("Cancel")
-//                }
-//            }
-//        )
         LogoutDialog(
             onDismissRequest = { showLogoutDialog = false},
             onConfirmation = {
