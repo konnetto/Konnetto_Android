@@ -10,15 +10,16 @@ import androidx.navigation.compose.NavHost
 fun RootNavGraph(
     navController: NavHostController,
     drawerState: DrawerState,
-    isLoggedIn: Boolean
+//    isLoggedIn: Boolean
 ) {
-    val startDestination = if (isLoggedIn) "main_graph" else "auth_graph"
+//    val startDestination = if (isLoggedIn) "main_graph" else "auth_graph"
 
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = "splash_graph",
         modifier = Modifier
     ) {
+        splashNavGraph(navController = navController)
         authNavGraph(navController = navController)
         mainNavGraph(
             navController = navController,

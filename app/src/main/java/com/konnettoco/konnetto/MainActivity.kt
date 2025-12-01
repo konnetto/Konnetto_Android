@@ -8,14 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.konnettoco.konnetto.ui.KonnettoApp
-import com.konnettoco.konnetto.ui.screen.settings.SettingsViewModel
-import com.konnettoco.konnetto.ui.screen.splash.SplashViewModel
 import com.konnettoco.konnetto.ui.theme.KonnettoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,33 +18,41 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val splashScreen = installSplashScreen()
+//        val splashScreen = installSplashScreen()
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            //Settings
-            val viewModel: SettingsViewModel = hiltViewModel()
-            val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
-
-            // login check
-            val splashScreenViewModel: SplashViewModel = hiltViewModel()
-            val isLoggedIn by splashScreenViewModel.isLoggedIn.collectAsState(initial = null)
-
-            splashScreen.setKeepOnScreenCondition {
-                viewModel.isLoading.value || isLoggedIn == null
-            }
-
-            KonnettoTheme(darkTheme = isDarkTheme)  {
-                // A surface container using the background color from theme
+//            //Settings
+//            val viewModel: SettingsViewModel = hiltViewModel()
+//            val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
+//
+//            // login check
+//            val splashScreenViewModel: SplashViewModel = hiltViewModel()
+//            val isLoggedIn by splashScreenViewModel.isLoggedIn.collectAsState(initial = null)
+//
+//            splashScreen.setKeepOnScreenCondition {
+//                viewModel.isLoading.value || isLoggedIn == null
+//            }
+//
+//            KonnettoTheme(darkTheme = isDarkTheme)  {
+//                // A surface container using the background color from theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    if (isLoggedIn != null) {
+//                        KonnettoApp(isLoggedIn = isLoggedIn!!)
+//                    }
+//                }
+//            }
+            KonnettoTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (isLoggedIn != null) {
-                        KonnettoApp(isLoggedIn = isLoggedIn!!)
-                    }
+                     KonnettoApp()
                 }
             }
         }

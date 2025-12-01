@@ -14,14 +14,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_splash_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SplashScreen.Konnetto"
+        android:theme="@style/Theme.Konnetto"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:theme="@style/Theme.SplashScreen.Konnetto">
+            android:theme="@style/Theme.Konnetto">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
