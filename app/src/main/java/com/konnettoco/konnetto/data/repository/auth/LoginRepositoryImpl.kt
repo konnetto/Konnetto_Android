@@ -28,6 +28,7 @@ class LoginRepositoryImpl @Inject constructor(
                 LoginResult(
                     accessToken = it.accessToken ?: "",
                     refreshToken = it.refreshToken ?: "",
+                    refreshTokenExpiredAt = it.refreshTokenExpiredAt ?: "",
                     role = it.role ?: ""
                 )
             } ?: return Result.failure(Exception("SERVER_DATA_NULL"))
@@ -37,7 +38,7 @@ class LoginRepositoryImpl @Inject constructor(
             val code = e.code()
             val message = when(code) {
                 409 -> "Email or username do not exist."
-                400 -> "Your email/username or password is incorrect, please try again.."
+                400, 401 -> "Your email/username or password is incorrect, please try again.."
                 500 -> "Something went wrong on our server. Please try again later."
                 else -> "An error occurred. Code: $code"
             }

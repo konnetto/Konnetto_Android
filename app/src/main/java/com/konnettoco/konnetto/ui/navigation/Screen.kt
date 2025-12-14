@@ -1,6 +1,7 @@
 package com.konnettoco.konnetto.ui.navigation
 
 sealed class Screen(val route: String) {
+    data object SplashPage : Screen("splashPage")
     //Auth Route
     data object LoginPage : Screen("loginPage")
     data object RegisterPage : Screen("registerPage")

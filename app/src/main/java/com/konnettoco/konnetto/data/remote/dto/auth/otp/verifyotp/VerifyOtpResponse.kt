@@ -19,6 +19,9 @@ data class VerifyOtpData(
 	@field:SerializedName("refresh_token")
 	val refreshToken: String? = null,
 
+	@field:SerializedName("refresh_token_expired_at")
+	val refreshTokenExpiredAt: String? = null,
+
 	@field:SerializedName("role")
 	val role: String? = null
 )

@@ -19,6 +19,7 @@ fun RootNavGraph(
         startDestination = startDestination,
         modifier = Modifier
     ) {
+        splashNavGraph(navController = navController)
         authNavGraph(navController = navController)
         mainNavGraph(
             navController = navController,
