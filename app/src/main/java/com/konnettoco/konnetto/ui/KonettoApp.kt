@@ -257,14 +257,6 @@ fun KonnettoApp(
             modifier = Modifier.widthIn(min = 30.dp)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-//                NavHost(
-//                    navController = navController,
-//                    startDestination = "auth_graph",
-//                    modifier = Modifier.fillMaxSize()
-//                ) {
-//                    authNavGraph(navController)
-//                    mainNavGraph(navController, drawerState)
-//                }
                 RootNavGraph(
                     navController = navController,
                     drawerState = drawerState,

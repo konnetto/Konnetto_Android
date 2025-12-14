@@ -17,8 +17,8 @@ class UserRepositoryImpl @Inject constructor(
         return userDataStore.getAccessToken()
     }
 
-    override suspend fun saveAuthToken(accessToken: String, refreshToken: String, userRole: String): Flow<Unit> {
-        return userDataStore.saveAuthToken(accessToken, refreshToken, userRole)
+    override suspend fun saveAuthToken(accessToken: String, refreshToken: String, refreshTokenExpiredAt: String, userRole: String): Flow<Unit> {
+        return userDataStore.saveAuthToken(accessToken, refreshToken, refreshTokenExpiredAt, userRole)
     }
 
     override suspend fun saveUserId(userId: String): Flow<Unit> {
