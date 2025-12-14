@@ -70,6 +70,7 @@ class LoginViewModel @Inject constructor(
             saveTokenUseCase(
                 accessToken = loginResult.accessToken,
                 refreshToken = loginResult.refreshToken,
+                refreshTokenExpiredAt = loginResult.refreshTokenExpiredAt,
                 userRole = loginResult.role
             ).collect()
         }.onSuccess {

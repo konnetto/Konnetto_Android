@@ -29,15 +29,17 @@ class VerifyOtpRepositoryImpl @Inject constructor(
             val data = response.data
             val token = data?.accessToken
             val refresh = data?.refreshToken
+            val refreshExpiredAt = data?.refreshTokenExpiredAt
             val role = data?.role
 
-            if (token.isNullOrBlank() || refresh.isNullOrBlank() || role.isNullOrBlank()) {
+            if (token.isNullOrBlank() || refresh.isNullOrBlank() || refreshExpiredAt.isNullOrBlank() || role.isNullOrBlank()) {
                 return Result.failure(Exception("Incomplete user data received from server."))
             }
 
             val domain = VerifyOtpResult(
                 accessToken = token,
                 refreshToken = refresh,
+                refreshTokenExpiredAt = refreshExpiredAt,
                 role = role
             )
 

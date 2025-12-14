@@ -15,7 +15,7 @@ android {
         minSdk = 28
         targetSdk = 35
         versionCode = 1
-        versionName = "0.7.94"
+        versionName = "0.7.96"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://9dbd439f-060d-457d-953b-012710b92955.mock.pstmn.io/v1/\"")
@@ -79,7 +79,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.7")
 
     //Splash screen
-//    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.52")
