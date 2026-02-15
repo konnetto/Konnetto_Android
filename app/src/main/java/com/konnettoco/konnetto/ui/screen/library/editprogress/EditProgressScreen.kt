@@ -584,13 +584,13 @@ fun NotesSection(
                             tint = Color.LightGray
                         )
                     },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-//                        textColor = MaterialTheme.colorScheme.onSurface,
-                        cursorColor = MaterialTheme.colorScheme.primary,
-                        focusedBorderColor = Color.LightGray,
-                        unfocusedBorderColor = Color.LightGray,
-//                        backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    ),
+//                    colors = TextFieldDefaults.outlinedTextFieldColors(
+////                        textColor = MaterialTheme.colorScheme.onSurface,
+//                        cursorColor = MaterialTheme.colorScheme.primary,
+//                        focusedBorderColor = Color.LightGray,
+//                        unfocusedBorderColor = Color.LightGray,
+////                        backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+//                    ),
                     shape = RoundedCornerShape(12.dp),
                     maxLines = 10,
                     textStyle = MaterialTheme.typography.bodyLarge,

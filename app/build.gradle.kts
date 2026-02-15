@@ -83,6 +83,7 @@ dependencies {
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.52")
+    implementation(libs.androidx.compose.material3.lint)
     kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
@@ -96,4 +97,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.compose.material.icons.extended)
 }
