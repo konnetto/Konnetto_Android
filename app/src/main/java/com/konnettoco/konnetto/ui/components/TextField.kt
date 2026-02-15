@@ -39,6 +39,7 @@ fun MyTextField(
     label: String,
     placeholder: String = "",
     activeColor: Color = Green40,
+    inactiveColor: Color = Color.Black,
     isPassword: Boolean
     ) {
 
@@ -92,8 +93,8 @@ fun MyTextField(
     }
 
     val customTextFieldColors = TextFieldDefaults.colors(
-        focusedTextColor = Color.Black,
-        unfocusedTextColor = Color.Black,
+        focusedTextColor = inactiveColor,
+        unfocusedTextColor = inactiveColor,
         focusedLeadingIconColor = activeColor,
         unfocusedLeadingIconColor = activeColor,
         focusedTrailingIconColor = Color.LightGray,
@@ -147,7 +148,7 @@ private fun MyTextFieldDarkPreview() {
             onValueChange = { text = it },
             label = "Username",
             placeholder = "Masukkan email atau username",
-            isPassword = false // Pastikan ini false untuk teks biasa
+            isPassword = false
         )
     }
 }
@@ -156,15 +157,14 @@ private fun MyTextFieldDarkPreview() {
 @Composable
 private fun MyTextFieldPasswordPreview() {
     KonnettoTheme {
-        // State sementara dengan teks yang akan disensor menjadi titik-titik
         var password by remember { mutableStateOf("rahasia123") }
 
         MyTextField(
-            icon = Icons.Default.Lock, // Menggunakan ikon gembok
+            icon = Icons.Default.Lock,
             value = password,
             onValueChange = { password = it },
             label = "Password",
-            isPassword = true // Teks "rahasia123" akan otomatis menjadi titik-titik
+            isPassword = true
         )
     }
 }
