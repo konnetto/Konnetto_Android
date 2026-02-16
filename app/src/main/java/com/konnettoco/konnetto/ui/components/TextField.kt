@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -12,7 +13,9 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -38,8 +41,7 @@ fun MyTextField(
     onValueChange: (String) -> Unit,
     label: String,
     placeholder: String = "",
-    activeColor: Color = Green40,
-    inactiveColor: Color = Color.Black,
+    isAvailable: Boolean? = null,
     isPassword: Boolean
     ) {
 
@@ -92,19 +94,21 @@ fun MyTextField(
         null
     }
 
-    val customTextFieldColors = TextFieldDefaults.colors(
-        focusedTextColor = inactiveColor,
-        unfocusedTextColor = inactiveColor,
-        focusedLeadingIconColor = activeColor,
-        unfocusedLeadingIconColor = activeColor,
-        focusedTrailingIconColor = Color.LightGray,
-        unfocusedTrailingIconColor = Color.LightGray,
-        focusedContainerColor = Color.White,
-        unfocusedContainerColor = Color.White,
-        focusedIndicatorColor = activeColor,
-        unfocusedIndicatorColor = activeColor,
-        unfocusedPlaceholderColor = activeColor
-    )
+    val colorFormatted = when (isAvailable) {
+        true -> OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.Green,
+            unfocusedBorderColor = Color.Green,
+            focusedLabelColor = Color.Green,
+            cursorColor = Color.Green
+        )
+        false -> OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.error,
+            unfocusedBorderColor = MaterialTheme.colorScheme.error,
+            focusedLabelColor = MaterialTheme.colorScheme.error,
+            cursorColor = MaterialTheme.colorScheme.error
+        )
+        null -> OutlinedTextFieldDefaults.colors()
+    }
 
 
 
@@ -128,9 +132,10 @@ fun MyTextField(
             },
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             visualTransformation = visualTransformation,
-            colors = customTextFieldColors,
+            colors = colorFormatted,
             trailingIcon = trailingIconContent,
-            supportingText = supportingTextContent
+            supportingText = supportingTextContent,
+            shape = RoundedCornerShape(12.dp)
         )
     }
 }
@@ -148,7 +153,8 @@ private fun MyTextFieldDarkPreview() {
             onValueChange = { text = it },
             label = "Username",
             placeholder = "Masukkan email atau username",
-            isPassword = false
+            isPassword = false,
+            isAvailable = true
         )
     }
 }
@@ -164,7 +170,8 @@ private fun MyTextFieldPasswordPreview() {
             value = password,
             onValueChange = { password = it },
             label = "Password",
-            isPassword = true
+            isPassword = true,
+            isAvailable = true
         )
     }
 }
