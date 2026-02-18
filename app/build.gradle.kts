@@ -89,6 +89,9 @@ dependencies {
     //javapoet
     implementation("com.squareup:javapoet:1.13.0")
 
+    // coil
+    implementation(libs.coil.kt.coil.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,4 +99,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }
